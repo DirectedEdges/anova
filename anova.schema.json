@@ -1,0 +1,288 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Anova Plugin Output Schema",
+  "description": "JSON Schema for data that's output by the Anova Figma plugin produced by Directed Edges",
+  "definitions": {
+    "Component": {
+      "type": "object",
+      "description": "A component specification derived from Figma that defines structure, properties, variants, and styling rules.",
+      "examples": [],
+      "properties": {
+        "title": { 
+          "type": "string",
+          "description": "The component asset name",
+          "examples": ["Button", "Card", "Text Input"]
+        },
+        "anatomy": { 
+          "$ref": "#/definitions/Anatomy",
+          "description": "The elements that comprise the component, corresponding largely to Figma layers"
+        },
+        "props": { 
+          "$ref": "#/definitions/Props",
+          "description": "Configurable properties that control component behavior and appearance"
+        },
+        "default": { 
+          "$ref": "#/definitions/Variant",
+          "description": "The base variant configuration that's both the component default display as well as the foundation for all other variants"
+        },
+        "variants": { 
+          "$ref": "#/definitions/Variants",
+          "description": "The styling, layout, and configuration of nested instances based on a cmoponent configuration"
+        },
+        "invalidVariantCombinations": {
+          "type": "array",
+          "description": "Non-default prop values that when used in combination result in an invalid component state, such as a component being set to disabled and hover simultaneously",
+          "items": { "$ref": "#/definitions/PropConfigurations" }
+        }
+      },
+      "required": ["title", "anatomy", "default"],
+      "additionalProperties": false
+    },
+    "Anatomy": {
+      "type": "object",
+      "description": "The structural elements that make up the component. Element names format depends on user settings.",
+      "examples": [],
+      "additionalProperties": { "$ref": "#/definitions/AnatomyElement" }
+    },
+    "AnatomyElement": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string" },
+        "detectedIn": { "type": "string" },
+        "instanceOf": { "type": "string" }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "Props": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "additionalProperties": { "$ref": "#/definitions/AnyProp" }
+    },
+    "AnyProp": {
+      "description": "",
+      "examples": [],
+      "oneOf": [
+        { "$ref": "#/definitions/BooleanProp" },
+        { "$ref": "#/definitions/TextProp" },
+        { "$ref": "#/definitions/IconProp" },
+        { "$ref": "#/definitions/EnumProp" },
+        { "$ref": "#/definitions/SlotProp" }
+      ]
+    },
+    "BooleanProp": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string", "const": "boolean" },
+        "default": { "type": "boolean" },
+        "x-platform": {
+          "type": "object",
+          "properties": {
+            "FIGMA": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"]
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["type", "default"],
+      "additionalProperties": false
+    },
+    "TextProp": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string", "const": "string" },
+        "default": { "type": "string" },
+        "nullable": { "type": "boolean" }
+      },
+      "required": ["type", "default", "nullable"],
+      "additionalProperties": false
+    },
+    "IconProp": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string", "const": "string" },
+        "default": { "type": "string" },
+        "nullable": { "type": "boolean" }
+      },
+      "required": ["type", "default", "nullable"],
+      "additionalProperties": false
+    },
+    "EnumProp": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string", "const": "string" },
+        "default": { "type": "string" },
+        "enum": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "nullable": { "type": "boolean" }
+      },
+      "required": ["type", "default", "enum"],
+      "additionalProperties": false
+    },
+    "SlotProp": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "type": { "type": "string", "const": "slot" },
+        "default": { "type": "null" },
+        "nullable": { "type": "boolean" }
+      },
+      "required": ["type", "default"],
+      "additionalProperties": false
+    },
+    "Variants": {
+      "type": "array",
+      "description": "Variants is an array of variant items, each corresponding to a specific set of non-default prop configurations taht represent a Figma variant. Evaluating a variant's style requires including layering the element styles, configurations and other properties from *every* variant that matches any of the combinations of non-defualt properties. This behavior is similar to the CSS cascade.",
+      "examples": [],
+      "items": { "$ref": "#/definitions/Variant" }
+    },
+    "Variant": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "name": { "type": "string" },
+        "baseline": { "type": "string" },
+        "configuration": { "$ref": "#/definitions/PropConfigurations" },
+        "invalid": { "type": "boolean" },
+        "elements": { "$ref": "#/definitions/Elements" }
+      },
+      "additionalProperties": false
+    },
+    "PropConfigurations": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          { "type": "number" },
+          { "type": "boolean" }
+        ]
+      }
+    },
+    "Elements": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "additionalProperties": { "$ref": "#/definitions/Element" }
+    },
+    "Element": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "children": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "parent": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "null" }
+          ]
+        },
+        "styles": { "$ref": "#/definitions/Styles" },
+        "propConfigurations": { "$ref": "#/definitions/PropConfigurations" },
+        "propBindings": { "$ref": "#/definitions/PropReferences" }
+      },
+      "additionalProperties": false
+    },
+    "PropReferences": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "patternProperties": {
+        "^(visible|characters|mainComponent)$": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "$ref": { "type": "string" }
+              },
+              "required": ["$ref"],
+              "additionalProperties": false
+            },
+            { "type": "null" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Styles": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "additionalProperties": { "$ref": "#/definitions/Style" }
+    },
+    "Style": {
+      "description": "",
+      "examples": [],
+      "oneOf": [
+        { "type": "string" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "null" },
+        { "$ref": "#/definitions/VariableStyle" },
+        { "$ref": "#/definitions/FigmaStyle" }
+      ]
+    },
+    "VariableStyle": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "id": { "type": "string" },
+        "rawValue": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "boolean" }
+          ]
+        },
+        "name": { "type": "string" },
+        "variableName": { "type": "string" },
+        "collectionName": { "type": "string" },
+        "collectionId": { "type": "string" }
+      },
+      "required": ["id", "rawValue"],
+      "additionalProperties": false
+    },
+    "FigmaStyle": {
+      "type": "object",
+      "description": "",
+      "examples": [],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "$ref": "#/definitions/Component"
+}
