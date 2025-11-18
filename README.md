@@ -1,6 +1,6 @@
-# Anova Figma Plugin
+# Anova UI Component Schema
 
-This repository serves as the central hub for documentation, issue tracking, and community support for the Anova Figma plugin produced by Nathan Curtis of Directed Edges.
+This repository serves as the central hub for documentation, issue tracking, and community support for the Anova UI Component Schema and supporting plugin produced by Nathan Curtis of Directed Edges.
 
 - [Plugin page](https://www.figma.com/community/plugin/1549454283615386215/anova) on Figma community
 
@@ -8,7 +8,7 @@ This repository serves as the central hub for documentation, issue tracking, and
 
 Anova (short for "Analysis of variants") automates design specifications as data by analyzing a selected Figma component or component set.
 
-The plugin conducts an "analysis of variants" to audit component composition, visual styling, and property configurations. While the name and concept alludes to traditional analysis of variance in statistics, the plugin returns a deterministic, repeatable, succinct and comprehensive result..
+The plugin conducts an "analysis of variants" to audit component composition, visual styling, and property configurations. While the name and concept alludes to traditional analysis of variance in statistics, the plugin returns a deterministic, repeatable, succinct and comprehensive result. To learn more, read the [Analysis of Variants blog post](https://nathanacurtis.substack.com/p/analysis-of-variants-9e440c30b93e).
 
 > **Note**: This repository contains documentation and issue tracking only. The actual plugin source code is maintained separately.
 
@@ -61,7 +61,7 @@ When using this schema, you must:
 - Indicate if you made any modifications to the schema
 
 Example attribution:
-> "This project uses the [Anova Plugin Output Schema](https://github.com/DirectedEdges/anova) by Directed Edges, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)."
+> "This project uses the [Anova UI Component Schema](https://github.com/DirectedEdges/anova) by Nathan Curtis of Directed Edges, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)."
 
 See the [LICENSE](LICENSE) file for full terms.
 
