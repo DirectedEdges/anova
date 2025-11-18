@@ -43,6 +43,28 @@ Found a bug or have a feature request? Please check if it already exists in our 
 
 Plugin updates are published directly to the Figma Community. Release notes and version history are included there.
 
+## 📄 License
+
+This repository and the [JSON schema](anova.schema.json) are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
+You are free to:
+- Use the schema to validate Anova plugin output
+- Integrate the schema into your own tools and workflows
+- Modify and distribute the schema
+- Use it for commercial purposes
+
+**Attribution Requirements:**
+When using this schema, you must:
+- Credit **Nathan Curtis** as the author
+- Provide a link to this repository: https://github.com/DirectedEdges/anova
+- Provide a link to the license: https://creativecommons.org/licenses/by/4.0/
+- Indicate if you made any modifications to the schema
+
+Example attribution:
+> "This project uses the [Anova Plugin Output Schema](https://github.com/DirectedEdges/anova) by Directed Edges, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)."
+
+See the [LICENSE](LICENSE) file for full terms.
+
 ---
 
 **Disclaimer**: This is an independent project and is not officially affiliated with Figma Inc.
