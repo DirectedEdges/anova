@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/anova.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -37,6 +37,13 @@
           "type": "array",
           "description": "Non-default prop values that when used in combination result in an invalid component state, such as a component being set to disabled and hover simultaneously",
           "items": { "$ref": "#/definitions/PropConfigurations" }
+        },
+        "subcomponents": {
+          "type": "object",
+          "description": "A record of subcomponents, where each key is a subcomponent name that matches a system-specific naming convention.",
+          "additionalProperties": {
+            "$ref": "#/definitions/Subcomponent"
+          }
         }
       },
       "required": ["metadata", "title", "anatomy", "default"],
@@ -323,6 +330,24 @@
       },
       "required": ["author", "lastUpdated", "generator", "schema", "source"],
       "additionalProperties": false
+    },
+    "Subcomponent": {
+      "type": "object",
+      "description": "A subcomponent's data, derived from ComponentData but excluding metadata and subcomponents.",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Component"
+        },
+        {
+          "not": {
+            "properties": {
+              "metadata": {},
+              "subcomponents": {}
+            },
+            "required": ["metadata", "subcomponents"]
+          }
+        }
+      ]
     }
   },
   "$ref": "#/definitions/Component"
