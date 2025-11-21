@@ -14,7 +14,7 @@ The plugin conducts an "analysis of variants" to audit component composition, vi
 
 ## 📚 Documentation
 
-- [JSON Schema](anova.schema.json) of data produced by the plugin
+- [JSON Schema](schema/root.schema.json) of data produced by the plugin
 
 ## 🐛 Issue Tracking
 
@@ -45,7 +45,7 @@ Plugin updates are published directly to the Figma Community. Release notes and 
 
 ## 📄 License
 
-This repository and the [JSON schema](anova.schema.json) are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+This repository and the [JSON schema](schema/root.schema.json) are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
 You are free to:
 - Use the schema to validate Anova plugin output
