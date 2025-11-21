@@ -1,4 +1,5 @@
 {
+  "version": "0.2.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/anova.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -10,6 +11,7 @@
       "description": "A component specification derived from Figma that defines structure, properties, variants, and styling rules.",
       "examples": [],
       "properties": {
+        "metadata": { "$ref": "#/definitions/Metadata" },
         "title": { 
           "type": "string",
           "description": "The component asset name",
@@ -37,7 +39,7 @@
           "items": { "$ref": "#/definitions/PropConfigurations" }
         }
       },
-      "required": ["title", "anatomy", "default"],
+      "required": ["metadata", "title", "anatomy", "default"],
       "additionalProperties": false
     },
     "Anatomy": {
@@ -283,8 +285,45 @@
       },
       "required": ["id"],
       "additionalProperties": false
+    },
+    "Metadata": {
+      "type": "object",
+      "description": "Metadata about the component, its author, generator, schema, and Figma source.",
+      "properties": {
+        "author": { "type": "string" },
+        "lastUpdated": { "type": "string" },
+        "generator": {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string" },
+            "version": { "type": "number" },
+            "name": { "type": "string" }
+          },
+          "required": ["url", "version", "name"],
+          "additionalProperties": false
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string" },
+            "version": { "type": "string" }
+          },
+          "required": ["url", "version"],
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "pageId": { "type": "string" },
+            "nodeId": { "type": "string" }
+          },
+          "required": ["pageId", "nodeId"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["author", "lastUpdated", "generator", "schema", "source"],
+      "additionalProperties": false
     }
   },
-  "type": "object",
   "$ref": "#/definitions/Component"
 }
