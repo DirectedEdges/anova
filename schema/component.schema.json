@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/anova.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -179,9 +179,36 @@
         "baseline": { "type": "string" },
         "configuration": { "$ref": "#/definitions/PropConfigurations" },
         "invalid": { "type": "boolean" },
+        "layout": { "$ref": "#/definitions/LayoutNode" },
         "elements": { "$ref": "#/definitions/Elements" }
       },
       "additionalProperties": false
+    },
+    "LayoutNode": {
+      "description": "Hierarchical layout structure representing element nesting. Leaf nodes are strings (element names), parent nodes are objects with element name as key and children array as value.",
+      "examples": [
+        "elementName",
+        {
+          "parentElement": [
+            "childElement1",
+            {
+              "childElement2": [
+                "grandchildElement"
+              ]
+            }
+          ]
+        }
+      ],
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/LayoutNode" }
+          }
+        }
+      ]
     },
     "PropConfigurations": {
       "type": "object",
