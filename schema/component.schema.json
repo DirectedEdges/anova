@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0",
+  "version": "0.5.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/anova.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -234,8 +234,14 @@
       "examples": [],
       "properties": {
         "children": {
-          "type": "array",
-          "items": { "type": "string" }
+          "oneOf": [
+            {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            { "$ref": "#/definitions/ReferenceValue" }
+          ],
+          "description": "Child element names, or a reference to a slot prop binding"
         },
         "parent": {
           "oneOf": [
@@ -244,34 +250,34 @@
           ]
         },
         "instanceOf": {
-          "type": "string",
-          "description": "The component or component set name that this instance element references. Only present for instance elements."
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/definitions/ReferenceValue" }
+          ],
+          "description": "The component or component set name that this instance element references, or a reference to an instance swap prop binding"
+        },
+        "text": {
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/definitions/ReferenceValue" }
+          ],
+          "description": "The text content for text elements, or a reference to a text prop binding"
         },
         "styles": { "$ref": "#/definitions/Styles" },
-        "propConfigurations": { "$ref": "#/definitions/PropConfigurations" },
-        "propBindings": { "$ref": "#/definitions/PropReferences" }
+        "propConfigurations": { "$ref": "#/definitions/PropConfigurations" }
       },
       "additionalProperties": false
     },
-    "PropReferences": {
+    "ReferenceValue": {
       "type": "object",
-      "description": "",
-      "examples": [],
-      "patternProperties": {
-        "^(visible|characters|mainComponent)$": {
-          "oneOf": [
-            {
-              "type": "object",
-              "properties": {
-                "$ref": { "type": "string" }
-              },
-              "required": ["$ref"],
-              "additionalProperties": false
-            },
-            { "type": "null" }
-          ]
+      "description": "A reference to a component property binding",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "description": "JSON pointer to the referenced prop, e.g. '#/props/propName'"
         }
       },
+      "required": ["$ref"],
       "additionalProperties": false
     },
     "Styles": {
@@ -289,7 +295,8 @@
         { "type": "number" },
         { "type": "null" },
         { "$ref": "#/definitions/VariableStyle" },
-        { "$ref": "#/definitions/FigmaStyle" }
+        { "$ref": "#/definitions/FigmaStyle" },
+        { "$ref": "#/definitions/ReferenceValue" }
       ]
     },
     "VariableStyle": {

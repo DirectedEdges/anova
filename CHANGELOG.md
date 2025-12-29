@@ -15,6 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Shows ComponentSet name for variant instances, or Component name for standalone instances
   - Also added to anatomy element definitions
 
+- **Text property**: Added optional `text` property to element definitions
+  - Contains the text content for text elements
+  - Can be a string value or a `ReferenceValue` when bound to a text prop
+
+- **Unified property bindings**: Property bindings now appear as `$ref` values on their natural properties
+  - `children` can now be a `ReferenceValue` (for slot content bindings)
+  - `instanceOf` can now be a `ReferenceValue` (for instance swap bindings)
+  - `visible` style can now be a `ReferenceValue` (for boolean prop bindings)
+  - `text` can be a `ReferenceValue` (for text prop bindings)
+  - Added `ReferenceValue` definition with `$ref` JSON pointer to props
+
+### Removed
+
+- **propBindings section**: Removed separate `propBindings` property from elements
+  - Bindings are now represented directly on their target properties using `$ref`
+
 ## [0.4.0] - 2025-12-27
 
 ### Added
