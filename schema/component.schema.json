@@ -243,6 +243,10 @@
             { "type": "null" }
           ]
         },
+        "instanceOf": {
+          "type": "string",
+          "description": "The component or component set name that this instance element references. Only present for instance elements."
+        },
         "styles": { "$ref": "#/definitions/Styles" },
         "propConfigurations": { "$ref": "#/definitions/PropConfigurations" },
         "propBindings": { "$ref": "#/definitions/PropReferences" }

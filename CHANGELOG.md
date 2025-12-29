@@ -5,6 +5,16 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-12-29
+
+### Added
+
+- **Instance of attribute**: Added optional `instanceOf` property to element definitions
+  - Indicates the component or component set name that an instance element references
+  - Only present for instance elements (Figma INSTANCE nodes)
+  - Shows ComponentSet name for variant instances, or Component name for standalone instances
+  - Also added to anatomy element definitions
+
 ## [0.4.0] - 2025-12-27
 
 ### Added
