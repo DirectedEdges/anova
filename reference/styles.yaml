@@ -1,0 +1,439 @@
+# Anova Styles Reference
+# Generated from anova-plugin/src/Model/Constants/StyleKeys.ts and RawStyles.ts
+# Last updated: January 27, 2026
+
+description: |
+  This document maps style properties to their applicable element types and value types.
+  It serves as a human-readable reference for understanding which styles can appear
+  on which elements in Anova's serialized output.
+
+# Style processing categories (from RawStyles.ts)
+styleCategories:
+  FONT:
+    description: "Font family and weight properties"
+    properties: [fontFamily, fontWeight]
+    valueType: FontStyleValue
+    
+  COLOR:
+    description: "Fill and stroke color properties"
+    properties: [fills, strokes]
+    valueType: ColorStyleValue
+    
+  STROKE:
+    description: "Stroke width properties"
+    properties: [strokeWeight, strokeTopWeight, strokeBottomWeight, strokeLeftWeight, strokeRightWeight]
+    valueType: StrokeStyleValue
+    
+  CORNER:
+    description: "Corner radius properties"
+    properties: [cornerRadius, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius]
+    valueType: CornerStyleValue
+    
+  MIXABLE_NUMBER:
+    description: "Numeric properties that can have 'mixed' values"
+    properties: [paddingLeft, paddingRight, paddingTop, paddingBottom, fontSize, letterSpacing, leadingTrim]
+    valueType: NumberStyleValue
+    
+  PURE_NUMBER:
+    description: "Numeric properties without mixed values"
+    properties: [x, y, width, height, minWidth, minHeight, maxWidth, maxHeight, opacity, itemSpacing, counterAxisSpacing, rotation, paragraphIndent, paragraphSpacing, listSpacing]
+    valueType: NumberStyleValue
+    
+  MIXABLE_STRING:
+    description: "String properties that can have 'mixed' values"
+    properties: [strokeAlign, textCase, textDecoration]
+    valueType: StringStyleValue
+    
+  PURE_STRING:
+    description: "String properties without mixed values"
+    properties: [effectStyleId, layoutWrap, layoutMode, textAlignHorizontal, textAlignVertical, layoutPositioning, layoutSizingHorizontal, layoutSizingVertical, primaryAxisSizingMode, primaryAxisAlignItems, counterAxisAlignItems, counterAxisAlignContent]
+    valueType: StringStyleValue
+    
+  BOOLEAN:
+    description: "Boolean properties"
+    properties: [itemReverseZIndex, clipContent, locked, visible, hangingPunctuation, hangingList]
+    valueType: BooleanStyleValue
+    
+  LINE_HEIGHT:
+    description: "Line height properties with special formatting"
+    properties: [lineHeight]
+    valueType: LineHeightStyleValue
+
+# Element type to applicable styles mapping (from StyleKeys.ts)
+elementTypes:
+  COMPONENT:
+    description: "Component root nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - clipContent
+      - cornerRadius
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - primaryAxisAlignItems
+      - primaryAxisSizingMode
+      - counterAxisAlignItems
+      - counterAxisAlignContent
+      - layoutMode
+      - layoutWrap
+      - itemReverseZIndex
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - x
+      - y
+      - strokes
+      - strokeAlign
+      - strokeWeight
+      - strokeTopWeight
+      - strokeBottomWeight
+      - strokeLeftWeight
+      - strokeRightWeight
+      - itemSpacing
+      - paddingLeft
+      - paddingRight
+      - paddingTop
+      - paddingBottom
+      - counterAxisSpacing
+      - topLeftRadius
+      - topRightRadius
+      - bottomLeftRadius
+      - bottomRightRadius
+    
+  FRAME:
+    description: "Frame nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - clipContent
+      - cornerRadius
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - primaryAxisAlignItems
+      - primaryAxisSizingMode
+      - counterAxisAlignItems
+      - counterAxisAlignContent
+      - layoutMode
+      - layoutWrap
+      - itemReverseZIndex
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - x
+      - y
+      - strokes
+      - strokeAlign
+      - strokeWeight
+      - strokeTopWeight
+      - strokeBottomWeight
+      - strokeLeftWeight
+      - strokeRightWeight
+      - itemSpacing
+      - paddingLeft
+      - paddingRight
+      - paddingTop
+      - paddingBottom
+      - counterAxisSpacing
+      - topLeftRadius
+      - topRightRadius
+      - bottomLeftRadius
+      - bottomRightRadius
+    
+  SLOT:
+    description: "Slot placeholder nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - clipContent
+      - cornerRadius
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+    
+  RECTANGLE:
+    description: "Rectangle shape nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+      - strokeTopWeight
+      - strokeBottomWeight
+      - strokeLeftWeight
+      - strokeRightWeight
+    
+  INSTANCE:
+    description: "Component instance nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+    
+  TEXT:
+    description: "Text nodes"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - fontSize
+      - fontFamily
+      - fontWeight
+      - lineHeight
+      - letterSpacing
+      - textDecoration
+      - textCase
+      - paragraphIndent
+      - paragraphSpacing
+      - leadingTrim
+      - listSpacing
+      - hangingPunctuation
+      - hangingList
+      - textStyleId
+      - textAlignHorizontal
+      - textAlignVertical
+    
+  VECTOR:
+    description: "Vector shape nodes (base)"
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+    
+  ELLIPSE:
+    description: "Ellipse shape nodes (inherits VECTOR)"
+    inherits: VECTOR
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+    
+  STAR:
+    description: "Star shape nodes (inherits VECTOR)"
+    inherits: VECTOR
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+    
+  POLYGON:
+    description: "Polygon shape nodes (inherits VECTOR)"
+    inherits: VECTOR
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - height
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+    
+  LINE:
+    description: "Line shape nodes (VECTOR without height)"
+    inherits: VECTOR
+    excludedStyles: [height]
+    applicableStyles:
+      - rotation
+      - visible
+      - opacity
+      - locked
+      - fills
+      - effectStyleId
+      - width
+      - minWidth
+      - minHeight
+      - maxWidth
+      - maxHeight
+      - x
+      - y
+      - layoutPositioning
+      - layoutSizingHorizontal
+      - layoutSizingVertical
+      - strokes
+      - strokeAlign
+      - strokeWeight
+
+# All possible style properties (union of all element types)
+allStyleProperties:
+  - rotation
+  - visible
+  - opacity
+  - locked
+  - fills
+  - effectStyleId
+  - clipContent
+  - cornerRadius
+  - width
+  - height
+  - minWidth
+  - minHeight
+  - maxWidth
+  - maxHeight
+  - x
+  - y
+  - layoutPositioning
+  - layoutSizingHorizontal
+  - layoutSizingVertical
+  - strokes
+  - strokeAlign
+  - strokeWeight
+  - strokeTopWeight
+  - strokeBottomWeight
+  - strokeLeftWeight
+  - strokeRightWeight
+  - fontSize
+  - fontFamily
+  - fontWeight
+  - lineHeight
+  - letterSpacing
+  - textDecoration
+  - textCase
+  - paragraphIndent
+  - paragraphSpacing
+  - leadingTrim
+  - listSpacing
+  - hangingPunctuation
+  - hangingList
+  - textStyleId
+  - textAlignHorizontal
+  - textAlignVertical
+  - primaryAxisAlignItems
+  - primaryAxisSizingMode
+  - counterAxisAlignItems
+  - counterAxisAlignContent
+  - layoutMode
+  - layoutWrap
+  - itemReverseZIndex
+  - itemSpacing
+  - paddingLeft
+  - paddingRight
+  - paddingTop
+  - paddingBottom
+  - counterAxisSpacing
+  - topLeftRadius
+  - topRightRadius
+  - bottomLeftRadius
+  - bottomRightRadius
