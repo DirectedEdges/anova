@@ -3,7 +3,7 @@
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/root.schema.json",
   "title": "Anova Schema Package",
   "description": "Root schema for the Anova component and components set definitions.",
-  "version": "0.2.0",
+  "version": "0.6.0",
   "oneOf": [
     { "$ref": "component.schema.json" },
     { "$ref": "components.schema.json" }

@@ -5,6 +5,49 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-01-27
+
+### Added
+
+- **Styles schema**: New `styles.schema.json` providing complete validation for style properties
+  - Defines 60+ style properties (fills, opacity, cornerRadius, fontSize, etc.)
+  - Type-specific validation for each property based on Style processor classes
+  - Supports all style value types: primitives, variables, Figma styles, and prop bindings
+  - Documents which value shapes depend on config.format settings (simplifyVariables, simplifyStyles)
+  
+- **Style value types**: Precise type definitions for style property values
+  - `NumberStyleValue`: number | VariableStyle | null
+  - `BooleanStyleValue`: boolean | VariableStyle | null
+  - `BooleanBindableStyleValue`: boolean | VariableStyle | ReferenceValue | null (for `visible` only)
+  - `ColorStyleValue`: string | VariableStyle | FigmaStyle | null
+  - `StringStyleValue`: string | VariableStyle | null
+  - `MixedNumberStyleValue`: number | "mixed" | VariableStyle | null
+  - `MixedStringStyleValue`: string | VariableStyle | null
+  - `StrokeStyleValue`: number | "mixed" | VariableStyle | null
+  - `CornerStyleValue`: number | "mixed" | VariableStyle | null
+  - `FontStyleValue`: string | number | "mixed" | null
+  - `LineHeightStyleValue`: string | number | VariableStyle | null
+  - `StyleIdValue`: string | FigmaStyle | null
+
+- **Styles reference documentation**: New `reference/styles.yaml` providing human-readable documentation
+  - Maps style properties to their applicable element types (COMPONENT, FRAME, TEXT, etc.)
+  - Documents style processing categories from RAW_STYLES_LOOKUP
+  - Lists all 60+ style properties with descriptions and value types
+  - Generated from StyleKeys.ts and RawStyles.ts constants
+
+### Changed
+
+- **VariableStyle definition**: Removed internal-only `rawValue` property
+  - Only includes properties emitted by Style.data(): id, name, variableName, collectionName, collectionId
+  - `rawValue` is used internally for rendering but never serialized
+
+- **FigmaStyle definition**: Improved descriptions
+  - Documents simplified vs full object output based on config.format.simplifyStyles
+
+- **Styles property**: Now references `styles.schema.json#/definitions/Styles`
+  - Replaces generic `additionalProperties: Style` with precise property-level validation
+  - Each style property validates against its specific value type union
+
 ## [0.5.0] - 2025-12-29
 
 ### Added

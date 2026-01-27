@@ -1,5 +1,5 @@
 {
-  "version": "0.5.0",
+  "version": "0.6.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/anova.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -281,55 +281,7 @@
       "additionalProperties": false
     },
     "Styles": {
-      "type": "object",
-      "description": "",
-      "examples": [],
-      "additionalProperties": { "$ref": "#/definitions/Style" }
-    },
-    "Style": {
-      "description": "",
-      "examples": [],
-      "oneOf": [
-        { "type": "string" },
-        { "type": "boolean" },
-        { "type": "number" },
-        { "type": "null" },
-        { "$ref": "#/definitions/VariableStyle" },
-        { "$ref": "#/definitions/FigmaStyle" },
-        { "$ref": "#/definitions/ReferenceValue" }
-      ]
-    },
-    "VariableStyle": {
-      "type": "object",
-      "description": "",
-      "examples": [],
-      "properties": {
-        "id": { "type": "string" },
-        "rawValue": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "number" },
-            { "type": "boolean" }
-          ]
-        },
-        "name": { "type": "string" },
-        "variableName": { "type": "string" },
-        "collectionName": { "type": "string" },
-        "collectionId": { "type": "string" }
-      },
-      "required": ["id", "rawValue"],
-      "additionalProperties": false
-    },
-    "FigmaStyle": {
-      "type": "object",
-      "description": "",
-      "examples": [],
-      "properties": {
-        "id": { "type": "string" },
-        "name": { "type": "string" }
-      },
-      "required": ["id"],
-      "additionalProperties": false
+      "$ref": "styles.schema.json#/definitions/Styles"
     },
     "Metadata": {
       "type": "object",
