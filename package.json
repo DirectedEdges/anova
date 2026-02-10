@@ -1,0 +1,63 @@
+{
+  "name": "@directededges/anova",
+  "version": "0.8.0",
+  "description": "Anova UI Component Schema - TypeScript types and JSON schema definitions for component specifications",
+  "license": "CC BY 4.0",
+  "author": "Nathan Curtis <nathan@directededges.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DirectedEdges/anova.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "type": "module",
+  "main": "./types/index.ts",
+  "types": "./types/index.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.ts",
+      "default": "./types/index.ts"
+    },
+    "./types": {
+      "types": "./types/index.ts",
+      "default": "./types/index.ts"
+    },
+    "./types/*": {
+      "types": "./types/*.ts",
+      "default": "./types/*.ts"
+    },
+    "./schema": {
+      "default": "./schema/component.schema.json"
+    },
+    "./schema/component": {
+      "default": "./schema/component.schema.json"
+    },
+    "./schema/components": {
+      "default": "./schema/components.schema.json"
+    },
+    "./schema/styles": {
+      "default": "./schema/styles.schema.json"
+    },
+    "./schema/root": {
+      "default": "./schema/root.schema.json"
+    }
+  },
+  "files": [
+    "types",
+    "schema",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "anova",
+    "component",
+    "schema",
+    "figma",
+    "design-system",
+    "specifications",
+    "types",
+    "typescript"
+  ]
+}
