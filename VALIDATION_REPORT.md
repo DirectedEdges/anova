@@ -1,8 +1,8 @@
 # Schema-Type Validation Report
 
-## Status: ⚠️ **INCONSISTENCIES FOUND** (6 remaining)
+## Status: ⚠️ **INCONSISTENCIES FOUND** (1 remaining)
 
-The TypeScript types in `types/` have inconsistencies with the JSON schemas in `schema/`. Below are the remaining issues that need to be addressed.
+The TypeScript types in `types/` have inconsistencies with the JSON schemas in `schema/`. Below is the remaining issue that needs to be addressed.
 
 ---
 
@@ -28,77 +28,7 @@ The TypeScript types in `types/` have inconsistencies with the JSON schemas in `
 
 ---
 
-### 2. **EnumProp - Field Name**
-**Schema**: `enum: { "type": "array", "items": { "type": "string" } }`
-**TypeScript**: `options: string[];`
-
-❌ **Issue**: Schema uses `enum`, TypeScript uses `options`
-✅ **Fix**: Change TypeScript to `enum: string[];`
-
----
-
-### 3. **VariableStyle** - Structure Mismatch
-**Schema**:
-```json
-{
-  "id": { "type": "string", "description": "Figma variable ID" },
-  "name": { "type": "string" },
-  "variableName": { "type": "string" },
-  "collectionName": { "type": "string" },
-  "collectionId": { "type": "string" }
-}
-```
-Required: `["id"]` only
-
-**TypeScript**:
-```typescript
-{
-  variable: string;      // ❌ Should be "id"
-  collection?: string;   // ❌ Should be "collectionName" or "collectionId"
-  mode?: string;         // ❌ Not in schema
-  resolvedValue?: string | number | boolean; // ❌ Not in schema
-}
-```
-
-❌ **Major Issue**: Completely different structure
-✅ **Fix**: Rewrite to match schema exactly
-
----
-
-### 4. **FigmaStyle** - Structure Mismatch
-**Schema**:
-```json
-{
-  "id": { "type": "string" },
-  "name": { "type": "string" }
-}
-```
-Required: `["id"]` only
-
-**TypeScript**:
-```typescript
-{
-  styleId: string;      // ❌ Should be "id"
-  styleName: string;    // ❌ Should be "name", and optional
-  styleType: 'FILL' | 'STROKE' | 'TEXT' | 'EFFECT' | 'GRID'; // ❌ Not in schema
-}
-```
-
-❌ **Major Issue**: Different property names and extra field
-✅ **Fix**: Change to match schema exactly
-
----
-
-### 5. **Styles** - Generic Record vs Specific Properties
-**Schema**: Defines 60+ specific style properties (rotation, visible, opacity, fills, etc.) with specific value types
-**TypeScript**: `type Styles = Record<string, Style>` (generic)
-
-❌ **Major Issue**: TypeScript is too loose, doesn't enforce schema's specific properties
-✅ **Fix**: Define interface with all specific properties from schema
-
----
-
-### 6. **BooleanProp - Missing x-platform**
+### 2. **BooleanProp - Missing x-platform**
 **Schema**: Optional `x-platform` object with FIGMA property
 **TypeScript**: No platform-specific metadata
 
@@ -112,11 +42,9 @@ Required: `["id"]` only
 | # | Category | Issue | Fix |
 |---|----------|-------|-----|
 | 1 | Props | Type discriminator alignment | Update TypeScript to use `type: 'string'` with proper discriminators |
-| 2 | Props | EnumProp field name | Rename `options` to `enum` in TypeScript |
-| 3 | Styles | VariableStyle structure | Rewrite to match schema exactly |
-| 4 | Styles | FigmaStyle property names | Change to match schema exactly |
-| 5 | Styles | Styles generic vs specific | Define interface with specific properties from schema |
-| 6 | Props | BooleanProp x-platform metadata | Add optional `'x-platform'` field to props |
+| 2 | Props | BooleanProp x-platform metadata | Add optional `'x-platform'` field to props |
+
+**Note on EnumProp**: The schema's `enum` field (array of strings) is semantically equivalent to TypeScript's `options: string[]`. Both represent the array of valid values. The transformer output may need updating to use the field name `enum` instead of `options` (pending separate work).
 
 ---
 

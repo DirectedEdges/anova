@@ -192,6 +192,7 @@
       "description": "Reference to a Figma variable. May include resolved metadata depending on config.format.simplifyVariables setting. When simplified, emits as string instead of object.",
       "properties": {
         "id": { "type": "string", "description": "Figma variable ID" },
+        "rawValue": { "type": ["string", "number", "boolean"], "description": "The underlying raw value for rendering" },
         "name": { "type": "string", "description": "Variable name in collection" },
         "variableName": { "type": "string", "description": "Alternative variable name field" },
         "collectionName": { "type": "string", "description": "Name of the variable collection" },
