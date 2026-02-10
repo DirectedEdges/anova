@@ -20,26 +20,28 @@ export interface BooleanProp {
  * Text content property definition
  */
 export interface TextProp {
-  type: 'text';
+  type: 'string';
   default: string;
+  nullable?: boolean;
 }
 
 /**
  * Icon/instance swap property definition
  */
 export interface IconProp {
-  type: 'icon';
+  type: 'string';
   default: string;
-  options?: string[];
+  nullable?: boolean;
 }
 
 /**
  * Enumeration property definition
  */
 export interface EnumProp {
-  type: 'enum';
+  type: 'string';
   default: string;
-  options: string[];
+  enum: string[];
+  nullable?: boolean;
 }
 
 /**

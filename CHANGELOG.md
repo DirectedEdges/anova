@@ -5,6 +5,33 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-02-10
+
+### Added
+
+- **TypeScript type definitions** (`types/` package): Complete type definitions for all schema entities
+  - Core types: Component, Anatomy, Props, Variant, Metadata, Config, Styles, Element, Layout
+  - Property types with proper discriminators: BooleanProp, TextProp, IconProp, EnumProp, SlotProp
+  - Style types supporting all 59 properties with specific value types
+  - Reference value types for prop bindings and style references
+
+### Changed
+
+- **Component.metadata** - Now optional to support components without full metadata
+- **Variant.layout** - Changed from single LayoutNode to array of LayoutNode for proper hierarchical representation
+- **Props type values** - TextProp, IconProp, and EnumProp now use `type: 'string'` with discriminators (matching schema)
+- **Style properties** - Changed from generic `Record<string, Style>` to specific Partial interface with all 59 style properties
+- **VariableStyle** - Now includes all properties from schema: id (required), rawValue, name, variableName, collectionName, collectionId (all optional)
+- **FigmaStyle** - Simplified to match schema: id (required), name (optional)
+
+### Fixed
+
+- **SlotProp.default** - Now accepts both `null` and `string` types
+- **TextProp/IconProp nullable** - Made nullable field optional (was incorrectly required)
+- **Metadata.source** - Added missing nodeType field with enum: COMPONENT | COMPONENT_SET | FRAME
+- **Metadata.config** - Added complete Config definition with processing, format, and include options
+- **StyleKey type** - Expanded from incomplete list to all 59 valid style properties matching schema
+
 ## [0.7.0]
 
 ### Changed
