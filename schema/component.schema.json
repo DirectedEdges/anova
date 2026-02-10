@@ -46,7 +46,7 @@
           }
         }
       },
-      "required": ["metadata", "title", "anatomy", "default"],
+      "required": ["title", "anatomy", "default"],
       "additionalProperties": false
     },
     "Anatomy": {
@@ -121,7 +121,7 @@
         "default": { "type": "string" },
         "nullable": { "type": "boolean" }
       },
-      "required": ["type", "default", "nullable"],
+      "required": ["type", "default"],
       "additionalProperties": false
     },
     "IconProp": {
@@ -133,7 +133,7 @@
         "default": { "type": "string" },
         "nullable": { "type": "boolean" }
       },
-      "required": ["type", "default", "nullable"],
+      "required": ["type", "default"],
       "additionalProperties": false
     },
     "EnumProp": {
@@ -158,7 +158,7 @@
       "examples": [],
       "properties": {
         "type": { "type": "string", "const": "slot" },
-        "default": { "type": "null" },
+        "default": { "type": ["null", "string"] },
         "nullable": { "type": "boolean" }
       },
       "required": ["type", "default"],
@@ -179,7 +179,10 @@
         "baseline": { "type": "string" },
         "configuration": { "$ref": "#/definitions/PropConfigurations" },
         "invalid": { "type": "boolean" },
-        "layout": { "$ref": "#/definitions/LayoutNode" },
+        "layout": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/LayoutNode" }
+        },
         "elements": { "$ref": "#/definitions/Elements" }
       },
       "additionalProperties": false
@@ -312,13 +315,57 @@
           "type": "object",
           "properties": {
             "pageId": { "type": "string" },
-            "nodeId": { "type": "string" }
+            "nodeId": { "type": "string" },
+            "nodeType": { "type": "string", "enum": ["COMPONENT", "COMPONENT_SET", "FRAME"] }
           },
-          "required": ["pageId", "nodeId"],
+          "required": ["pageId", "nodeId", "nodeType"],
+          "additionalProperties": false
+        },
+        "config": { "$ref": "#/definitions/Config" }
+      },
+      "required": ["author", "lastUpdated", "generator", "schema", "source", "config"],
+      "additionalProperties": false
+    },
+    "Config": {
+      "type": "object",
+      "description": "Model configuration used to generate this spec.",
+      "properties": {
+        "processing": {
+          "type": "object",
+          "properties": {
+            "subcomponentNamePattern": { "type": "string" },
+            "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
+            "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
+          },
+          "required": ["subcomponentNamePattern", "variantDepth", "details"],
+          "additionalProperties": false
+        },
+        "format": {
+          "type": "object",
+          "properties": {
+            "output": { "type": "string", "enum": ["JSON", "YAML"] },
+            "keys": { "type": "string", "enum": ["SAFE", "CAMEL", "SNAKE", "KEBAB", "PASCAL", "TRAIN"] },
+            "layout": { "type": "string", "enum": ["LAYOUT", "PARENT_CHILDREN", "BOTH"] },
+            "variables": { "type": "string", "enum": ["NAME_WITH_COLLECTION", "NAME", "OBJECT"] },
+            "simplifyVariables": { "type": "boolean" },
+            "simplifyStyles": { "type": "boolean" }
+          },
+          "required": ["output", "keys", "layout", "variables", "simplifyVariables", "simplifyStyles"],
+          "additionalProperties": false
+        },
+        "include": {
+          "type": "object",
+          "properties": {
+            "subcomponents": { "type": "boolean" },
+            "variantNames": { "type": "boolean" },
+            "invalidVariants": { "type": "boolean" },
+            "invalidCombinations": { "type": "boolean" }
+          },
+          "required": ["subcomponents", "variantNames", "invalidVariants", "invalidCombinations"],
           "additionalProperties": false
         }
       },
-      "required": ["author", "lastUpdated", "generator", "schema", "source"],
+      "required": ["processing", "format", "include"],
       "additionalProperties": false
     },
     "Subcomponent": {
