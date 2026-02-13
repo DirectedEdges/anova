@@ -12,7 +12,6 @@ export type { Anatomy, AnatomyElement } from './Anatomy.js';
 export type { Props, AnyProp, BooleanProp, TextProp, IconProp, EnumProp, SlotProp } from './Props.js';
 export type { Variant, Variants } from './Variant.js';
 export type { Metadata } from './Metadata.js';
-export type { Config } from './Config.js';
 export type { Subcomponent, Subcomponents } from './Subcomponent.js';
 
 // Element and structure types
@@ -22,6 +21,8 @@ export type { Children } from './Children.js';
 
 // Configuration types
 export type { PropConfigurations } from './PropConfigurations.js';
+export type { Config } from './Config.js';
+export { DEFAULT_CONFIG } from './Config.js';
 
 // Style types
 export type { Styles, Style, StyleKey, VariableStyle, FigmaStyle } from './Styles.js';

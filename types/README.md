@@ -15,7 +15,8 @@ npm install @directededges/anova
 ## Usage
 
 ```typescript
-import { Component, Variant, Anatomy } from '@directededges/anova';
+import type { Component, Variant, Anatomy, Config } from '@directededges/anova';
+import { DEFAULT_CONFIG } from '@directededges/anova';
 
 // Type-safe component data
 const component: Component = {
@@ -35,6 +36,15 @@ const component: Component = {
     }
   }
 };
+
+// Use default config or customize
+const config: Config = {
+  ...DEFAULT_CONFIG,
+  format: {
+    ...DEFAULT_CONFIG.format,
+    output: 'YAML'
+  }
+};
 ```
 
 ## Type Hierarchy
@@ -45,6 +55,10 @@ const component: Component = {
 - **`Props`** - Configurable component properties
 - **`Variant`** - Component state/configuration
 - **`Metadata`** - Generation metadata
+- **`Config`** - Transformer configuration type
+
+### Configuration
+- **`DEFAULT_CONFIG`** - Default configuration constant for transformer setup
 
 ### Supporting Types
 - **`Element`** - Individual component element
@@ -60,16 +74,17 @@ const component: Component = {
 │ @directededges/anova (this package)         │
 │ - JSON Schema definitions                   │
 │ - TypeScript type definitions               │
-│ Exports: Component, Variant, Anatomy, etc.  │
+│ - Default configuration constants           │
+│ Exports: Component, Config, DEFAULT_CONFIG  │
 └─────────────────────────────────────────────┘
                     ▲
-                    │ imports types
+                    │ imports types & config
     ┌───────────────┴──────────────┐
     │                               │
 ┌───────────────────┐   ┌──────────────────────┐
 │ anova-transformer │   │ anova-plugin (MCP)   │
 │ - Produces data   │   │ - Consumes data      │
-│ - No type exports │   │ - Validates schema   │
+│                   │   │ - Validates schema   │
 └───────────────────┘   └──────────────────────┘
 ```
 

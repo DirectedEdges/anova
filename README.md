@@ -15,6 +15,25 @@ The plugin conducts an "analysis of variants" to audit component composition, vi
 ## 📚 Documentation
 
 - [JSON Schema](schema/root.schema.json) of data produced by the plugin
+- [TypeScript Types](types/) - Complete type definitions for all schema entities
+
+## 📦 NPM Package
+
+This package provides TypeScript types and a default configuration for use with `@directededges/anova-transformer`.
+
+```typescript
+import type { Component, Config } from '@directededges/anova';
+import { DEFAULT_CONFIG } from '@directededges/anova';
+
+// Use the default config or customize it
+const myConfig: Config = {
+  ...DEFAULT_CONFIG,
+  format: {
+    ...DEFAULT_CONFIG.format,
+    output: 'YAML'
+  }
+};
+```
 
 ## 🐛 Issue Tracking
 
