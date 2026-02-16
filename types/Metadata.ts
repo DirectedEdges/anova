@@ -8,7 +8,7 @@
  * @property source - Figma source information.
  * @property config - The model configuration used to generate this spec.
  */
-import { Config } from './Config';
+import { Config } from './Config.js';
 
 /**
  * Represents the metadata for a component.

@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures consistent behavior across CLI, MCP, and Plugin environments
   - Co-located with Config type definition for easy maintenance
 
+## [0.10.0] - 2026-02-16
+
+### Added
+
+- **Runtime JS build** - Compile TypeScript types to `dist/index.js` for ESM consumers
+  - Enables ESM runtime imports without loading `.ts` files
+  - Keeps type definitions in `types/` for TypeScript tooling
+
 ## [0.8.0] - 2026-02-10
 
 ### Added

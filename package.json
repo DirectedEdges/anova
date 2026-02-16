@@ -1,6 +1,6 @@
 {
   "name": "@directededges/anova",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Anova UI Component Schema - TypeScript types and JSON schema definitions for component specifications",
   "license": "CC BY 4.0",
   "author": "Nathan Curtis <nathan@directededges.com>",
@@ -12,12 +12,12 @@
     "registry": "https://npm.pkg.github.com"
   },
   "type": "module",
-  "main": "./types/index.ts",
+  "main": "./dist/index.js",
   "types": "./types/index.ts",
   "exports": {
     ".": {
       "types": "./types/index.ts",
-      "default": "./types/index.ts"
+      "default": "./dist/index.js"
     },
     "./types": {
       "types": "./types/index.ts",
@@ -44,12 +44,17 @@
     }
   },
   "files": [
+    "dist",
     "types",
     "schema",
     "LICENSE",
     "README.md",
     "CHANGELOG.md"
   ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build"
+  },
   "keywords": [
     "anova",
     "component",
@@ -59,5 +64,8 @@
     "specifications",
     "types",
     "typescript"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
 }
