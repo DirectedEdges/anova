@@ -150,6 +150,7 @@ export type StyleKey =
   | 'paddingTop'
   | 'paddingBottom'
   | 'counterAxisSpacing'
+  | 'cornerSmoothing'
   | 'topLeftRadius'
   | 'topRightRadius'
   | 'bottomLeftRadius'
