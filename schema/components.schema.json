@@ -3,7 +3,7 @@
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/components.schema.json",
   "title": "Anova Components Set Schema",
   "description": "A set of named components, each conforming to the Anova component schema.",
-  "version": "0.6.0",
+  "version": "0.11.0",
   "type": "object",
   "properties": {
     "components": {
