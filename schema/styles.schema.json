@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.7.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/styles.schema.json",
   "title": "Anova Styles Schema",
@@ -14,7 +14,8 @@
         "visible": { "$ref": "#/definitions/BooleanBindableStyleValue", "description": "Visibility. Can be bound to component prop." },
         "opacity": { "$ref": "#/definitions/NumberStyleValue", "description": "Opacity 0-1" },
         "locked": { "$ref": "#/definitions/BooleanStyleValue", "description": "Lock state" },
-        "fills": { "$ref": "#/definitions/ColorStyleValue", "description": "Fill colors" },
+        "backgroundColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Background fill color. Present on all non-text element types. Represented in Figma as fills." },
+        "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
         "effectStyleId": { "$ref": "#/definitions/StyleIdValue", "description": "Effect style reference" },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
         "cornerRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Uniform corner radius" },
@@ -68,7 +69,8 @@
         "topLeftRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Top-left corner radius" },
         "topRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Top-right corner radius" },
         "bottomLeftRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-left corner radius" },
-        "bottomRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-right corner radius" }
+        "bottomRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-right corner radius" },
+        "cornerSmoothing": { "$ref": "#/definitions/NumberStyleValue", "description": "Degree of corner smoothing (0 = standard circular corners, 1 = fully smooth iOS-style squircle). Applies to FRAME, COMPONENT, RECTANGLE, POLYGON, STAR, VECTOR, and ELLIPSE element types." }
       },
       "additionalProperties": false
     },

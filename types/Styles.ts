@@ -5,7 +5,7 @@ export type Styles = Partial<{
   visible: Style;
   opacity: Style;
   locked: Style;
-  fills: Style;
+  backgroundColor: Style;
   effectStyleId: Style;
   clipContent: Style;
   cornerRadius: Style;
@@ -43,6 +43,7 @@ export type Styles = Partial<{
   textStyleId: Style;
   textAlignHorizontal: Style;
   textAlignVertical: Style;
+  textColor: Style;
   primaryAxisAlignItems: Style;
   primaryAxisSizingMode: Style;
   counterAxisAlignItems: Style;
@@ -60,6 +61,7 @@ export type Styles = Partial<{
   topRightRadius: Style;
   bottomLeftRadius: Style;
   bottomRightRadius: Style;
+  cornerSmoothing: Style;
 }>;
 
 /**
@@ -96,7 +98,7 @@ export type StyleKey =
   | 'visible'
   | 'opacity'
   | 'locked'
-  | 'fills'
+  | 'backgroundColor'
   | 'effectStyleId'
   | 'clipContent'
   | 'cornerRadius'
@@ -134,6 +136,7 @@ export type StyleKey =
   | 'textStyleId'
   | 'textAlignHorizontal'
   | 'textAlignVertical'
+  | 'textColor'
   | 'primaryAxisAlignItems'
   | 'primaryAxisSizingMode'
   | 'counterAxisAlignItems'
