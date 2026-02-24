@@ -25,7 +25,7 @@ export type { Config } from './Config.js';
 export { DEFAULT_CONFIG } from './Config.js';
 
 // Style types
-export type { Styles, Style, StyleKey, VariableStyle, FigmaStyle } from './Styles.js';
+export type { Styles, Style, StyleKey, VariableStyle, FigmaStyle, Shadow } from './Styles.js';
 
 // Reference types
 export type { ReferenceValue, BindingKey } from './ReferenceValue.js';

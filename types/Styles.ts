@@ -6,7 +6,7 @@ export type Styles = Partial<{
   opacity: Style;
   locked: Style;
   backgroundColor: Style;
-  effectStyleId: Style;
+  effects: FigmaStyle | Shadow[];
   clipContent: Style;
   cornerRadius: Style;
   width: Style;
@@ -91,6 +91,22 @@ export interface FigmaStyle {
 }
 
 /**
+ * A single evaluated drop shadow.
+ * `x`, `y`, `blur`, `spread` may be a raw number or a Figma variable reference.
+ * `color` is an 8-digit hex string (`#RRGGBBAA`) or a Figma variable reference.
+ * `visible` is always a boolean — Figma does not support variable binding on
+ * the `visible` field of individual effect items.
+ */
+export interface Shadow {
+  visible: boolean;
+  x: number | VariableStyle;
+  y: number | VariableStyle;
+  blur: number | VariableStyle;
+  spread: number | VariableStyle;
+  color: string | VariableStyle;
+}
+
+/**
  * Style property keys that can appear in the serialized output
  */
 export type StyleKey =
@@ -99,7 +115,7 @@ export type StyleKey =
   | 'opacity'
   | 'locked'
   | 'backgroundColor'
-  | 'effectStyleId'
+  | 'effects'
   | 'clipContent'
   | 'cornerRadius'
   | 'width'

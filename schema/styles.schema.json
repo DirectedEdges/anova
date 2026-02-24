@@ -16,7 +16,7 @@
         "locked": { "$ref": "#/definitions/BooleanStyleValue", "description": "Lock state" },
         "backgroundColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Background fill color. Present on all non-text element types. Represented in Figma as fills." },
         "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
-        "effectStyleId": { "$ref": "#/definitions/StyleIdValue", "description": "Effect style reference" },
+        "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Drop shadow effects. FigmaStyle when the node references a named effects style; Shadow[] when effects are defined inline. Replaces effectStyleId." },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
         "cornerRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Uniform corner radius" },
         "width": { "$ref": "#/definitions/NumberStyleValue", "description": "Width in pixels" },
@@ -170,10 +170,32 @@
       ]
     },
     "StyleIdValue": {
-      "description": "Style ID reference (textStyleId, effectStyleId)",
+      "description": "Style ID reference (textStyleId)",
       "oneOf": [
         { "type": "string", "description": "Style ID when simplified" },
         { "$ref": "#/definitions/FigmaStyle", "description": "Full style object when not simplified" },
+        { "type": "null" }
+      ]
+    },
+    "Shadow": {
+      "type": "object",
+      "description": "A single evaluated drop shadow. Emitted as part of the effects array when inline shadows are present on a node.",
+      "properties": {
+        "visible": { "type": "boolean", "description": "Whether this shadow is active" },
+        "x": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Horizontal offset in pixels" },
+        "y": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Vertical offset in pixels" },
+        "blur": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Blur radius in pixels" },
+        "spread": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Spread radius in pixels" },
+        "color": { "oneOf": [{ "type": "string", "description": "#RRGGBBAA hex string" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Shadow color" }
+      },
+      "required": ["visible", "x", "y", "blur", "spread", "color"],
+      "additionalProperties": false
+    },
+    "EffectsStyleValue": {
+      "description": "Effect style value. FigmaStyle when the node references a named effects style; Shadow array when effects are defined inline.",
+      "oneOf": [
+        { "$ref": "#/definitions/FigmaStyle", "description": "Named effects style reference" },
+        { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Inline drop shadows" },
         { "type": "null" }
       ]
     },
