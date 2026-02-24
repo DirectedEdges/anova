@@ -38,4 +38,14 @@ export type Metadata = {
     nodeType: 'COMPONENT' | 'COMPONENT_SET' | 'FRAME';
   };
   config: Config;
+  /**
+   * Resolved license state at the time this component spec was generated.
+   * Absent when no license was supplied to the generator.
+   */
+  license?: {
+    /** The resolved license status string (e.g. 'active', 'none', 'expired'). */
+    status: string;
+    /** Human-readable description of the license state. */
+    description: string;
+  };
 };

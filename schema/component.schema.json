@@ -321,7 +321,17 @@
           "required": ["pageId", "nodeId", "nodeType"],
           "additionalProperties": false
         },
-        "config": { "$ref": "#/definitions/Config" }
+        "config": { "$ref": "#/definitions/Config" },
+        "license": {
+          "type": "object",
+          "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
+          "properties": {
+            "status": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "required": ["status", "description"],
+          "additionalProperties": false
+        }
       },
       "required": ["author", "lastUpdated", "generator", "schema", "source", "config"],
       "additionalProperties": false

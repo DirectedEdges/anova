@@ -5,6 +5,22 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-02-24
+
+### Added
+
+- `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
+- `styles.textColor` — new style key for text colour
+- `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)
+
+### Changed
+
+- `styles.fills` renamed to `styles.backgroundColor`
+
+### Migration
+
+- `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
+
 ## [0.9.0] - 2026-02-12
 
 ### Added
