@@ -12,14 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
 - `styles.textColor` — new style key for text colour
 - `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)
+- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `Shadow[]` when effects are defined inline
+- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`)
+- `EffectsStyleValue` and `Shadow` definitions in `schema/styles.schema.json`
 
 ### Changed
 
 - `styles.fills` renamed to `styles.backgroundColor`
 
+### Removed
+
+- `styles.effectStyleId` — removed with no deprecation period; consumers must migrate to `styles.effects` (see Migration)
+
 ### Migration
 
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
+- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is a `Shadow[]`, shadow geometry is available per array entry.
 
 ## [0.9.0] - 2026-02-12
 
