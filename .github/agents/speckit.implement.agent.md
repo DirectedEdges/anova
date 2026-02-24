@@ -61,8 +61,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 10. **Update CHANGELOG.md**:
     - Prepend a new entry at the top using the existing format in the file
-    - Include: version number, date, concise consumer-facing description of what changed
-    - If MAJOR: include a `### Migration` subsection describing what callers must update
+    - **Format**: one top-level bullet per user-visible change; no sub-bullets; no bold
+    - **Names**: `<Parent>.<field>` in backticks, em dash separator — e.g. `Styles.cornerSmoothing` — corner smoothing factor
+    - **Sections**: use `### Added`, `### Changed`, `### Removed` as needed; add `### Migration` (MAJOR or rename only) with `<Parent>.<old>` → `<Parent>.<new>`: imperative callsite instruction
 
 11. **Bump version in `package.json`**: Apply the `NEW` version from the ADR's Semver Decision.
 

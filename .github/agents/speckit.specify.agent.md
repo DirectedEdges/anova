@@ -19,9 +19,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Setup**:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT` and `BRANCH`.
-   - Check whether `specs/$BRANCH/` already exists in the repo root.
-   - If the directory **exists**: the feature is already started. Skip `create-new-feature.sh`. Set `BRANCH_NAME=$BRANCH`, `FEATURE_DIR=$REPO_ROOT/specs/$BRANCH`, `SPEC_FILE=$FEATURE_DIR/adr.md`.
-   - If the directory **does not exist**: run `.specify/scripts/bash/create-new-feature.sh --json "$ARGUMENTS"` from repo root. Parse JSON for `BRANCH_NAME`, `SPEC_FILE`, `FEATURE_NUM`.
+   - Check whether `adr/$BRANCH.md` already exists in the repo root.
+   - If the file **exists**: the ADR is already started. Skip `create-new-feature.sh`. Set `BRANCH_NAME=$BRANCH`, `SPEC_FILE=$REPO_ROOT/adr/$BRANCH.md`.
+   - If the file **does not exist**: run `.specify/scripts/bash/create-new-feature.sh --json "$ARGUMENTS"` from repo root. Parse JSON for `BRANCH_NAME` and `FEATURE_NUM`. Set `SPEC_FILE=$REPO_ROOT/adr/$BRANCH_NAME.md`.
    - All paths must be absolute.
 
 2. **Load context**: Read `.specify/memory/constitution.md`. Read `.specify/templates/adr-template.md` — this is the output template you will fill.
@@ -36,7 +36,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If the user input or context indicates the decision is pre-decided (e.g., "record and implement this decision"), omit this step and leave the Options Considered section of the ADR with a single entry marked *(Pre-decided — no alternatives evaluated)*.
    - Otherwise, identify at least two alternative approaches and for each: assess against the constitution's Decision Drivers (type-schema sync, no logic, stable API, etc.) and state which is selected and which are rejected with clear rationale.
 
-5. **Draft the ADR**: Fill `adr-template.md` and write to `specs/[branch]/adr.md`:
+5. **Draft the ADR**: Fill `adr-template.md` and write to `adr/[branch].md`:
    - **Status**: `DRAFT`
    - **Context**: Current state of the relevant types/schema and what gap or opportunity this addresses
    - **Decision Drivers**: Enumerate the constraints from the constitution that apply
@@ -47,7 +47,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Semver Decision**: MAJOR / MINOR / PATCH with justification citing the constitution
    - **Consequences**: What becomes true after acceptance
 
-6. **Report**: Output `specs/[branch]/adr.md` path and a one-paragraph summary of the decision.
+6. **Report**: Output `adr/[branch].md` path and a one-paragraph summary of the decision.
 ## Formatting rules (apply when drafting the ADR)
 
 - **Examples over prose**: Wherever a type shape, schema property, or field change is described, include a YAML example showing the before/after or the new structure. Prefer this over sentences explaining the same idea in abstract terms.
