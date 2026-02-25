@@ -5,6 +5,8 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### Added
+
 ## [0.11.0] - 2026-02-24
 
 ### Added
@@ -17,9 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Blur` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `radius` (number or `VariableStyle`)
 - `EffectsGroup` interface — exported from `@directededges/anova`; fields: `dropShadows?` (`Shadow[]`), `innerShadows?` (`Shadow[]`), `layerBlur?` (`Blur`), `backgroundBlur?` (`Blur`)
 - `Shadow`, `Blur`, `EffectsGroup`, and `EffectsStyleValue` definitions in `schema/styles.schema.json`
+- `GradientStop` interface — fields: `position` (number, normalised 0–1), `color` (hex/rgba string or `VariableStyle`)
+- `GradientCenter` interface — fields: `x`, `y` (number, normalised 0–1); centre point for RADIAL and ANGULAR variants
+- `LinearGradient` interface — fields: `type: 'LINEAR'`, `angle` (degrees), `stops` (`GradientStop[]`)
+- `RadialGradient` interface — fields: `type: 'RADIAL'`, `center` (`GradientCenter`), `stops` (`GradientStop[]`)
+- `AngularGradient` interface — fields: `type: 'ANGULAR'`, `center` (`GradientCenter`), `stops` (`GradientStop[]`)
+- `GradientValue` type — discriminated union `LinearGradient | RadialGradient | AngularGradient`; `type` field is the discriminant; DIAMOND excluded
+- `ColorStyle` type — colour-specific style union (`string | VariableStyle | FigmaStyle | ReferenceValue | GradientValue | null`); mirrors `ColorStyleValue` in `schema/styles.schema.json`
+- `GradientCenter`, `GradientStop`, `LinearGradient`, `RadialGradient`, `AngularGradient`, `GradientValue` definitions in `schema/styles.schema.json`
 
 ### Changed
 
+- `Styles.backgroundColor` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `Styles.textColor` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `Styles.strokes` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `ColorStyleValue` in `schema/styles.schema.json` — gains `{ "$ref": "#/definitions/GradientValue" }` variant
 - `styles.fills` renamed to `styles.backgroundColor`
 
 ### Removed

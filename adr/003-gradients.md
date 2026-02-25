@@ -3,7 +3,7 @@
 **Branch**: `003-gradients`
 **Created**: 2026-02-25
 **Status**: ACCEPTED
-**Deciders**: (author)
+**Deciders**: Nathan Curtis
 **Supersedes**: *(none)*
 
 ---
