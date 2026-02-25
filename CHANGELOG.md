@@ -5,12 +5,15 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Added
-
-## [0.11.0] - 2026-02-24
+## [0.11.0] - 2026-02-25
 
 ### Added
 
+- `Styles.aspectRatio` — optional aspect ratio constraint emitted when a node has a locked ratio; value is `AspectRatioValue` (`{ x: number; y: number }` numerator/denominator pair, e.g. `{ x: 16, y: 9 }`) or `null` when unconstrained; field is omitted from output entirely when no ratio is set
+- `AspectRatioValue` — exported interface with required `x` (numerator) and `y` (denominator) number fields; named per existing specialised-type precedent (`GradientCenter`) rather than a generic `Vector`
+- `AspectRatioStyle` — exported type alias `AspectRatioValue | null`; `VariableStyle` intentionally excluded as aspect ratio is a structural lock of literal numbers in the Figma API
+- `AspectRatioValue` and `AspectRatioStyleValue` definitions in `schema/styles.schema.json`
+- `'aspectRatio'` added to `StyleKey` union
 - `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
 - `styles.textColor` — new style key for text colour
 - `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)

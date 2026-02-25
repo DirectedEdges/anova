@@ -70,9 +70,27 @@
         "topRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Top-right corner radius" },
         "bottomLeftRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-left corner radius" },
         "bottomRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-right corner radius" },
-        "cornerSmoothing": { "$ref": "#/definitions/NumberStyleValue", "description": "Degree of corner smoothing (0 = standard circular corners, 1 = fully smooth iOS-style squircle). Applies to FRAME, COMPONENT, RECTANGLE, POLYGON, STAR, VECTOR, and ELLIPSE element types." }
+        "cornerSmoothing": { "$ref": "#/definitions/NumberStyleValue", "description": "Degree of corner smoothing (0 = standard circular corners, 1 = fully smooth iOS-style squircle). Applies to FRAME, COMPONENT, RECTANGLE, POLYGON, STAR, VECTOR, and ELLIPSE element types." },
+        "aspectRatio": { "$ref": "#/definitions/AspectRatioStyleValue", "description": "Aspect ratio constraint. Present only when the node has a locked ratio; omitted otherwise." }
       },
       "additionalProperties": false
+    },
+    "AspectRatioValue": {
+      "type": "object",
+      "description": "Aspect ratio expressed as a numerator/denominator pair. `x` is the numerator, `y` is the denominator (e.g. x:16, y:9 for 16:9).",
+      "properties": {
+        "x": { "type": "number", "description": "Ratio numerator (e.g. 16 for 16:9)" },
+        "y": { "type": "number", "description": "Ratio denominator (e.g. 9 for 16:9)" }
+      },
+      "required": ["x", "y"],
+      "additionalProperties": false
+    },
+    "AspectRatioStyleValue": {
+      "description": "Aspect ratio value. Object pair when the node has a locked ratio; null when no constraint is active. VariableStyle is intentionally excluded — aspect ratio is a structural lock of literal numbers in the Figma API.",
+      "oneOf": [
+        { "$ref": "#/definitions/AspectRatioValue" },
+        { "type": "null" }
+      ]
     },
     "NumberStyleValue": {
       "description": "Pure number style value (from NumberStyle processor)",
