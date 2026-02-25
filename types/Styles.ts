@@ -64,6 +64,7 @@ export type Styles = Partial<{
   bottomLeftRadius: Style;
   bottomRightRadius: Style;
   cornerSmoothing: Style;
+  aspectRatio: AspectRatioStyle;
 }>;
 
 /**
@@ -91,6 +92,26 @@ export interface VariableStyle {
   collectionName?: string;
   collectionId?: string;
 }
+
+/**
+ * Aspect ratio expressed as a numerator/denominator pair.
+ * `x` is the numerator (e.g. 16), `y` is the denominator (e.g. 9).
+ * Both components are required; irrational ratios are expressed as `{ x: 1.618, y: 1 }`.
+ */
+export interface AspectRatioValue {
+  /** Ratio numerator (e.g. 16 for 16:9) */
+  x: number;
+  /** Ratio denominator (e.g. 9 for 16:9) */
+  y: number;
+}
+
+/**
+ * Aspect ratio style value.
+ * Present only when the node has a locked ratio; `null` when unconstrained.
+ * `VariableStyle` and `ReferenceValue` are intentionally excluded — aspect ratio
+ * is a structural lock of literal numbers in the Figma API, not a token-driven value.
+ */
+export type AspectRatioStyle = AspectRatioValue | null;
 
 /**
  * Figma published style reference
@@ -164,4 +185,5 @@ export type StyleKey =
   | 'topLeftRadius'
   | 'topRightRadius'
   | 'bottomLeftRadius'
-  | 'bottomRightRadius';
+  | 'bottomRightRadius'
+  | 'aspectRatio';
