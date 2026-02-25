@@ -1,9 +1,13 @@
 /**
- * Type-level tests for Styles, Shadow, Blur, and EffectsGroup.
+ * Type-level tests for Styles, Shadow, Blur, EffectsGroup, and gradient types.
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { Styles, Shadow, Blur, EffectsGroup, FigmaStyle, VariableStyle } from '../types/index.js';
+import type {
+  Styles, Shadow, Blur, EffectsGroup, FigmaStyle, VariableStyle,
+  ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
+  AngularGradient, GradientValue,
+} from '../types/index.js';
 
 // ─── Shadow ────────────────────────────────────────────────────────────────
 
