@@ -1,12 +1,13 @@
 import { ReferenceValue } from "./ReferenceValue.js";
 import { EffectsGroup } from "./Effects.js";
+import { GradientValue } from "./Gradient.js";
 
 export type Styles = Partial<{
   rotation: Style;
   visible: Style;
   opacity: Style;
   locked: Style;
-  backgroundColor: Style;
+  backgroundColor: ColorStyle;
   effects: FigmaStyle | EffectsGroup;
   clipContent: Style;
   cornerRadius: Style;
@@ -21,7 +22,7 @@ export type Styles = Partial<{
   layoutPositioning: Style;
   layoutSizingHorizontal: Style;
   layoutSizingVertical: Style;
-  strokes: Style;
+  strokes: ColorStyle;
   strokeAlign: Style;
   strokeWeight: Style;
   strokeTopWeight: Style;
@@ -44,7 +45,7 @@ export type Styles = Partial<{
   textStyleId: Style;
   textAlignHorizontal: Style;
   textAlignVertical: Style;
-  textColor: Style;
+  textColor: ColorStyle;
   primaryAxisAlignItems: Style;
   primaryAxisSizingMode: Style;
   counterAxisAlignItems: Style;
@@ -70,6 +71,14 @@ export type Styles = Partial<{
  * Can be primitives, variable references, Figma style references, or prop bindings.
  */
 export type Style = string | boolean | number | null | VariableStyle | FigmaStyle | ReferenceValue;
+
+/**
+ * Colour-specific style value type.
+ * Mirrors `ColorStyleValue` in `schema/styles.schema.json`.
+ * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
+ * whose values are always colour-semantics and may carry gradient data.
+ */
+export type ColorStyle = string | VariableStyle | FigmaStyle | ReferenceValue | GradientValue | null;
 
 /**
  * Variable-based style reference
