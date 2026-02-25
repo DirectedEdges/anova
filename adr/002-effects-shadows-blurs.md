@@ -45,6 +45,8 @@ Styles:
   # effects — ABSENT
 ```
 
+Note that Figma's `noise`, `textures`, and `glass` effects are considered out of scope. Because `EffectsGroup` routes by `effect.type` into named keys, unknown effect types are silently skipped during evaluation with no positional side effects on the output. If any of these effect types are formalised in a future release, they can be introduced as new optional keys on `EffectsGroup` without a breaking change.
+
 ---
 
 ## Decision Drivers
