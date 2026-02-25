@@ -25,7 +25,9 @@ export type { Config } from './Config.js';
 export { DEFAULT_CONFIG } from './Config.js';
 
 // Style types
-export type { Styles, Style, StyleKey, VariableStyle, FigmaStyle, Shadow } from './Styles.js';
+export type { Styles, Style, ColorStyle, StyleKey, VariableStyle, FigmaStyle } from './Styles.js';
+export type { Shadow, Blur, EffectsGroup } from './Effects.js';
+export type { GradientStop, GradientCenter, LinearGradient, RadialGradient, AngularGradient, GradientValue } from './Gradient.js';
 
 // Reference types
 export type { ReferenceValue, BindingKey } from './ReferenceValue.js';

@@ -5,6 +5,8 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### Added
+
 ## [0.11.0] - 2026-02-24
 
 ### Added
@@ -12,12 +14,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
 - `styles.textColor` — new style key for text colour
 - `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)
-- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `Shadow[]` when effects are defined inline
-- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`)
-- `EffectsStyleValue` and `Shadow` definitions in `schema/styles.schema.json`
+- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `EffectsGroup` when effects are defined inline
+- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`); used for both `dropShadows` and `innerShadows` entries
+- `Blur` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `radius` (number or `VariableStyle`)
+- `EffectsGroup` interface — exported from `@directededges/anova`; fields: `dropShadows?` (`Shadow[]`), `innerShadows?` (`Shadow[]`), `layerBlur?` (`Blur`), `backgroundBlur?` (`Blur`)
+- `Shadow`, `Blur`, `EffectsGroup`, and `EffectsStyleValue` definitions in `schema/styles.schema.json`
+- `GradientStop` interface — fields: `position` (number, normalised 0–1), `color` (hex/rgba string or `VariableStyle`)
+- `GradientCenter` interface — fields: `x`, `y` (number, normalised 0–1); centre point for RADIAL and ANGULAR variants
+- `LinearGradient` interface — fields: `type: 'LINEAR'`, `angle` (degrees), `stops` (`GradientStop[]`)
+- `RadialGradient` interface — fields: `type: 'RADIAL'`, `center` (`GradientCenter`), `stops` (`GradientStop[]`)
+- `AngularGradient` interface — fields: `type: 'ANGULAR'`, `center` (`GradientCenter`), `stops` (`GradientStop[]`)
+- `GradientValue` type — discriminated union `LinearGradient | RadialGradient | AngularGradient`; `type` field is the discriminant; DIAMOND excluded
+- `ColorStyle` type — colour-specific style union (`string | VariableStyle | FigmaStyle | ReferenceValue | GradientValue | null`); mirrors `ColorStyleValue` in `schema/styles.schema.json`
+- `GradientCenter`, `GradientStop`, `LinearGradient`, `RadialGradient`, `AngularGradient`, `GradientValue` definitions in `schema/styles.schema.json`
 
 ### Changed
 
+- `Styles.backgroundColor` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `Styles.textColor` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `Styles.strokes` — narrowed from `Style` to `ColorStyle`; inline gradients now representable
+- `ColorStyleValue` in `schema/styles.schema.json` — gains `{ "$ref": "#/definitions/GradientValue" }` variant
 - `styles.fills` renamed to `styles.backgroundColor`
 
 ### Removed
@@ -27,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Migration
 
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
-- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is a `Shadow[]`, shadow geometry is available per array entry.
+- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is an `EffectsGroup`, read from `dropShadows`, `innerShadows`, `layerBlur`, or `backgroundBlur` by role.
 
 ## [0.9.0] - 2026-02-12
 
