@@ -16,7 +16,7 @@
         "locked": { "$ref": "#/definitions/BooleanStyleValue", "description": "Lock state" },
         "backgroundColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Background fill color. Present on all non-text element types. Represented in Figma as fills." },
         "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
-        "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Drop shadow effects. FigmaStyle when the node references a named effects style; Shadow[] when effects are defined inline. Replaces effectStyleId." },
+        "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Effect output. FigmaStyle when the node references a named effects style; EffectsGroup when effects are defined inline. Replaces effectStyleId." },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
         "cornerRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Uniform corner radius" },
         "width": { "$ref": "#/definitions/NumberStyleValue", "description": "Width in pixels" },
@@ -179,7 +179,7 @@
     },
     "Shadow": {
       "type": "object",
-      "description": "A single evaluated drop shadow. Emitted as part of the effects array when inline shadows are present on a node.",
+      "description": "A single evaluated shadow (drop or inner). Fields are identical for both roles; the containing key (dropShadows vs innerShadows) determines render role.",
       "properties": {
         "visible": { "type": "boolean", "description": "Whether this shadow is active" },
         "x": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Horizontal offset in pixels" },
@@ -191,11 +191,32 @@
       "required": ["visible", "x", "y", "blur", "spread", "color"],
       "additionalProperties": false
     },
+    "Blur": {
+      "type": "object",
+      "description": "A single evaluated blur effect. Singular per type; the containing key (layerBlur vs backgroundBlur) determines render role.",
+      "properties": {
+        "visible": { "type": "boolean", "description": "Whether this blur is active" },
+        "radius": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Blur radius in pixels" }
+      },
+      "required": ["visible", "radius"],
+      "additionalProperties": false
+    },
+    "EffectsGroup": {
+      "type": "object",
+      "description": "Inline effects grouped by role. Each key is optional; a key is omitted when no effects of that type are present on the node.",
+      "properties": {
+        "dropShadows": { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Ordered list of drop shadows" },
+        "innerShadows": { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Ordered list of inner shadows" },
+        "layerBlur": { "$ref": "#/definitions/Blur", "description": "Layer blur (filter effect on the node itself)" },
+        "backgroundBlur": { "$ref": "#/definitions/Blur", "description": "Background blur (backdrop filter)" }
+      },
+      "additionalProperties": false
+    },
     "EffectsStyleValue": {
-      "description": "Effect style value. FigmaStyle when the node references a named effects style; Shadow array when effects are defined inline.",
+      "description": "Effect value. FigmaStyle when the node references a named effects style; EffectsGroup when effects are defined inline.",
       "oneOf": [
         { "$ref": "#/definitions/FigmaStyle", "description": "Named effects style reference" },
-        { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Inline drop shadows" },
+        { "$ref": "#/definitions/EffectsGroup", "description": "Inline effects grouped by role" },
         { "type": "null" }
       ]
     },

@@ -12,9 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
 - `styles.textColor` — new style key for text colour
 - `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)
-- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `Shadow[]` when effects are defined inline
-- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`)
-- `EffectsStyleValue` and `Shadow` definitions in `schema/styles.schema.json`
+- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `EffectsGroup` when effects are defined inline
+- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`); used for both `dropShadows` and `innerShadows` entries
+- `Blur` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `radius` (number or `VariableStyle`)
+- `EffectsGroup` interface — exported from `@directededges/anova`; fields: `dropShadows?` (`Shadow[]`), `innerShadows?` (`Shadow[]`), `layerBlur?` (`Blur`), `backgroundBlur?` (`Blur`)
+- `Shadow`, `Blur`, `EffectsGroup`, and `EffectsStyleValue` definitions in `schema/styles.schema.json`
 
 ### Changed
 
@@ -27,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Migration
 
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
-- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is a `Shadow[]`, shadow geometry is available per array entry.
+- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is an `EffectsGroup`, read from `dropShadows`, `innerShadows`, `layerBlur`, or `backgroundBlur` by role.
 
 ## [0.9.0] - 2026-02-12
 
