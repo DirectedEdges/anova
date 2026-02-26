@@ -62,9 +62,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 10. **Update CHANGELOG.md**:
     - Prepend a new entry at the top using the existing format in the file
-    - **Format**: one top-level bullet per user-visible change; no sub-bullets; no bold
-    - **Names**: `<Parent>.<field>` in backticks, em dash separator — e.g. `Styles.cornerSmoothing` — corner smoothing factor
-    - **Sections**: use `### Added`, `### Changed`, `### Removed` as needed; add `### Migration` (MAJOR or rename only) with `<Parent>.<old>` → `<Parent>.<new>`: imperative callsite instruction
+    - **Format**: one top-level bullet per user-visible change; no sub-bullets; no bold; no code blocks; no wrapping prose paragraphs
+    - **Entry line**: `` `Parent.field` `` — one-phrase description; aim for ≤ 12 words; omit implementation detail (class names, file paths, method names)
+    - **Names**: `<Parent>.<field>` in backticks, em dash separator — e.g. `Styles.cornerSmoothing` — corner smoothing factor (0–1)
+    - **Sections**: use `### Added`, `### Changed`, `### Removed` as needed; add `### Migration` (MAJOR or rename only)
+    - **Migration line**: `` `Parent.old` → `Parent.new` ``: one sentence; imperative; describe what to read instead and how to handle the new type
     - **Gate**: After writing, verify the new entry is present in the file. If CHANGELOG.md does not contain the new version heading, halt and report — do not proceed to step 11.
 
 11. **Bump version in `package.json`**: Apply the `NEW` version from the ADR's Semver Decision.

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Styles.typography` — composite typography property; value is `FigmaStyle` (text style reference), `Typography` (inline properties), or omitted when absent
+- `Typography` interface — 13 optional fields for inline text styling: `fontSize`, `fontFamily`, `fontStyle`, `lineHeight`, `letterSpacing`, `textCase`, `textDecoration`, `paragraphIndent`, `paragraphSpacing`, `leadingTrim`, `listSpacing`, `hangingPunctuation`, `hangingList`
+- `Typography` and `TypographyStyleValue` definitions in `schema/styles.schema.json`
+- `'typography'` added to `StyleKey` union
 - `Styles.aspectRatio` — optional aspect ratio constraint emitted when a node has a locked ratio; value is `AspectRatioValue` (`{ x: number; y: number }` numerator/denominator pair, e.g. `{ x: 16, y: 9 }`) or `null` when unconstrained; field is omitted from output entirely when no ratio is set
 - `AspectRatioValue` — exported interface with required `x` (numerator) and `y` (denominator) number fields; named per existing specialised-type precedent (`GradientCenter`) rather than a generic `Vector`
 - `AspectRatioStyle` — exported type alias `AspectRatioValue | null`; `VariableStyle` intentionally excluded as aspect ratio is a structural lock of literal numbers in the Figma API
@@ -41,10 +45,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `Styles.fontSize` — removed; use `typography.fontSize` instead
+- `Styles.fontFamily` — removed; use `typography.fontFamily` instead
+- `Styles.fontStyle` — removed; use `typography.fontStyle` instead
+- `Styles.lineHeight` — removed; use `typography.lineHeight` instead
+- `Styles.letterSpacing` — removed; use `typography.letterSpacing` instead
+- `Styles.textCase` — removed; use `typography.textCase` instead
+- `Styles.textDecoration` — removed; use `typography.textDecoration` instead
+- `Styles.paragraphIndent` — removed; use `typography.paragraphIndent` instead
+- `Styles.paragraphSpacing` — removed; use `typography.paragraphSpacing` instead
+- `Styles.leadingTrim` — removed; use `typography.leadingTrim` instead
+- `Styles.listSpacing` — removed; use `typography.listSpacing` instead
+- `Styles.hangingPunctuation` — removed; use `typography.hangingPunctuation` instead
+- `Styles.hangingList` — removed; use `typography.hangingList` instead
+- `Styles.textStyleId` — removed; use `typography` with `FigmaStyle` instead (named text style reference)
 - `styles.effectStyleId` — removed with no deprecation period; consumers must migrate to `styles.effects` (see Migration)
 
 ### Migration
 
+- `Styles.<typographyProperty>` → `Styles.typography.<property>`: all 14 flat typography properties replaced with single composite `typography` field. When `typography` is a `FigmaStyle` (text style reference), read `id` and `name`. When `typography` is a `Typography` object, read individual fields (`fontSize`, `fontFamily`, `fontStyle`, `lineHeight`, `letterSpacing`, `textCase`, `textDecoration`, `paragraphIndent`, `paragraphSpacing`, `leadingTrim`, `listSpacing`, `hangingPunctuation`, `hangingList`). Old `textStyleId` becomes `typography: { id, name }`.
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
 - `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is an `EffectsGroup`, read from `dropShadows`, `innerShadows`, `layerBlur`, or `backgroundBlur` by role.
 
