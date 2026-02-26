@@ -37,20 +37,7 @@
         "strokeBottomWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Bottom stroke weight" },
         "strokeLeftWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Left stroke weight" },
         "strokeRightWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Right stroke weight" },
-        "fontSize": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Font size in pixels" },
-        "fontFamily": { "$ref": "#/definitions/FontStyleValue", "description": "Font family" },
-        "fontWeight": { "$ref": "#/definitions/FontStyleValue", "description": "Font weight" },
-        "lineHeight": { "$ref": "#/definitions/LineHeightStyleValue", "description": "Line height" },
-        "letterSpacing": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Letter spacing" },
-        "textDecoration": { "$ref": "#/definitions/MixedStringStyleValue", "description": "Text decoration" },
-        "textCase": { "$ref": "#/definitions/MixedStringStyleValue", "description": "Text case" },
-        "paragraphIndent": { "$ref": "#/definitions/NumberStyleValue", "description": "Paragraph indent" },
-        "paragraphSpacing": { "$ref": "#/definitions/NumberStyleValue", "description": "Paragraph spacing" },
-        "leadingTrim": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Leading trim" },
-        "listSpacing": { "$ref": "#/definitions/NumberStyleValue", "description": "List spacing" },
-        "hangingPunctuation": { "$ref": "#/definitions/BooleanStyleValue", "description": "Hanging punctuation" },
-        "hangingList": { "$ref": "#/definitions/BooleanStyleValue", "description": "Hanging list" },
-        "textStyleId": { "$ref": "#/definitions/StyleIdValue", "description": "Text style reference" },
+        "typography": { "$ref": "#/definitions/TypographyStyleValue", "description": "Typography properties. FigmaStyle when a named text style is used; Typography when defined inline." },
         "textAlignHorizontal": { "$ref": "#/definitions/StringStyleValue", "description": "Horizontal text alignment" },
         "textAlignVertical": { "$ref": "#/definitions/StringStyleValue", "description": "Vertical text alignment" },
         "primaryAxisAlignItems": { "$ref": "#/definitions/StringStyleValue", "description": "Primary axis item alignment" },
@@ -350,6 +337,118 @@
       },
       "required": ["id"],
       "additionalProperties": false
+    },
+    "Typography": {
+      "type": "object",
+      "description": "Inline typography properties grouped into a composite object. All fields are optional; only properties set on the text node are present.",
+      "properties": {
+        "fontSize": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "string", "const": "mixed" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Font size in pixels; 'mixed' allowed (mixableNumber primitive)"
+        },
+        "fontFamily": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "string", "const": "mixed" }
+          ],
+          "description": "Font family name; number for weight, 'mixed' when varied (font primitive)"
+        },
+        "fontStyle": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "string", "const": "mixed" }
+          ],
+          "description": "Style name (e.g., \"Bold\") or numeric (e.g., 400); 'mixed' allowed (font primitive)"
+        },
+        "lineHeight": {
+          "oneOf": [
+            { "type": "string", "description": "Percentage (e.g., '150%') or 'auto'" },
+            { "type": "number", "description": "Pixel value" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Line height (lineHeight primitive)"
+        },
+        "letterSpacing": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "string", "const": "mixed" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Letter spacing in pixels; 'mixed' allowed (mixableNumber primitive)"
+        },
+        "textCase": {
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Text case (\"UPPER\", \"LOWER\", \"TITLE\", \"ORIGINAL\", or 'mixed') (mixableString primitive)"
+        },
+        "textDecoration": {
+          "oneOf": [
+            { "type": "string" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Text decoration (\"UNDERLINE\", \"STRIKETHROUGH\", \"NONE\", or 'mixed') (mixableString primitive)"
+        },
+        "paragraphIndent": {
+          "oneOf": [
+            { "type": "number" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Paragraph indent in pixels (pureNumber primitive)"
+        },
+        "paragraphSpacing": {
+          "oneOf": [
+            { "type": "number" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Spacing between paragraphs in pixels (pureNumber primitive)"
+        },
+        "leadingTrim": {
+          "oneOf": [
+            { "type": "number" },
+            { "type": "string", "const": "mixed" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Leading trim value (mixableNumber primitive)"
+        },
+        "listSpacing": {
+          "oneOf": [
+            { "type": "number" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Spacing for list items in pixels (pureNumber primitive)"
+        },
+        "hangingPunctuation": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Whether hanging punctuation is enabled (boolean primitive)"
+        },
+        "hangingList": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "$ref": "#/definitions/VariableStyle" }
+          ],
+          "description": "Whether hanging list is enabled (boolean primitive)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TypographyStyleValue": {
+      "description": "Typography value. FigmaStyle when the text node references a named text style; Typography when typography is defined inline.",
+      "oneOf": [
+        { "$ref": "#/definitions/FigmaStyle", "description": "Named text style reference" },
+        { "$ref": "#/definitions/Typography", "description": "Inline typography properties" },
+        { "type": "null" }
+      ]
     },
     "FigmaStyle": {
       "type": "object",

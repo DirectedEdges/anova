@@ -29,20 +29,7 @@ export type Styles = Partial<{
   strokeBottomWeight: Style;
   strokeLeftWeight: Style;
   strokeRightWeight: Style;
-  fontSize: Style;
-  fontFamily: Style;
-  fontWeight: Style;
-  lineHeight: Style;
-  letterSpacing: Style;
-  textDecoration: Style;
-  textCase: Style;
-  paragraphIndent: Style;
-  paragraphSpacing: Style;
-  leadingTrim: Style;
-  listSpacing: Style;
-  hangingPunctuation: Style;
-  hangingList: Style;
-  textStyleId: Style;
+  typography: FigmaStyle | Typography;
   textAlignHorizontal: Style;
   textAlignVertical: Style;
   textColor: ColorStyle;
@@ -91,6 +78,40 @@ export interface VariableStyle {
   variableName?: string;
   collectionName?: string;
   collectionId?: string;
+}
+
+/**
+ * Inline typography properties grouped into a composite object.
+ * All fields are optional; only properties set on the text node are present.
+ * Maps to transformer primitive types: font, mixableNumber, mixableString, pureNumber, boolean, lineHeight.
+ */
+export interface Typography {
+  /** Font size in pixels (mixableNumber primitive) */
+  fontSize?: number | 'mixed' | VariableStyle;
+  /** Font family name; 'mixed' when text has multiple families (font primitive) */
+  fontFamily?: string | number | 'mixed';
+  /** Style name or numeric (e.g., 400, "Bold"); 'mixed' allowed (font primitive) */
+  fontStyle?: string | number | 'mixed';
+  /** Line height: "150%", "auto", or pixel value (lineHeight primitive) */
+  lineHeight?: string | number | VariableStyle;
+  /** Letter spacing in pixels; 'mixed' allowed (mixableNumber primitive) */
+  letterSpacing?: number | 'mixed' | VariableStyle;
+  /** Text case: "UPPER", "LOWER", "TITLE", "ORIGINAL", or 'mixed' (mixableString primitive) */
+  textCase?: string | 'mixed' | VariableStyle;
+  /** Text decoration: "UNDERLINE", "STRIKETHROUGH", "NONE", or 'mixed' (mixableString primitive) */
+  textDecoration?: string | 'mixed' | VariableStyle;
+  /** Paragraph indent in pixels (pureNumber primitive) */
+  paragraphIndent?: number | VariableStyle;
+  /** Spacing between paragraphs in pixels (pureNumber primitive) */
+  paragraphSpacing?: number | VariableStyle;
+  /** Leading trim value (mixableNumber primitive) */
+  leadingTrim?: number | 'mixed' | VariableStyle;
+  /** Spacing for list items in pixels (pureNumber primitive) */
+  listSpacing?: number | VariableStyle;
+  /** Whether hanging punctuation is enabled (boolean primitive) */
+  hangingPunctuation?: boolean | VariableStyle;
+  /** Whether hanging list is enabled (boolean primitive) */
+  hangingList?: boolean | VariableStyle;
 }
 
 /**
@@ -151,20 +172,7 @@ export type StyleKey =
   | 'strokeBottomWeight'
   | 'strokeLeftWeight'
   | 'strokeRightWeight'
-  | 'fontSize'
-  | 'fontFamily'
-  | 'fontWeight'
-  | 'lineHeight'
-  | 'letterSpacing'
-  | 'textDecoration'
-  | 'textCase'
-  | 'paragraphIndent'
-  | 'paragraphSpacing'
-  | 'leadingTrim'
-  | 'listSpacing'
-  | 'hangingPunctuation'
-  | 'hangingList'
-  | 'textStyleId'
+  | 'typography'
   | 'textAlignHorizontal'
   | 'textAlignVertical'
   | 'textColor'
