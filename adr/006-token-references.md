@@ -1,0 +1,432 @@
+# ADR: Unified Token Reference Type — Replace `VariableStyle` and `FigmaStyle` with `TokenReference`
+
+**Branch**: `v0.11.0/006-token-references`
+**Created**: 2026-02-28
+**Status**: DRAFT
+**Deciders**: Nathan Curtis (author)
+**Supersedes**: *(none)*
+
+---
+
+## Context
+
+`@directededges/anova` currently represents references to Figma variables and Figma named styles as two separate types within the `Style` union:
+
+- `VariableStyle` — a Figma variable reference carrying `id`, `rawValue`, `name`, `variableName`, `collectionName`, `collectionId`
+- `FigmaStyle` — a Figma named style reference carrying `id` and `name`
+
+Current `Style` shape:
+
+```yaml
+# types/Styles.ts
+Style: string | boolean | number | null | VariableStyle | FigmaStyle | ReferenceValue
+
+VariableStyle:
+  id: string                  # Figma variable UUID
+  rawValue?: string | number | boolean
+  name?: string
+  variableName?: string       # e.g. "DS Color/Text/Primary"
+  collectionName?: string     # e.g. "DS Color"
+  collectionId?: string
+
+FigmaStyle:
+  id: string                  # Figma style UUID
+  name?: string               # e.g. "Body/Medium"
+```
+
+> **`ReferenceValue` is not a token reference.** `ReferenceValue` — `{ "$ref": "#/props/{PropName}" }` — is a *prop binding*: it signals that a style property's value is driven by a component prop at runtime (e.g., `visible` driven by an `isVisible` prop). It is orthogonal to design token references and remains unchanged in the `Style` union.
+
+Serialized output for a style property carrying a reference currently appears as either an object or a plain string, with no discriminator marking it as a reference vs a literal:
+
+```
+backgroundColor: { id: "VAR:123", variableName: "DS Color/Text/Primary" }
+textStyleId: { id: "STY:456", name: "Body/Medium" }
+```
+
+This creates three compounding problems:
+
+1. **Implicit reference kind** — a property value may be a `VariableStyle`, a `FigmaStyle`, or a plain string literal. Consumers cannot distinguish a reference from a raw value without inspecting field shape. `FigmaStyle` and `VariableStyle` both look like objects with an `id` string but carry different semantics.
+
+2. **Figma-biased field names** — `variableName`, `collectionName`, `collectionId`, and `id` (a raw Figma UUID) are Figma API concepts with no equivalents in any platform-neutral token format. Output consumers (anova-kit CLI, platform adapters) cannot treat this representation as platform-independent.
+
+3. **Expanding composite reference surface** — `typography`, `effects`, and `gradient` properties now use named-style references (`FigmaStyle`) alongside their inline structured types (`Typography`, `EffectsGroup`, `GradientValue`). A fourth category — composites referenced by name — currently reuses `FigmaStyle`, which lacks a `kind` signal telling consumers this reference points to a composite shape rather than an atomic token value.
+
+The [W3C Design Tokens Community Group format module](https://www.designtokens.org/tr/2025.10/format/) (Candidate Recommendation, published 28 October 2025, considered stable and intended for implementation) identifies tokens by path, not by source-tool ID, and reserves `$`-prefixed keys for standard semantics. Figma-specific metadata belongs in a `$extensions` block per that convention, with keys in reverse domain name notation (§5.2.3). Anova output should be structurally compatible with that direction rather than mirroring Figma internals.
+
+### Compact output and human readability
+
+A full `TokenReference` object (`{ $token: "DS Color/Text/Primary", kind: "variable" }`) is more verbose than the current flat string representation. This is an intentional trade-off: the structured object makes kind explicit and is machine-parseable without heuristics. A "simplified" profile — where the transformer emits just the `$token` string instead of the full object — is a valid serialization option for human-readable audit output. That serialization choice belongs in `anova-transformer`'s output configuration, not in the type contract. `TokenReference` defines the canonical typed shape; simplified string output is a projection of it.
+
+---
+
+## Decision Drivers
+
+- **Type–schema sync**: Every type change must have a corresponding schema change. No drift between `types/` and `schema/` is permitted (Constitution I).
+- **No runtime logic**: This package declares shapes only. No processing or conditional logic may be added (Constitution II).
+- **Stable public API — MAJOR for breaking changes**: Removing or restructuring `VariableStyle` and `FigmaStyle` breaks consumers that type-check against them. A MAJOR version bump is required (Constitution III).
+- **Platform-independent output**: Reference representation must not require consumers to understand Figma variable collections or style IDs to extract a token path.
+- **Explicit kind discrimination**: The reference type (variable token, named style, named composite) must be statically distinguishable without field-shape inspection.
+- **Design tokens format alignment**: Reference paths and metadata placement should follow the DTCG convention — `$`-prefixed keys for standard fields, `$extensions` for tool-specific data.
+- **Minimal new surface**: New types must represent a genuine shared concept. `TokenReference` replaces two types with one; no net surface expansion.
+
+---
+
+## Options Considered
+
+### Option A: Retain `VariableStyle` and `FigmaStyle` as-is *(Rejected)*
+
+Keep both types unchanged. Accept the current dual-type representation for the foreseeable future.
+
+**Rejected because**:
+- `VariableStyle` and `FigmaStyle` have structurally identical shapes (`{ id: string, name?: string }`) with no discriminator — consumers must distinguish them by which property they appear on, which is fragile
+- `variableName`, `collectionName`, `collectionId` are Figma-internal metadata with no platform-neutral equivalent; they cannot be mapped to token paths without Figma-specific parsing logic
+- Composite named references (`effects`, `typography`) are currently typed as `FigmaStyle` even though they resolve to structured shapes — the absence of a `kind` signal creates ambiguity that will only compound as more composite types are added
+- The platform-independence driver is structurally unsatisfiable without replacing the Figma-centric field set
+
+---
+
+### Option B: `TokenReference` — unified discriminated reference with DTCG-aligned extensions *(Selected)*
+
+Introduce a single `TokenReference` interface with a `kind` discriminator, a `$token` path field, and Figma-specific metadata isolated in `$extensions.figma`. Replace all uses of `VariableStyle` and `FigmaStyle` in `Style`, `ColorStyle`, and composite property types with `TokenReference`. Deprecate and eventually remove `VariableStyle` and `FigmaStyle` from the public API.
+
+```yaml
+# Option B — new shape
+TokenReference:
+  $token: string                  # Figma slash-path, e.g. "DS Color/Text/Primary"; DTCG alias form: {DS Color.Text.Primary} (see Path Translation note)
+  kind: variable | style | composite
+  rawValue?: string | number | boolean   # resolved scalar value, when known
+  $extensions?:
+    "com.figma":                  # reverse domain name per DTCG §5.2.3
+      id: string                  # Figma variable or style UUID (traceability only)
+
+Style: string | boolean | number | null | TokenReference | ReferenceValue
+
+ColorStyle: HexColor | TokenReference | ReferenceValue | GradientValue | null
+# HexColor = string (see Color strong-typing note in Decision section)
+```
+
+**Pros**:
+- Single reference type — no ambiguity between variable and named-style references
+- `kind` makes reference type statically explicit; composite references (effects, typography, gradient) are first-class
+- `$token` path is platform-neutral; `variableName`/`collectionName`/`collectionId` are retired
+- Figma UUID is namespaced under `$extensions["com.figma"]`, consistent with DTCG §5.2.3 reverse domain name notation for tool-specific metadata
+- `$extensions` key is open for other tool namespaces without changing the top-level contract
+
+**Cons / Trade-offs**:
+- MAJOR break: `VariableStyle` and `FigmaStyle` are referenced throughout `anova-transformer` and `anova-kit`; both packages must update after this is published
+- `$token` and `$extensions` use `$` prefixes — unconventional in TypeScript interfaces but intentional for DTCG alignment
+- Full object form is more verbose than a plain string; compact output is a transformer concern, not a type contract concern (see Context above)
+
+---
+
+### Option C: Additive `StyleReference` union alias over existing types *(Rejected)*
+
+Add a `kind` field to both `VariableStyle` (`kind: "variable"`) and `FigmaStyle` (`kind: "style"`) and export a union alias `StyleReference = VariableStyle | FigmaStyle`. Update `Style` to include `StyleReference` alongside the existing members.
+
+**Rejected because**:
+- Retains all Figma-biased field names (`variableName`, `collectionName`, `collectionId`, Figma `id`)
+- Platform-independence driver is not satisfied — consumers must still parse Figma-internal metadata to extract a usable token path
+- `StyleReference` is syntactic sugar over an unchanged Figma-specific contract
+
+---
+
+### Option D: String-only token reference `{ $token: string }` without `kind` *(Rejected)*
+
+Use a minimal shape `{ $token: string }` for all references (variables, styles, composites), omitting the `kind` discriminator and `$extensions`.
+
+**Rejected because**:
+- Without `kind`, consumers cannot distinguish a variable reference from a named style or composite reference without out-of-band knowledge
+- The implicit-reference-kind problem (driver 3 in Context) is only partially resolved
+- Composite references (`kind: "composite"`) require explicit discrimination so consumers know to expect a structured shape, not a scalar
+
+---
+
+## Decision
+
+### Color strong-typing and DTCG alignment
+
+`ColorStyle` uses `string` as the arm for raw hex color values (e.g., `"#FF0000AA"`). Per the [DTCG Color Module §4.1](https://www.designtokens.org/tr/2025.10/color/#format) (stable), the canonical color value is a structured object:
+
+```yaml
+# DTCG Color Module §4.1 — canonical color value shape
+# colorSpace: one of "srgb", "hsl", "oklch", etc.
+# components: numeric array for the given color space
+# alpha: 0–1, default 1 (fully opaque) if omitted
+# hex: optional fallback — 6-digit #RRGGBB only (NOT 8-digit; alpha is stored separately)
+{
+  colorSpace: "srgb",
+  components: [1, 0, 0],
+  alpha: 0.5,
+  hex: "#ff0000"
+}
+```
+
+**Canonical vs compact in Anova**:
+- **Canonical form** — `TokenReference.rawValue` for color variables SHOULD eventually be the DTCG color object `{ colorSpace, components[], alpha?, hex? }`. `rawValue` is currently typed as `string | number | boolean`; supporting the full color object requires expanding this type (deferred follow-up).
+- **Compact/simplified form** — the “hex-alpha” string `#RRGGBBAA`, which encodes the DTCG `hex` field plus alpha in a single 8-digit value. This is what Anova currently emits and what compact output projects to. Note: DTCG stores `hex` and `alpha` separately; Anova compact combines them for human-readable brevity.
+
+The schema `string` arm for `ColorStyleValue` is strengthened with a pattern constraint matching the compact form:
+
+```yaml
+# schema/styles.schema.json — ColorStyleValue string arm (compact hex form)
+{
+  "type": "string",
+  "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$",
+  "description": "Compact color: #RRGGBB or #RRGGBBAA (Anova compact form). Canonical form per DTCG Color Module §4.1 is the color object."
+}
+```
+
+The TypeScript type retains `string` (branded types are not appropriate in a pure-declaration package), but the schema gains machine-verifiable color validation. This is additive to `ColorStyle` and does not affect the `TokenReference` replacement. Full DTCG color object support in `rawValue` is a follow-up change.
+
+### Type changes (`types/`)
+
+| File | Change | Bump |
+|------|--------|------|
+| `Styles.ts` | Add `TokenReference` interface | MINOR (additive) |
+| `Styles.ts` | Replace `VariableStyle \| FigmaStyle` in `Style` with `TokenReference` | MAJOR (breaking) |
+| `Styles.ts` | Replace `VariableStyle \| FigmaStyle` in `ColorStyle` with `TokenReference` | MAJOR (breaking) |
+| `Styles.ts` | Mark `VariableStyle` as `@deprecated` | MAJOR |
+| `Styles.ts` | Mark `FigmaStyle` as `@deprecated` | MAJOR |
+| `Styles.ts` | Replace `FigmaStyle` in `effects: FigmaStyle \| EffectsGroup` with `TokenReference` | MAJOR (breaking) |
+| `Styles.ts` | Replace `FigmaStyle` in `typography: FigmaStyle \| Typography` with `TokenReference` | MAJOR (breaking) |
+| `Effects.ts` | Rename `Shadow.x` → `Shadow.offsetX` | MAJOR (breaking) |
+| `Effects.ts` | Rename `Shadow.y` → `Shadow.offsetY` | MAJOR (breaking) |
+| `Effects.ts` | Add `Shadow.inset?: boolean` | MINOR (additive) |
+| `Effects.ts` | Replace `VariableStyle` in `Shadow` field types with `TokenReference` | MAJOR (breaking) |
+| `Effects.ts` | Merge `EffectsGroup.dropShadows?: Shadow[]` and `EffectsGroup.innerShadows?: Shadow[]` into `EffectsGroup.shadows?: Shadow[]` | MAJOR (breaking) |
+
+**Example — current vs new shape** (`types/Styles.ts`):
+
+```yaml
+# Before
+VariableStyle:
+  id: string
+  rawValue?: string | number | boolean
+  name?: string
+  variableName?: string
+  collectionName?: string
+  collectionId?: string
+
+FigmaStyle:
+  id: string
+  name?: string
+
+Style: string | boolean | number | null | VariableStyle | FigmaStyle | ReferenceValue
+
+ColorStyle: string | VariableStyle | FigmaStyle | ReferenceValue | GradientValue | null
+
+# After
+TokenReference:
+  $token: string       # e.g. "DS Color/Text/Primary" or "Body/Medium"
+  kind: "variable" | "style" | "composite"
+  rawValue?: string | number | boolean
+  $extensions?:
+    "com.figma":       # reverse domain name per DTCG §5.2.3
+      id: string       # Figma source UUID — traceability only, not for platform use
+
+Style: string | boolean | number | null | TokenReference | ReferenceValue
+
+ColorStyle: string | TokenReference | ReferenceValue | GradientValue | null
+# string arm: hex color "#RRGGBB" or "#RRGGBBAA" — pattern-constrained in schema only
+```
+
+**Composite property example** (effects and typography):
+
+```yaml
+# Before
+effects: FigmaStyle | EffectsGroup
+#   FigmaStyle { id: "STY:789", name: "Elevation/Shadow/Card" }
+#   EffectsGroup { shadows: [...], blur: ... }
+
+typography: FigmaStyle | Typography
+#   FigmaStyle { id: "STY:456", name: "Body/Medium" }
+#   Typography { fontSize: 14, lineHeight: "150%", ... }
+
+# After
+effects: TokenReference | EffectsGroup
+#   TokenReference { $token: "Elevation/Shadow/Card", kind: "composite", $extensions: { "com.figma": { id: "STY:789" } } }
+#   EffectsGroup { shadows: [...], blur: ... }
+
+typography: TokenReference | Typography
+#   TokenReference { $token: "Body/Medium", kind: "composite", $extensions: { "com.figma": { id: "STY:456" } } }
+#   Typography { fontSize: 14, lineHeight: "150%", ... }
+```
+
+**Simplified (compact) output projection** *(transformer concern — shown here for clarity)*:
+
+```yaml
+# Full TokenReference form (canonical spec output)
+backgroundColor:
+  $token: "DS Color/Text/Primary"
+  kind: variable
+  $extensions:
+    "com.figma":
+      id: "VAR:123"
+
+# Simplified form (human-readable audit view — emitted by transformer when compact mode enabled)
+backgroundColor: "DS Color/Text/Primary"
+```
+
+### Shadow shape alignment (DTCG §9.6)
+
+Anova’s `Shadow` interface in `types/Effects.ts` uses `x` and `y` for offset fields. The [DTCG Format Module §9.6](https://www.designtokens.org/tr/2025.10/format/#shadow) (stable) defines the shadow composite with `offsetX` and `offsetY`. This ADR includes renaming these fields for DTCG alignment.
+
+```yaml
+# Before (types/Effects.ts — Shadow)
+Shadow:
+  visible: boolean
+  x: number | VariableStyle      # horizontal offset
+  y: number | VariableStyle      # vertical offset
+  blur: number | VariableStyle
+  spread: number | VariableStyle
+  color: string | VariableStyle
+  # inset: not present
+
+# After
+Shadow:
+  visible: boolean
+  offsetX: number | TokenReference   # renamed to match DTCG §9.6
+  offsetY: number | TokenReference   # renamed to match DTCG §9.6
+  blur: number | TokenReference
+  spread: number | TokenReference
+  color: string | TokenReference
+  inset?: boolean                    # added: inner shadow flag per DTCG §9.6
+```
+
+**Notes on remaining DTCG §9.6 divergence**:
+- DTCG defines `offsetX`, `offsetY`, `blur`, `spread` as dimension objects `{ value: number, unit: "px" | "rem" }`. Anova uses `number` (unitless, assumed `px`). Full dimension-unit alignment is deferred to a separate ADR; only the field rename is included in `v0.11.0`.
+- DTCG defines shadow `color` as a DTCG color object. Anova currently uses `string` (8-digit hex) or `TokenReference`. Full color-object alignment follows from the color section above (deferred).
+
+### Schema changes (`schema/`)
+
+| File | Change | Bump |
+|------|--------|------|
+| `styles.schema.json` | Add `TokenReference` definition | MINOR (additive) |
+| `styles.schema.json` | Replace all `{ "$ref": "#/definitions/VariableStyle" }` and `{ "$ref": "#/definitions/FigmaStyle" }` references in `oneOf` arrays with `{ "$ref": "#/definitions/TokenReference" }` | MAJOR (breaking) |
+| `styles.schema.json` | Mark `VariableStyle` and `FigmaStyle` definitions as `deprecated: true` with `description` notes | MAJOR |
+| `styles.schema.json` | Update `EffectsStyleValue` oneOf: replace `FigmaStyle` with `TokenReference` | MAJOR |
+| `styles.schema.json` | Update `TypographyStyleValue` oneOf: replace `FigmaStyle` with `TokenReference` | MAJOR |
+| `styles.schema.json` | Add hex color `pattern` constraint + `description` referencing DTCG Color Module §4.1 to the `string` arm of `ColorStyleValue` | MINOR (additive constraint) |
+| `styles.schema.json` | Rename `Shadow.x` → `Shadow.offsetX` and `Shadow.y` → `Shadow.offsetY` in the `Shadow` definition | MAJOR (breaking) |
+| `styles.schema.json` | Add `Shadow.inset` optional boolean to the `Shadow` definition | MINOR (additive) |
+| `styles.schema.json` | Merge `dropShadows` and `innerShadows` into `shadows` in the `EffectsGroup` definition | MAJOR (breaking) |
+
+**Example — new `TokenReference` definition** (`schema/styles.schema.json`):
+
+```yaml
+# New definition under #/definitions/TokenReference
+TokenReference:
+  type: object
+  description: "Platform-neutral token reference. Replaces VariableStyle and FigmaStyle."
+  required: [ "$token", "kind" ]
+  properties:
+    $token:
+      type: string
+      description: "Normalized slash-separated token path, e.g. 'DS Color/Text/Primary'"
+    kind:
+      type: string
+      enum: [ "variable", "style", "composite" ]
+      description: "Discriminates variable tokens, named style references, and composite shape references"
+    rawValue:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+      description: "Resolved scalar value, when available"
+    $extensions:
+      type: object
+      description: "Tool-specific metadata per DTCG §5.2.3 $extensions convention (reverse domain name notation)"
+      properties:
+        "com.figma":
+          type: object
+          properties:
+            id:
+              type: string
+              description: "Figma variable or style UUID (traceability only — not for platform consumption)"
+          required: [ "id" ]
+          additionalProperties: false
+      additionalProperties: true   # open for other tool namespaces
+  additionalProperties: false
+```
+
+**Example — updated `StyleValue` oneOf** (`schema/styles.schema.json`):
+
+```yaml
+# Before (within StyleValue/oneOf)
+- { "$ref": "#/definitions/VariableStyle" }
+- { "$ref": "#/definitions/FigmaStyle" }
+
+# After
+- { "$ref": "#/definitions/TokenReference" }
+```
+
+**Example — strengthened `ColorStyleValue` string arm** (`schema/styles.schema.json`):
+
+```yaml
+# Before
+- { "type": "string" }
+
+# After
+- { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$",
+    "description": "Hex color value: #RRGGBB or #RRGGBBAA" }
+```
+
+### Notes
+
+- `TokenReference` with `kind: "composite"` is used for named references to effects styles, text styles, and (if introduced) fill/gradient styles. This distinguishes them from atomic token values (`kind: "variable"`) and non-composite named styles (`kind: "style"`).
+- `$token` uses the `$` prefix to signal alignment with DTCG token path semantics. This is consistent with `$ref` on `ReferenceValue`.
+- **Figma-to-DTCG path translation**: Figma stores variable and style paths with `/` as the segment separator (e.g., `"DS Color/Text/Primary"`). DTCG alias syntax ([Format §7.1.1](https://www.designtokens.org/tr/2025.10/format/#curly-brace-syntax-token-references)) uses `.` as the separator inside curly braces (e.g., `{DS Color.Text.Primary}`). DTCG [Format §5.1.1](https://www.designtokens.org/tr/2025.10/format/#character-restrictions) forbids `.` in token or group names, but Figma names use `/` which is legal in DTCG names. Consumers producing DTCG-format output MUST replace `/` with `.` when converting `$token` paths to DTCG curly-brace alias form. Anova preserves the original Figma slash-path in `$token` for fidelity; the DTCG-normalized path is a consumer translation concern.
+
+  | Anova `$token` | DTCG alias | Notes |
+  |----------------|-----------|-------|
+  | `"DS Color/Text/Primary"` | `{DS Color.Text.Primary}` | `/` → `.` |
+  | `"Body/Medium"` | `{Body.Medium}` | `/` → `.` |
+  | `"Elevation/Shadow/Card"` | `{Elevation.Shadow.Card}` | `/` → `.` |
+- Figma UUIDs move from top-level `id` to `$extensions["com.figma"].id`, following the DTCG §5.2.3 convention that tool-specific metadata belongs in `$extensions` with reverse domain name notation (e.g., `"org.example.tool-a"`). The key `"com.figma"` is the correct reverse-domain form for Figma.
+- `VariableStyle` and `FigmaStyle` are retained as `@deprecated` exports in `v0.11.0` to allow downstream packages a migration window before removal in the subsequent MAJOR release.
+
+---
+
+## Type ↔ Schema Impact
+
+- **Symmetric**: Yes
+- **Parity check**:
+  - `TokenReference` in `types/Styles.ts` maps to `#/definitions/TokenReference` in `schema/styles.schema.json`
+  - `Style` union changes are reflected in `StyleValue` oneOf in `schema/styles.schema.json`
+  - `ColorStyle` union changes are reflected in `ColorStyleValue` oneOf in `schema/styles.schema.json`
+  - `effects: TokenReference | EffectsGroup` maps to `EffectsStyleValue` oneOf
+  - `typography: TokenReference | Typography` maps to `TypographyStyleValue` oneOf
+  - `VariableStyle` and `FigmaStyle` are marked deprecated in both `types/` and `schema/`
+  - Hex color pattern constraint is schema-only (no TypeScript change — `string` arm retained as-is)
+  - `Shadow.x`/`Shadow.y` renames to `Shadow.offsetX`/`Shadow.offsetY` in `types/Effects.ts` map to the same renames in the `Shadow` definition in `schema/styles.schema.json`
+  - `Shadow.inset` addition and the `EffectsGroup.dropShadows`/`innerShadows` → `shadows` merge are reflected in both `types/Effects.ts` and `schema/styles.schema.json`
+
+---
+
+## Downstream Impact
+
+| Consumer | Impact | Action required |
+|----------|--------|-----------------|
+| `anova-kit` | Recompile; update any code reading `VariableStyle`- or `FigmaStyle`-shaped objects, shadow offset fields, or `dropShadows`/`innerShadows` keys | Replace reads of `variableName`, `collectionName`, `id` (style name) with `$token` and `kind` checks; Figma UUID now at `$extensions["com.figma"].id`; shadow offsets: `.x`/`.y` → `.offsetX`/`.offsetY`; shadow role: `dropShadows`/`innerShadows` → `shadows.filter(s => !s.inset)` / `shadows.filter(s => s.inset)` |
+
+---
+
+## Semver Decision
+
+**Version bump**: Incorporated into `v0.11.0` (`MAJOR`)
+
+**Justification**: Removing `VariableStyle` and `FigmaStyle` from the `Style` and `ColorStyle` union types, from `effects` and `typography` property types, and renaming `Shadow.x`/`Shadow.y` to `Shadow.offsetX`/`Shadow.offsetY` all break consumers that type-check against those interfaces. Per Constitution III: "Removing or renaming an exported type or a named field within a type is a breaking change and MUST follow semantic versioning." This change is batched into `v0.11.0`, which carries MAJOR character, consistent with the typography composite change (ADR 005) already accepted in this release.
+
+---
+
+## Consequences
+
+- All style property values that reference a design token (variable or named style) carry an explicit `kind` discriminator, eliminating implicit type ambiguity.
+- The `$token` path field provides a platform-neutral token identifier that does not require consumers to parse Figma collection hierarchies. Consumers translating to DTCG alias format must replace `/` separators with `.` (DTCG §5.1.1 / §7.1.1).
+- Figma UUIDs are namespaced under `$extensions["com.figma"].id`, isolating Figma-specific metadata per DTCG §5.2.3 reverse domain name notation, opening the `$extensions` block to other tool namespaces without future breaking changes.
+- `ReferenceValue` (`{ "$ref": "#/props/..." }`) remains unchanged — it is a prop binding, not a token reference, and continues to serve its distinct role in the `Style` union.
+- Hex color values in `ColorStyle` gain schema-level pattern validation; TypeScript type is unchanged. Full DTCG color object support in `rawValue` is deferred.
+- `Shadow.x`/`Shadow.y` renamed to `Shadow.offsetX`/`Shadow.offsetY` per DTCG §9.6; `Shadow.inset?: boolean` added. `EffectsGroup.dropShadows` and `EffectsGroup.innerShadows` merged into a single `EffectsGroup.shadows?: Shadow[]` — `inset` on each item discriminates drop vs inner. Consumers reading `dropShadows`/`innerShadows` must update to `shadows.filter(s => !s.inset)` / `shadows.filter(s => s.inset)`.
+- Compact string output for token references (`"DS Color/Text/Primary"` instead of the full object) is a valid projection for human-readable views, but is a transformer serialization concern — it does not change this type contract.
+- `VariableStyle` and `FigmaStyle` remain as `@deprecated` exports in `v0.11.0` and are removed in the next MAJOR release.
+- Any tool validating output against `schema/styles.schema.json` must update to the `v0.11.0` schema to pass validation after `anova-transformer` adopts the new reference shape.
