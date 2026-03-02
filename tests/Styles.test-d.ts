@@ -1,10 +1,10 @@
 /**
- * Type-level tests for Styles, Shadow, Blur, EffectsGroup, Typography, and gradient types.
+ * Type-level tests for Styles, Shadow, Blur, Effects, Typography, and gradient types.
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
 import type {
-  Styles, Shadow, Blur, EffectsGroup, Typography, FigmaStyle, VariableStyle,
+  Styles, Shadow, Blur, Effects, Typography, FigmaStyle, VariableStyle,
   ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
   AngularGradient, GradientValue, AspectRatioValue, AspectRatioStyle,
 } from '../types/index.js';
@@ -13,8 +13,8 @@ import type {
 
 const shadowRaw: Shadow = {
   visible: true,
-  x: 0,
-  y: 4,
+  offsetX: 0,
+  offsetY: 4,
   blur: 8,
   spread: 0,
   color: '#000000FF',
@@ -22,8 +22,9 @@ const shadowRaw: Shadow = {
 
 const shadowVariable: Shadow = {
   visible: false,
-  x: { id: 'var:1' } satisfies VariableStyle,
-  y: { id: 'var:2' } satisfies VariableStyle,
+  inset: true,
+  offsetX: { id: 'var:1' } satisfies VariableStyle,
+  offsetY: { id: 'var:2' } satisfies VariableStyle,
   blur: 4,
   spread: 0,
   color: { id: 'var:3' } satisfies VariableStyle,
@@ -33,7 +34,7 @@ const shadowVariable: Shadow = {
 const _badVisible: Shadow = {
   // @ts-expect-error
   visible: 'yes',
-  x: 0, y: 0, blur: 0, spread: 0, color: '#000000FF',
+  offsetX: 0, offsetY: 0, blur: 0, spread: 0, color: '#000000FF',
 };
 
 // ─── Blur ──────────────────────────────────────────────────────────────────
@@ -44,20 +45,19 @@ const blurVariable: Blur = { visible: false, radius: { id: 'var:4' } satisfies V
 // @ts-expect-error: missing required radius
 const _badBlur: Blur = { visible: true };
 
-// ─── EffectsGroup ──────────────────────────────────────────────────────────
+// ─── Effects ──────────────────────────────────────────────────────────────
 
-// All keys optional — empty group is valid
-const emptyGroup: EffectsGroup = {};
+// All keys optional — empty Effects is valid
+const emptyGroup: Effects = {};
 
-const fullGroup: EffectsGroup = {
-  dropShadows: [shadowRaw],
-  innerShadows: [shadowVariable],
+const fullGroup: Effects = {
+  shadows: [shadowRaw, { ...shadowVariable, inset: true }],
   layerBlur: blurRaw,
   backgroundBlur: blurVariable,
 };
 
-// dropShadows is Shadow[], not Shadow
-const _dropType: Shadow[] | undefined = fullGroup.dropShadows;
+// shadows is Shadow[], not Shadow
+const _shadowsType: Shadow[] | undefined = fullGroup.shadows;
 
 // layerBlur is singular Blur, not array
 const _layerType: Blur | undefined = fullGroup.layerBlur;
@@ -69,7 +69,7 @@ const withFigmaStyle: Styles = {
   effects: { id: 'S:abc123' } satisfies FigmaStyle,
 };
 
-// Inline effects via EffectsGroup
+// Inline effects via Effects
 const withEffectsGroup: Styles = {
   effects: fullGroup,
 };
@@ -83,8 +83,8 @@ const withNullEffects: Styles = {
 const withNoEffects: Styles = {};
 
 // ─── effects must not be a Shadow[] array directly (old shape) ─────────────
-// @ts-expect-error: Shadow[] is not assignable to FigmaStyle | EffectsGroup
-const _oldEffectsShape: FigmaStyle | EffectsGroup = [shadowRaw];
+// @ts-expect-error: Shadow[] is not assignable to FigmaStyle | Effects
+const _oldEffectsShape: FigmaStyle | Effects = [shadowRaw];
 
 // ─── AspectRatioValue ──────────────────────────────────────────────────────
 

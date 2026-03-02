@@ -16,7 +16,7 @@
         "locked": { "$ref": "#/definitions/BooleanStyleValue", "description": "Lock state" },
         "backgroundColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Background fill color. Present on all non-text element types. Represented in Figma as fills." },
         "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
-        "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Effect output. FigmaStyle when the node references a named effects style; EffectsGroup when effects are defined inline. Replaces effectStyleId." },
+        "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Effect output. FigmaStyle when the node references a named effects style; Effects when effects are defined inline. Replaces effectStyleId." },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
         "cornerRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Uniform corner radius" },
         "width": { "$ref": "#/definitions/NumberStyleValue", "description": "Width in pixels" },
@@ -271,16 +271,17 @@
     },
     "Shadow": {
       "type": "object",
-      "description": "A single evaluated shadow (drop or inner). Fields are identical for both roles; the containing key (dropShadows vs innerShadows) determines render role.",
+      "description": "A single evaluated shadow. inset distinguishes drop (absent/false) from inner (true). Field names align with the DTCG Format Module shadow token.",
       "properties": {
         "visible": { "type": "boolean", "description": "Whether this shadow is active" },
-        "x": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Horizontal offset in pixels" },
-        "y": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Vertical offset in pixels" },
+        "inset": { "type": "boolean", "description": "true for inner shadow; absent or false for drop shadow (DTCG)" },
+        "offsetX": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Horizontal offset in pixels (DTCG)" },
+        "offsetY": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Vertical offset in pixels (DTCG)" },
         "blur": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Blur radius in pixels" },
         "spread": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Spread radius in pixels" },
         "color": { "oneOf": [{ "type": "string", "description": "#RRGGBBAA hex string" }, { "$ref": "#/definitions/VariableStyle" }], "description": "Shadow color" }
       },
-      "required": ["visible", "x", "y", "blur", "spread", "color"],
+      "required": ["visible", "offsetX", "offsetY", "blur", "spread", "color"],
       "additionalProperties": false
     },
     "Blur": {
@@ -293,22 +294,21 @@
       "required": ["visible", "radius"],
       "additionalProperties": false
     },
-    "EffectsGroup": {
+    "Effects": {
       "type": "object",
       "description": "Inline effects grouped by role. Each key is optional; a key is omitted when no effects of that type are present on the node.",
       "properties": {
-        "dropShadows": { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Ordered list of drop shadows" },
-        "innerShadows": { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Ordered list of inner shadows" },
+        "shadows": { "type": "array", "items": { "$ref": "#/definitions/Shadow" }, "description": "Ordered list of shadows; Shadow.inset distinguishes drop (absent/false) vs inner (true)" },
         "layerBlur": { "$ref": "#/definitions/Blur", "description": "Layer blur (filter effect on the node itself)" },
         "backgroundBlur": { "$ref": "#/definitions/Blur", "description": "Background blur (backdrop filter)" }
       },
       "additionalProperties": false
     },
     "EffectsStyleValue": {
-      "description": "Effect value. FigmaStyle when the node references a named effects style; EffectsGroup when effects are defined inline.",
+      "description": "Effect value. FigmaStyle when the node references a named effects style; Effects when effects are defined inline.",
       "oneOf": [
         { "$ref": "#/definitions/FigmaStyle", "description": "Named effects style reference" },
-        { "$ref": "#/definitions/EffectsGroup", "description": "Inline effects grouped by role" },
+        { "$ref": "#/definitions/Effects", "description": "Inline effects grouped by role" },
         { "type": "null" }
       ]
     },

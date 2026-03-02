@@ -1,5 +1,5 @@
 import { ReferenceValue } from "./ReferenceValue.js";
-import { EffectsGroup } from "./Effects.js";
+import { Effects } from "./Effects.js";
 import { GradientValue } from "./Gradient.js";
 
 export type Styles = Partial<{
@@ -8,7 +8,7 @@ export type Styles = Partial<{
   opacity: Style;
   locked: Style;
   backgroundColor: ColorStyle;
-  effects: FigmaStyle | EffectsGroup;
+  effects: FigmaStyle | Effects;
   clipContent: Style;
   cornerRadius: Style;
   width: Style;

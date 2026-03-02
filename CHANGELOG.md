@@ -21,11 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Metadata.license?` — optional `{ status: string; description: string }` field; absent when no license is supplied
 - `styles.textColor` — new style key for text colour
 - `styles.cornerSmoothing` — new style key for corner smoothing (Figma squircle factor)
-- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `EffectsGroup` when effects are defined inline
-- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `x`, `y`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`); used for both `dropShadows` and `innerShadows` entries
+- `styles.effects` — new style key replacing `effectStyleId`; value is `FigmaStyle` when the node references a named effects style, or `Effects` when effects are defined inline
+- `Shadow` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `inset?` (boolean; true = inner shadow), `offsetX`, `offsetY`, `blur`, `spread` (number or `VariableStyle`), `color` (8-digit hex `#RRGGBBAA` or `VariableStyle`); field names align with DTCG Format Module shadow token
 - `Blur` interface — exported from `@directededges/anova`; fields: `visible` (boolean), `radius` (number or `VariableStyle`)
-- `EffectsGroup` interface — exported from `@directededges/anova`; fields: `dropShadows?` (`Shadow[]`), `innerShadows?` (`Shadow[]`), `layerBlur?` (`Blur`), `backgroundBlur?` (`Blur`)
-- `Shadow`, `Blur`, `EffectsGroup`, and `EffectsStyleValue` definitions in `schema/styles.schema.json`
+- `Effects` interface — exported from `@directededges/anova`; fields: `shadows?` (`Shadow[]`; `Shadow.inset` distinguishes drop vs inner), `layerBlur?` (`Blur`), `backgroundBlur?` (`Blur`)
+- `Shadow`, `Blur`, `Effects`, and `EffectsStyleValue` definitions in `schema/styles.schema.json`
 - `GradientStop` interface — fields: `position` (number, normalised 0–1), `color` (hex/rgba string or `VariableStyle`)
 - `GradientCenter` interface — fields: `x`, `y` (number, normalised 0–1); centre point for RADIAL and ANGULAR variants
 - `LinearGradient` interface — fields: `type: 'LINEAR'`, `angle` (degrees), `stops` (`GradientStop[]`)
@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Styles.<typographyProperty>` → `Styles.typography.<property>`: all 14 flat typography properties replaced with single composite `typography` field. When `typography` is a `FigmaStyle` (text style reference), read `id` and `name`. When `typography` is a `Typography` object, read individual fields (`fontSize`, `fontFamily`, `fontStyle`, `lineHeight`, `letterSpacing`, `textCase`, `textDecoration`, `paragraphIndent`, `paragraphSpacing`, `leadingTrim`, `listSpacing`, `hangingPunctuation`, `hangingList`). Old `textStyleId` becomes `typography: { id, name }`.
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`.
-- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is an `EffectsGroup`, read from `dropShadows`, `innerShadows`, `layerBlur`, or `backgroundBlur` by role.
+- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`. When `effects` is a `FigmaStyle`, the style `id` and `name` are available. When `effects` is an `Effects`, read from `shadows` (use `shadow.inset` to distinguish drop vs inner), `layerBlur`, or `backgroundBlur` by role.
 
 ## [0.9.0] - 2026-02-12
 
