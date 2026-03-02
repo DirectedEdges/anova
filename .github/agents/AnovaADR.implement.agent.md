@@ -2,7 +2,7 @@
 description: Applies the changes described in an ADR directly to types, schema, tests, and changelog. Runs all validation gates. Author reviews the result as a normal code diff before merging.
 handoffs:
   - label: Accept ADR
-    agent: speckit.accept
+    agent: AnovaADR.accept
     prompt: All gates passed — mark the ADR as ACCEPTED
     send: true
 ---
@@ -58,15 +58,21 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Create or update `tests/[type-name].test-d.ts` for each changed type using `tsd`-style assertions or `@ts-expect-error` patterns
    - Run: `tsc --noEmit --strict tests/*.test-d.ts` to confirm test files compile
    - If tests fail: halt and report
+   - **All gates have now passed. Steps 10 and 11 are REQUIRED before reporting completion. Do not skip to step 12.**
 
 10. **Update CHANGELOG.md**:
     - Prepend a new entry at the top using the existing format in the file
-    - Include: version number, date, concise consumer-facing description of what changed
-    - If MAJOR: include a `### Migration` subsection describing what callers must update
+    - **Format**: one top-level bullet per user-visible change; no sub-bullets; no bold; no code blocks; no wrapping prose paragraphs
+    - **Entry line**: `` `Parent.field` `` — one-phrase description; aim for ≤ 12 words; omit implementation detail (class names, file paths, method names)
+    - **Names**: `<Parent>.<field>` in backticks, em dash separator — e.g. `Styles.cornerSmoothing` — corner smoothing factor (0–1)
+    - **Sections**: use `### Added`, `### Changed`, `### Removed` as needed; add `### Migration` (MAJOR or rename only)
+    - **Migration line**: `` `Parent.old` → `Parent.new` ``: one sentence; imperative; describe what to read instead and how to handle the new type
+    - **Gate**: After writing, verify the new entry is present in the file. If CHANGELOG.md does not contain the new version heading, halt and report — do not proceed to step 11.
 
 11. **Bump version in `package.json`**: Apply the `NEW` version from the ADR's Semver Decision.
+    - **Gate**: After writing, read `package.json` back and confirm the `"version"` field matches the ADR's `NEW` version. If it does not match, halt and report — do not proceed to step 12.
 
-12. **Report**: List every file modified (with one-line description each). State that the author should review the diff and run `/speckit.accept` once satisfied.
+12. **Report**: List every file modified (with one-line description each). The list **must** include `CHANGELOG.md` and `package.json` — if either is absent from the list, halt: steps 10–11 were not completed. State that the author should review the diff and run `/speckit.accept` once satisfied.
 
 ## Key rules
 

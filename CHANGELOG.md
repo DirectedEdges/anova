@@ -5,6 +5,78 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-03-02
+
+### Added
+
+- `PropBinding` — component-prop binding type; discriminated by `$binding` key; replaces `ReferenceValue`
+- `TokenReference` — unified DTCG-aligned token reference; replaces `VariableStyle` and `FigmaStyle`; `$token` and `$type` are the complete platform-facing API
+- `TokenReference.$token` — DTCG dot-separated token path, usable directly as a DTCG alias
+- `TokenReference.$type` — DTCG token type discriminator: `color`, `dimension`, `string`, `number`, `boolean`, `shadow`, `gradient`, `typography`, `effects`
+- `TokenReference.$extensions["com.figma"]` — optional Figma extraction metadata: `id`, `name`, `collectionName`, `rawValue`
+- `Styles.typography` — composite typography; value is `TokenReference`, `Typography`, or omitted
+- `Typography` — 13 optional inline text properties: `fontSize`, `fontFamily`, `fontStyle`, `lineHeight`, `letterSpacing`, `textCase`, `textDecoration`, `paragraphIndent`, `paragraphSpacing`, `leadingTrim`, `listSpacing`, `hangingPunctuation`, `hangingList`
+- `Styles.aspectRatio` — aspect ratio constraint; `AspectRatioValue` pair or `null` when unconstrained
+- `AspectRatioValue` — required `x` (numerator) and `y` (denominator) number fields
+- `AspectRatioStyle` — type alias `AspectRatioValue | null`
+- `Metadata.license?` — optional `{ status: string; description: string }` field
+- `styles.textColor` — style key for text colour
+- `styles.cornerSmoothing` — style key for corner smoothing (Figma squircle factor)
+- `styles.effects` — style key replacing `effectStyleId`; `TokenReference` or inline `Effects`
+- `Shadow` — fields: `visible`, `inset?`, `offsetX`, `offsetY`, `blur`, `spread`, `color`
+- `Blur` — fields: `visible`, `radius`
+- `Effects` — fields: `shadows?`, `layerBlur?`, `backgroundBlur?`
+- `GradientStop` — fields: `position` (0–1), `color`
+- `GradientCenter` — fields: `x`, `y` (0–1)
+- `LinearGradient` — discriminated by `type: 'LINEAR'`; fields: `angle`, `stops`
+- `RadialGradient` — discriminated by `type: 'RADIAL'`; fields: `center`, `stops`
+- `AngularGradient` — discriminated by `type: 'ANGULAR'`; fields: `center`, `stops`
+- `GradientValue` — discriminated union `LinearGradient | RadialGradient | AngularGradient`
+- `ColorStyle` — `string | TokenReference | GradientValue | null`
+
+### Changed
+
+- `Element.instanceOf` — accepts `string | PropBinding`; bound form is `{ $binding: "#/props/..." }`
+- `Element.text` — accepts `string | PropBinding`; bound form is `{ $binding: "#/props/..." }`
+- `Style` — `PropBinding` replaces `ReferenceValue`; `TokenReference` replaces `VariableStyle` and `FigmaStyle`
+- `Styles.backgroundColor` — narrowed to `ColorStyle`; inline gradients representable
+- `Styles.textColor` — narrowed to `ColorStyle`; inline gradients representable
+- `Styles.strokes` — narrowed to `ColorStyle`; inline gradients representable
+- `styles.fills` renamed to `styles.backgroundColor`
+
+### Removed
+
+- `ReferenceValue` — removed; use `PropBinding` instead
+- `isReferenceValue` — removed; no replacement; prop-binding guards are upstream consumer responsibility
+- `VariableStyle` — removed; use `TokenReference` instead
+- `FigmaStyle` — removed; use `TokenReference` instead
+- `Styles.fontSize` — removed; use `typography.fontSize` instead
+- `Styles.fontFamily` — removed; use `typography.fontFamily` instead
+- `Styles.fontStyle` — removed; use `typography.fontStyle` instead
+- `Styles.lineHeight` — removed; use `typography.lineHeight` instead
+- `Styles.letterSpacing` — removed; use `typography.letterSpacing` instead
+- `Styles.textCase` — removed; use `typography.textCase` instead
+- `Styles.textDecoration` — removed; use `typography.textDecoration` instead
+- `Styles.paragraphIndent` — removed; use `typography.paragraphIndent` instead
+- `Styles.paragraphSpacing` — removed; use `typography.paragraphSpacing` instead
+- `Styles.leadingTrim` — removed; use `typography.leadingTrim` instead
+- `Styles.listSpacing` — removed; use `typography.listSpacing` instead
+- `Styles.hangingPunctuation` — removed; use `typography.hangingPunctuation` instead
+- `Styles.hangingList` — removed; use `typography.hangingList` instead
+- `Styles.textStyleId` — removed; use `typography` with a `TokenReference` instead
+- `styles.effectStyleId` — removed with no deprecation period; consumers must migrate to `styles.effects`
+
+### Migration
+
+- `Element.instanceOf` → `Element.instanceOf`: replace `{ $ref: "#/props/..." }` with `{ $binding: "#/props/..." }`; update any `isReferenceValue` guards to narrow against `$binding` directly
+- `Element.text` → `Element.text`: same key rename from `$ref` to `$binding`
+- `Styles.visible` → `Styles.visible`: same key rename from `$ref` to `$binding`
+- `VariableStyle` → `TokenReference`: replace `{ id, variableName, collectionName }` with `{ $token: "<Collection>.<name>", $type: "<type>", $extensions: { "com.figma": { id, name, collectionName } } }`; read token path from `$token` and token category from `$type`
+- `FigmaStyle` → `TokenReference`: replace `{ id, name }` with `{ $token: "<dot.path>", $type: "typography" | "effects" | ... }` and move the Figma UUID to `$extensions["com.figma"].id`
+- `Styles.<typographyProperty>` → `Styles.typography.<property>`: all 14 flat typography properties replaced with single composite `typography` field; when `typography` is a `TokenReference`, read `$token` for the style path; when `typography` is a `Typography` object, read individual fields
+- `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`
+- `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`; when `effects` is a `TokenReference`, read `$token` and `$type`; when `effects` is an `Effects`, read from `shadows`, `layerBlur`, or `backgroundBlur` by role
+
 ## [0.9.0] - 2026-02-12
 
 ### Added
