@@ -100,12 +100,35 @@ export interface TokenReference {
 export type Style = string | boolean | number | null | TokenReference | PropBinding;
 
 /**
+ * Inline resolved color value per DTCG Color Module §4.1.
+ * `colorSpace` and `components` are required; `alpha` defaults to 1 when omitted;
+ * `hex` is an optional 6-digit sRGB fallback (#RRGGBB — no alpha channel in hex).
+ *
+ * The 14 supported `colorSpace` values correspond to DTCG Color §4.2.
+ * The `colorSpace` field is typed as `string` (not a literal union) to avoid drift
+ * with the schema enum — the schema provides the validation constraint.
+ *
+ * Mirrors `ColorValue` in `schema/styles.schema.json`.
+ * @since 0.11.0
+ */
+export interface ColorValue {
+  /** Color space identifier per DTCG Color §4.2 (e.g. 'srgb', 'oklch', 'display-p3'). */
+  colorSpace: string;
+  /** Ordered component values for the given color space. Each element is a number or the 'none' keyword. */
+  components: (number | 'none')[];
+  /** Alpha channel 0–1. Defaults to 1 (fully opaque) when omitted. */
+  alpha?: number;
+  /** Optional 6-digit sRGB fallback hex string (#RRGGBB). Alpha is excluded per DTCG §4.1. */
+  hex?: string;
+}
+
+/**
  * Colour-specific style value type.
  * Mirrors `ColorStyleValue` in `schema/styles.schema.json`.
  * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
  * whose values are always colour-semantics and may carry gradient data.
  */
-export type ColorStyle = string | TokenReference | GradientValue | null;
+export type ColorStyle = ColorValue | TokenReference | GradientValue | null;
 
 /**
  * Inline typography properties grouped into a composite object.

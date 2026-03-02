@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "0.11.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/styles.schema.json",
   "title": "Anova Styles Schema",
@@ -190,10 +190,50 @@
         { "$ref": "#/definitions/AngularGradient" }
       ]
     },
+    "ColorValue": {
+      "type": "object",
+      "description": "Inline resolved color value per DTCG Color Module \u00a74.1. `colorSpace` and `components` are required; `alpha` defaults to 1 (fully opaque) when omitted; `hex` is an optional 6-digit sRGB fallback (#RRGGBB \u2014 no alpha channel in hex). Consumers SHOULD prefer `colorSpace` + `components` for rendering.",
+      "properties": {
+        "colorSpace": {
+          "type": "string",
+          "enum": [
+            "srgb", "srgb-linear", "hsl", "hwb",
+            "lab", "lch", "oklab", "oklch",
+            "display-p3", "a98-rgb", "prophoto-rgb", "rec2020",
+            "xyz-d65", "xyz-d50"
+          ],
+          "description": "Color space identifier per DTCG Color \u00a74.2 (e.g. 'srgb', 'oklch', 'display-p3')."
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "number" },
+              { "type": "string", "const": "none" }
+            ]
+          },
+          "minItems": 3,
+          "description": "Ordered component values (number or 'none' keyword) for the given colorSpace. The number of components and their ranges depend on the colorSpace per DTCG Color \u00a74.2."
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Alpha channel 0\u20131. Defaults to 1 (fully opaque) when omitted."
+        },
+        "hex": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "description": "Optional 6-digit sRGB fallback (#RRGGBB). Alpha is excluded per DTCG Color \u00a74.1. Consumers SHOULD prefer colorSpace + components for rendering."
+        }
+      },
+      "required": ["colorSpace", "components"],
+      "additionalProperties": false
+    },
     "ColorStyleValue": {
-      "description": "Color style value. Covers solid hex color, token reference, inline gradient, or null.",
+      "description": "Color style value. Covers inline resolved color (DTCG Color \u00a74.1 object), token reference, inline gradient, or null.",
       "oneOf": [
-        { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$", "description": "Hex color value: #RRGGBB or #RRGGBBAA (Anova compact form). Canonical form per DTCG Color Module \u00a74.1 is the color object." },
+        { "$ref": "#/definitions/ColorValue", "description": "Inline resolved color value with colorSpace, components, optional alpha, and optional 6-digit hex fallback." },
         { "$ref": "#/definitions/TokenReference" },
         { "$ref": "#/definitions/GradientValue" },
         { "type": "null" }

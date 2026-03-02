@@ -7,7 +7,7 @@
  */
 import type {
   PropBinding, BindingKey,
-  Element, Style, ColorStyle,
+  Element, Style, ColorStyle, ColorValue,
 } from '../types/index.js';
 
 // ─── PropBinding shape ──────────────────────────────────────────────────────
@@ -67,10 +67,14 @@ const styleBound: Style = { $binding: '#/props/isVisible' };
 const _oldStyle: Style = { $ref: '#/props/isVisible' };
 
 // ─── ColorStyle does NOT accept PropBinding or ReferenceValue ───────────────
-// Color properties are not bindable; only string | TokenReference | GradientValue | null
+// Color properties are not bindable; only ColorValue | TokenReference | GradientValue | null
 
-const colorHex: ColorStyle = '#FF0000FF';
+const colorValue: ColorStyle = { colorSpace: 'srgb', components: [1, 0, 0] } satisfies ColorValue;
 const colorNull: ColorStyle = null;
+
+// Hex string is no longer valid for ColorStyle (removed in v0.11.0 — use ColorValue with hex field)
+// @ts-expect-error: plain hex string is not valid for ColorStyle
+const _colorHex: ColorStyle = '#FF0000FF';
 
 // PropBinding must NOT compile as ColorStyle
 // @ts-expect-error: PropBinding is not valid for ColorStyle

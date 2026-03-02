@@ -5,7 +5,7 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-03-02
+## [0.11.0] - 2026-03-02
 
 ### Added
 
@@ -32,7 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RadialGradient` — discriminated by `type: 'RADIAL'`; fields: `center`, `stops`
 - `AngularGradient` — discriminated by `type: 'ANGULAR'`; fields: `center`, `stops`
 - `GradientValue` — discriminated union `LinearGradient | RadialGradient | AngularGradient`
-- `ColorStyle` — `string | TokenReference | GradientValue | null`
+- `ColorValue` — inline resolved color object per DTCG Color Module §4.1; fields: `colorSpace`, `components`, optional `alpha` (0–1), optional 6-digit `hex` fallback
+- `ColorStyle` — `ColorValue | TokenReference | GradientValue | null`
 
 ### Changed
 
@@ -43,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Styles.textColor` — narrowed to `ColorStyle`; inline gradients representable
 - `Styles.strokes` — narrowed to `ColorStyle`; inline gradients representable
 - `styles.fills` renamed to `styles.backgroundColor`
+- `ColorStyle` — `string` arm replaced by `ColorValue`; wide-gamut color spaces now representable
 
 ### Removed
 
@@ -50,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `isReferenceValue` — removed; no replacement; prop-binding guards are upstream consumer responsibility
 - `VariableStyle` — removed; use `TokenReference` instead
 - `FigmaStyle` — removed; use `TokenReference` instead
+
 - `Styles.fontSize` — removed; use `typography.fontSize` instead
 - `Styles.fontFamily` — removed; use `typography.fontFamily` instead
 - `Styles.fontStyle` — removed; use `typography.fontStyle` instead
@@ -76,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Styles.<typographyProperty>` → `Styles.typography.<property>`: all 14 flat typography properties replaced with single composite `typography` field; when `typography` is a `TokenReference`, read `$token` for the style path; when `typography` is a `Typography` object, read individual fields
 - `fills` → `backgroundColor`: any consumer reading `component.styles.fills` must update to `component.styles.backgroundColor`
 - `effectStyleId` → `effects`: any consumer reading `styles.effectStyleId` must update to `styles.effects`; when `effects` is a `TokenReference`, read `$token` and `$type`; when `effects` is an `Effects`, read from `shadows`, `layerBlur`, or `backgroundBlur` by role
+- `ColorStyle` hex string → `ColorValue`: replace bare `"#RRGGBB"` or `"#RRGGBBAA"` strings with `{ colorSpace: "srgb", components: [r, g, b], alpha?, hex? }`; use `colorSpace` and `components` for rendering and retain `hex` as an optional fallback
 
 ## [0.9.0] - 2026-02-12
 
