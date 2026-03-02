@@ -1,4 +1,4 @@
-import { VariableStyle } from "./Styles.js";
+import { TokenReference } from "./Styles.js";
 
 /**
  * A single evaluated shadow (drop or inner).
@@ -14,12 +14,12 @@ export interface Shadow {
   /** true for inner shadow; absent or false for drop shadow (DTCG) */
   inset?: boolean;
   /** Horizontal offset in pixels — DTCG field name */
-  offsetX: number | VariableStyle;
+  offsetX: number | TokenReference;
   /** Vertical offset in pixels — DTCG field name */
-  offsetY: number | VariableStyle;
-  blur: number | VariableStyle;
-  spread: number | VariableStyle;
-  color: string | VariableStyle;
+  offsetY: number | TokenReference;
+  blur: number | TokenReference;
+  spread: number | TokenReference;
+  color: string | TokenReference;
 }
 
 /**
@@ -31,7 +31,7 @@ export interface Shadow {
  */
 export interface Blur {
   visible: boolean;
-  radius: number | VariableStyle;
+  radius: number | TokenReference;
 }
 
 /**

@@ -4,8 +4,8 @@
  * to assert that the type shape is correct.
  */
 import type {
-  Styles, Shadow, Blur, Effects, Typography, FigmaStyle, VariableStyle,
-  ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
+  Styles, Shadow, Blur, Effects, Typography,
+  TokenReference, ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
   AngularGradient, GradientValue, AspectRatioValue, AspectRatioStyle,
 } from '../types/index.js';
 
@@ -23,12 +23,16 @@ const shadowRaw: Shadow = {
 const shadowVariable: Shadow = {
   visible: false,
   inset: true,
-  offsetX: { id: 'var:1' } satisfies VariableStyle,
-  offsetY: { id: 'var:2' } satisfies VariableStyle,
+  offsetX: { $token: 'Space.2', $type: 'dimension' } satisfies TokenReference,
+  offsetY: { $token: 'Space.4', $type: 'dimension' } satisfies TokenReference,
   blur: 4,
   spread: 0,
-  color: { id: 'var:3' } satisfies VariableStyle,
+  color: { $token: 'DS Color.Text.Primary', $type: 'color' } satisfies TokenReference,
 };
+
+// Old VariableStyle shape must NOT compile as Shadow field — breaking change
+// @ts-expect-error: VariableStyle is no longer valid for Shadow.offsetX
+const _oldVarAsOffset: Shadow['offsetX'] = { id: 'var:1' };
 
 // visible must be boolean — @ts-expect-error: string is not boolean
 const _badVisible: Shadow = {
@@ -40,7 +44,11 @@ const _badVisible: Shadow = {
 // ─── Blur ──────────────────────────────────────────────────────────────────
 
 const blurRaw: Blur = { visible: true, radius: 12 };
-const blurVariable: Blur = { visible: false, radius: { id: 'var:4' } satisfies VariableStyle };
+const blurToken: Blur = { visible: false, radius: { $token: 'Blur.Soft', $type: 'dimension' } satisfies TokenReference };
+
+// Old VariableStyle shape must NOT compile as Blur.radius — breaking change
+// @ts-expect-error: VariableStyle is no longer valid for Blur.radius
+const _oldVarAsRadius: Blur['radius'] = { id: 'var:4' };
 
 // @ts-expect-error: missing required radius
 const _badBlur: Blur = { visible: true };
@@ -53,7 +61,7 @@ const emptyGroup: Effects = {};
 const fullGroup: Effects = {
   shadows: [shadowRaw, { ...shadowVariable, inset: true }],
   layerBlur: blurRaw,
-  backgroundBlur: blurVariable,
+  backgroundBlur: blurToken,
 };
 
 // shadows is Shadow[], not Shadow
@@ -64,27 +72,26 @@ const _layerType: Blur | undefined = fullGroup.layerBlur;
 
 // ─── Styles.effects ────────────────────────────────────────────────────────
 
-// Named style reference
-const withFigmaStyle: Styles = {
-  effects: { id: 'S:abc123' } satisfies FigmaStyle,
+// Named style reference — now uses TokenReference ($type: 'effects')
+const withEffectsRef: Styles = {
+  effects: { $token: 'Elevation.Shadow.Card', $type: 'effects' } satisfies TokenReference,
 };
+
+// Old FigmaStyle shape must NOT compile as Styles.effects — breaking change
+// @ts-expect-error: FigmaStyle is no longer valid for Styles.effects
+const _oldFigmaAsEffects: NonNullable<Styles['effects']> = { id: 'S:abc123' };
 
 // Inline effects via Effects
 const withEffectsGroup: Styles = {
   effects: fullGroup,
 };
 
-// null is valid (effects absent in output)
-const withNullEffects: Styles = {
-  effects: null as unknown as FigmaStyle, // value-level; type allows omission
-};
-
 // effects is optional — no effects key at all is valid
 const withNoEffects: Styles = {};
 
 // ─── effects must not be a Shadow[] array directly (old shape) ─────────────
-// @ts-expect-error: Shadow[] is not assignable to FigmaStyle | Effects
-const _oldEffectsShape: FigmaStyle | Effects = [shadowRaw];
+// @ts-expect-error: Shadow[] is not assignable to TokenReference | Effects
+const _oldEffectsShape: TokenReference | Effects = [shadowRaw];
 
 // ─── AspectRatioValue ──────────────────────────────────────────────────────
 
@@ -109,9 +116,9 @@ const ratioStyle: AspectRatioStyle = { x: 4, y: 3 };
 // null is valid (no ratio constraint)
 const noRatio: AspectRatioStyle = null;
 
-// VariableStyle must NOT be assignable to AspectRatioStyle
-// @ts-expect-error: VariableStyle is not a valid AspectRatioStyle
-const _varRatio: AspectRatioStyle = { id: 'var:1' } satisfies VariableStyle;
+// An { id } object must NOT be assignable to AspectRatioStyle
+// @ts-expect-error: { id } is not a valid AspectRatioStyle
+const _varRatio: AspectRatioStyle = { id: 'var:1' };
 
 // ─── Styles.aspectRatio ────────────────────────────────────────────────────
 
@@ -152,22 +159,26 @@ const fullTypographyRaw: Typography = {
   hangingList: false,
 };
 
-// Typography with VariableStyle values
-const fullTypographyVariable: Typography = {
-  fontSize: { id: 'var:fontSize' } satisfies VariableStyle,
-  fontFamily: 'Inter', // font primitive does not accept VariableStyle
-  fontStyle: 'Regular', // font primitive does not accept VariableStyle
-  lineHeight: { id: 'var:lineHeight' } satisfies VariableStyle,
-  letterSpacing: { id: 'var:letterSpacing' } satisfies VariableStyle,
-  textCase: { id: 'var:textCase' } satisfies VariableStyle,
-  textDecoration: { id: 'var:textDecoration' } satisfies VariableStyle,
-  paragraphIndent: { id: 'var:paragraphIndent' } satisfies VariableStyle,
-  paragraphSpacing: { id: 'var:paragraphSpacing' } satisfies VariableStyle,
-  leadingTrim: { id: 'var:leadingTrim' } satisfies VariableStyle,
-  listSpacing: { id: 'var:listSpacing' } satisfies VariableStyle,
-  hangingPunctuation: { id: 'var:hangingPunctuation' } satisfies VariableStyle,
-  hangingList: { id: 'var:hangingList' } satisfies VariableStyle,
+// Typography with TokenReference values
+const fullTypographyToken: Typography = {
+  fontSize: { $token: 'Typography.Body.Size', $type: 'dimension' } satisfies TokenReference,
+  fontFamily: 'Inter', // font primitive does not accept TokenReference
+  fontStyle: 'Regular', // font primitive does not accept TokenReference
+  lineHeight: { $token: 'Typography.Body.LineHeight', $type: 'dimension' } satisfies TokenReference,
+  letterSpacing: { $token: 'Typography.Body.LetterSpacing', $type: 'dimension' } satisfies TokenReference,
+  textCase: { $token: 'Typography.Body.TextCase', $type: 'string' } satisfies TokenReference,
+  textDecoration: { $token: 'Typography.Body.Decoration', $type: 'string' } satisfies TokenReference,
+  paragraphIndent: { $token: 'Typography.Body.Indent', $type: 'dimension' } satisfies TokenReference,
+  paragraphSpacing: { $token: 'Typography.Body.ParaSpacing', $type: 'dimension' } satisfies TokenReference,
+  leadingTrim: { $token: 'Typography.Body.LeadingTrim', $type: 'dimension' } satisfies TokenReference,
+  listSpacing: { $token: 'Typography.Body.ListSpacing', $type: 'dimension' } satisfies TokenReference,
+  hangingPunctuation: { $token: 'Typography.Body.HangingPunct', $type: 'boolean' } satisfies TokenReference,
+  hangingList: { $token: 'Typography.Body.HangingList', $type: 'boolean' } satisfies TokenReference,
 };
+
+// Old VariableStyle shape must NOT compile as Typography sub-field — breaking change
+// @ts-expect-error: VariableStyle is no longer valid for Typography.fontSize
+const _oldVarAsFontSize: Typography['fontSize'] = { id: 'var:fontSize' };
 
 // Typography with 'mixed' values (for multi-selection)
 const mixedTypography: Typography = {
@@ -180,42 +191,41 @@ const mixedTypography: Typography = {
   leadingTrim: 'mixed',
 };
 
-// fontSize accepts number, 'mixed', or VariableStyle
-const _fontSizeNumber: number | 'mixed' | VariableStyle | undefined = mixedTypography.fontSize;
+// fontSize accepts number, 'mixed', or TokenReference
+const _fontSizeNumber: number | 'mixed' | TokenReference | undefined = fullTypographyRaw.fontSize;
 
 // fontFamily/fontStyle accept string, number, 'mixed', or VariableStyle (number for registered families)
 const _fontFamily: string | number | 'mixed' | undefined = fullTypographyRaw.fontFamily;
 
-// hangingPunctuation accepts boolean or VariableStyle
-const _hangingBool: boolean | VariableStyle | undefined = fullTypographyRaw.hangingPunctuation;
+// hangingPunctuation accepts boolean or TokenReference
+const _hangingBool: boolean | TokenReference | undefined = fullTypographyRaw.hangingPunctuation;
 
 // @ts-expect-error: fontSize must not accept string
 const _badFontSize: Typography = { fontSize: '16px' };
 
-// @ts-expect-error: fontFamily must not accept VariableStyle (font primitive restriction)
-const _badFontFamily: Typography = { fontFamily: { id: 'var:1' } satisfies VariableStyle };
+// @ts-expect-error: fontFamily must not accept TokenReference (font primitive restriction)
+const _badFontFamily: Typography['fontFamily'] = { $token: 'X', $type: 'string' };
 
-// @ts-expect-error: fontStyle must not accept VariableStyle (font primitive restriction)
-const _badFontStyle: Typography = { fontStyle: { id: 'var:2' } satisfies VariableStyle };
+// @ts-expect-error: fontStyle must not accept TokenReference (font primitive restriction)
+const _badFontStyle: Typography['fontStyle'] = { $token: 'X', $type: 'string' };
 
 // @ts-expect-error: hangingPunctuation must not accept string
 const _badHanging: Typography = { hangingPunctuation: 'yes' };
 
 // ─── Styles.typography ─────────────────────────────────────────────────────
 
-// Named text style reference
+// Named text style reference — now uses TokenReference ($type: 'typography')
 const withTextStyle: Styles = {
-  typography: { id: 'S:textStyle123' } satisfies FigmaStyle,
+  typography: { $token: 'Body.Medium', $type: 'typography' } satisfies TokenReference,
 };
+
+// Old FigmaStyle shape must NOT compile as Styles.typography — breaking change
+// @ts-expect-error: FigmaStyle is no longer valid for Styles.typography
+const _oldFigmaAsTypo: NonNullable<Styles['typography']> = { id: 'S:textStyle123' };
 
 // Inline typography via Typography
 const withTypographyGroup: Styles = {
   typography: fullTypographyRaw,
-};
-
-// null is valid (typography absent in output)
-const withNullTypography: Styles = {
-  typography: null as unknown as FigmaStyle, // value-level; type allows omission
 };
 
 // typography is optional — no typography key at all is valid

@@ -1,7 +1,7 @@
 import { Children } from "./Children.js";
 import { Styles } from "./Styles.js";
 import { PropConfigurations } from "./PropConfigurations.js";
-import { ReferenceValue } from "./ReferenceValue.js";
+import { PropBinding } from "./ReferenceValue.js";
 
 /**
  * Represents elements within a component.
@@ -16,8 +16,8 @@ export type Element = {
   parent?: string | null;
   styles?: Styles;
   propConfigurations?: PropConfigurations;
-  instanceOf?: string | ReferenceValue;
-  text?: string | ReferenceValue;
+  instanceOf?: string | PropBinding;
+  text?: string | PropBinding;
 };
 
 /**

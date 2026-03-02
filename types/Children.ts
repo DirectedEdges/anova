@@ -1,7 +1,7 @@
-import { ReferenceValue } from './ReferenceValue.js';
+import { PropBinding } from './ReferenceValue.js';
 
 /**
  * Data output for children.
- * Can be an array of child names or a ReferenceValue when bound to a prop.
+ * Can be an array of child names or a PropBinding when bound to a slot prop.
  */
-export type Children = string[] | ReferenceValue;
+export type Children = string[] | PropBinding;
