@@ -1,4 +1,4 @@
-import { TokenReference } from "./Styles.js";
+import { ColorValue, TokenReference } from "./Styles.js";
 
 /**
  * A single evaluated shadow (drop or inner).
@@ -19,7 +19,7 @@ export interface Shadow {
   offsetY: number | TokenReference;
   blur: number | TokenReference;
   spread: number | TokenReference;
-  color: string | TokenReference;
+  color: ColorValue | TokenReference;
 }
 
 /**

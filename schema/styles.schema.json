@@ -126,7 +126,7 @@
         },
         "color": {
           "oneOf": [
-            { "type": "string", "description": "Stop color as hex or rgba string" },
+            { "$ref": "#/definitions/ColorValue", "description": "Stop color as an inline resolved color value" },
             { "$ref": "#/definitions/TokenReference", "description": "Stop color as a token reference" }
           ]
         }
@@ -317,7 +317,7 @@
         "offsetY": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Vertical offset in pixels (DTCG)" },
         "blur": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Blur radius in pixels" },
         "spread": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Spread radius in pixels" },
-        "color": { "oneOf": [{ "type": "string", "description": "#RRGGBBAA hex string" }, { "$ref": "#/definitions/TokenReference" }], "description": "Shadow color" }
+        "color": { "oneOf": [{ "$ref": "#/definitions/ColorValue", "description": "Inline resolved color value" }, { "$ref": "#/definitions/TokenReference" }], "description": "Shadow color" }
       },
       "required": ["visible", "offsetX", "offsetY", "blur", "spread", "color"],
       "additionalProperties": false
