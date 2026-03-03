@@ -5,73 +5,20 @@
  */
 import type {
   Styles, Shadow, Blur, Effects, Typography,
-  TokenReference, ColorStyle, ColorValue, GradientStop, GradientCenter, LinearGradient, RadialGradient,
+  TokenReference, ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
   AngularGradient, GradientValue, AspectRatioValue, AspectRatioStyle,
 } from '../types/index.js';
 
-// ─── ColorValue ───────────────────────────────────────────────────────────
-
-// Minimal valid: colorSpace + components only
-const colorSrgb: ColorValue = {
-  colorSpace: 'srgb',
-  components: [1, 0, 0.502],
-};
-
-// With optional alpha and hex fallback
-const colorSrgbFull: ColorValue = {
-  colorSpace: 'srgb',
-  components: [1, 0, 0.502],
-  alpha: 0.87,
-  hex: '#ff007f',
-};
-
-// Wide-gamut: oklch
-const colorOklch: ColorValue = {
-  colorSpace: 'oklch',
-  components: [0.7016, 0.3225, 328.363],
-  alpha: 1,
-  hex: '#ff00ff',
-};
-
-// Display P3
-const colorP3: ColorValue = {
-  colorSpace: 'display-p3',
-  components: [1, 0, 1],
-};
-
-// 'none' keyword in components (per DTCG Color §4.1.1)
-const colorWithNone: ColorValue = {
-  colorSpace: 'hsl',
-  components: ['none', 0, 100],
-  alpha: 1,
-  hex: '#ffffff',
-};
-
-// @ts-expect-error: colorSpace is required
-const _missingColorSpace: ColorValue = { components: [1, 0, 0] };
-
-// @ts-expect-error: components is required
-const _missingComponents: ColorValue = { colorSpace: 'srgb' };
-
-// colorSpace must be a string
-const _badColorValue: ColorValue = {
-  // @ts-expect-error: number is not assignable to string
-  colorSpace: 123,
-  components: [1, 0, 0],
-};
-
 // ─── ColorStyle ────────────────────────────────────────────────────────────
 
-// ColorValue arm
-const csColorValue: ColorStyle = colorSrgb;
-const csColorValueFull: ColorStyle = colorSrgbFull;
-const csColorOklch: ColorStyle = colorOklch;
+// String arm (hex colors)
+const csHexString: ColorStyle = '#ff007f';
+const csHexAlpha: ColorStyle = '#ff007f80';
 
-// TokenReference arm still valid
+// TokenReference arm
 const csToken: ColorStyle = { $token: 'DS Color.Text.Primary', $type: 'color' } satisfies TokenReference;
 
-// GradientValue arm still valid
-// Note: GradientStop.color retains string | TokenReference (out of scope for this ADR)
+// GradientValue arm
 const csGradient: ColorStyle = {
   type: 'LINEAR',
   angle: 90,
@@ -81,15 +28,8 @@ const csGradient: ColorStyle = {
   ],
 } satisfies GradientValue;
 
-// null still valid
+// null is valid (no color)
 const csNull: ColorStyle = null;
-
-// Hex string is no longer a valid ColorStyle (breaking change in v0.11.0; use ColorValue with hex field instead)
-// @ts-expect-error: plain hex string is not valid for ColorStyle
-const _csHexString: ColorStyle = '#ff007f';
-
-// @ts-expect-error: RRGGBBAA hex string is not valid for ColorStyle
-const _csHexAlpha: ColorStyle = '#ff007f80';
 
 // @ts-expect-error: number is not valid for ColorStyle
 const _csNumber: ColorStyle = 0xff007f;
@@ -97,7 +37,7 @@ const _csNumber: ColorStyle = 0xff007f;
 // ─── Styles with ColorStyle fields ────────────────────────────────────────
 
 const withBackground: Styles = {
-  backgroundColor: colorSrgbFull,
+  backgroundColor: '#ff007f',
 };
 
 const withTextColor: Styles = {
@@ -105,18 +45,16 @@ const withTextColor: Styles = {
 };
 
 const withStrokes: Styles = {
-  strokes: colorP3,
+  strokes: '#0000ff',
 };
 
 const withNullBackground: Styles = {
   backgroundColor: null,
 };
 
-// @ts-expect-error: hex string is not valid for Styles.backgroundColor
-const _bgHexString: Styles = { backgroundColor: '#ff007f' };
-
-// @ts-expect-error: hex string is not valid for Styles.textColor
-const _textColorHexString: Styles = { textColor: '#000000' };
+// Hex strings are valid for color fields
+const withBgHexString: Styles = { backgroundColor: '#ff007f' };
+const withTextColorHexString: Styles = { textColor: '#000000' };
 
 // ─── Shadow ────────────────────────────────────────────────────────────────
 

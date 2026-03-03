@@ -1,4 +1,4 @@
-import { ColorValue, TokenReference } from "./Styles.js";
+import { TokenReference } from "./Styles.js";
 
 /**
  * A single stop in a gradient definition.
@@ -7,7 +7,7 @@ export interface GradientStop {
   /** Position along the gradient vector, normalised 0–1. */
   position: number;
   /** Stop color as a hex/rgba string or a token reference. */
-  color: ColorValue | TokenReference;
+  color: string | TokenReference;
 }
 
 /**

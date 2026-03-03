@@ -111,7 +111,7 @@ export type Style = string | boolean | number | null | TokenReference | PropBind
  * Mirrors `ColorValue` in `schema/styles.schema.json`.
  * @since 0.11.0
  */
-export interface ColorValue {
+export interface ColorValue { /** Candidate */
   /** Color space identifier per DTCG Color §4.2 (e.g. 'srgb', 'oklch', 'display-p3'). */
   colorSpace: string;
   /** Ordered component values for the given color space. Each element is a number or the 'none' keyword. */
@@ -128,7 +128,7 @@ export interface ColorValue {
  * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
  * whose values are always colour-semantics and may carry gradient data.
  */
-export type ColorStyle = ColorValue | TokenReference | GradientValue | null;
+export type ColorStyle = string | TokenReference | GradientValue | null;
 
 /**
  * Inline typography properties grouped into a composite object.
