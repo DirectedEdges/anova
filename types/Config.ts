@@ -22,12 +22,8 @@ export interface Config {
     keys: 'SAFE' | 'CAMEL' | 'SNAKE' | 'KEBAB' | 'PASCAL' | 'TRAIN';
     /** Layout representation format */
     layout: 'LAYOUT' | 'PARENT_CHILDREN' | 'BOTH';
-    /** Variable naming format */
-    variables: 'NAME_WITH_COLLECTION' | 'NAME' | 'OBJECT';
-    /** Whether to simplify variable references */
-    simplifyVariables: boolean;
-    /** Whether to simplify style references */
-    simplifyStyles: boolean;
+    /** Token reference serialization profile. Optional; defaults to DTCG. */
+    tokens?: 'DTCG' | 'DTCG_COMPACT' | 'FIGMA' | 'FIGMA_COMPACT' | 'CUSTOM';
   };
   include: {
     /** Include subcomponents in output */
@@ -68,9 +64,7 @@ export const DEFAULT_CONFIG: Config = {
     output: 'JSON',
     keys: 'SAFE',
     layout: 'LAYOUT',
-    variables: 'NAME_WITH_COLLECTION',
-    simplifyVariables: true,
-    simplifyStyles: true,
+    tokens: 'DTCG',
   },
   include: {
     subcomponents: false,

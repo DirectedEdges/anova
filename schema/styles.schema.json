@@ -8,7 +8,7 @@
   "definitions": {
     "Styles": {
       "type": "object",
-      "description": "Collection of style properties emitted by Styles.data(). Each property value depends on its type (RAW, VARIABLE, STYLE, REFERENCE) and config.format settings (simplifyVariables, simplifyStyles). Applicable properties vary by element type.",
+      "description": "Collection of style properties emitted by Styles.data(). Each property value depends on its type and config.format.tokens setting. Applicable properties vary by element type.",
       "properties": {
         "rotation": { "$ref": "#/definitions/NumberStyleValue", "description": "Rotation in degrees" },
         "visible": { "$ref": "#/definitions/BooleanBindableStyleValue", "description": "Visibility. Can be bound to component prop." },
@@ -126,7 +126,7 @@
         },
         "color": {
           "oneOf": [
-            { "$ref": "#/definitions/ColorValue", "description": "Stop color as an inline resolved color value" },
+            { "type": "string", "description": "Stop color as hex or rgba string" },
             { "$ref": "#/definitions/TokenReference", "description": "Stop color as a token reference" }
           ]
         }
@@ -317,7 +317,7 @@
         "offsetY": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Vertical offset in pixels (DTCG)" },
         "blur": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Blur radius in pixels" },
         "spread": { "oneOf": [{ "type": "number" }, { "$ref": "#/definitions/TokenReference" }], "description": "Spread radius in pixels" },
-        "color": { "oneOf": [{ "$ref": "#/definitions/ColorValue", "description": "Inline resolved color value" }, { "$ref": "#/definitions/TokenReference" }], "description": "Shadow color" }
+        "color": { "oneOf": [{ "type": "string", "description": "#RRGGBBAA hex string" }, { "$ref": "#/definitions/TokenReference" }], "description": "Shadow color" }
       },
       "required": ["visible", "offsetX", "offsetY", "blur", "spread", "color"],
       "additionalProperties": false
