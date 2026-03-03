@@ -1,7 +1,7 @@
 import { Children } from "./Children.js";
 import { Styles } from "./Styles.js";
 import { PropConfigurations } from "./PropConfigurations.js";
-import { PropBinding } from "./ReferenceValue.js";
+import { PropBinding } from "./PropBinding.js";
 
 /**
  * Represents elements within a component.

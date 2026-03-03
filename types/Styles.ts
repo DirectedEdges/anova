@@ -1,4 +1,4 @@
-import { PropBinding } from "./ReferenceValue.js";
+import { PropBinding } from "./PropBinding.js";
 import { Effects } from "./Effects.js";
 import { GradientValue } from "./Gradient.js";
 

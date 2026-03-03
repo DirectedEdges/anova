@@ -1,4 +1,4 @@
-import { PropBinding } from './ReferenceValue.js';
+import { PropBinding } from './PropBinding.js';
 
 /**
  * Data output for children.

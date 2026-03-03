@@ -30,4 +30,4 @@ export type { Shadow, Blur, Effects } from './Effects.js';
 export type { GradientStop, GradientCenter, LinearGradient, RadialGradient, AngularGradient, GradientValue } from './Gradient.js';
 
 // Reference types
-export type { PropBinding, BindingKey } from './ReferenceValue.js';
+export type { PropBinding, BindingKey } from './PropBinding.js';
