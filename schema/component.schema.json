@@ -356,11 +356,14 @@
             "output": { "type": "string", "enum": ["JSON", "YAML"] },
             "keys": { "type": "string", "enum": ["SAFE", "CAMEL", "SNAKE", "KEBAB", "PASCAL", "TRAIN"] },
             "layout": { "type": "string", "enum": ["LAYOUT", "PARENT_CHILDREN", "BOTH"] },
-            "variables": { "type": "string", "enum": ["NAME_WITH_COLLECTION", "NAME", "OBJECT"] },
-            "simplifyVariables": { "type": "boolean" },
-            "simplifyStyles": { "type": "boolean" }
+            "tokens": {
+              "type": "string",
+              "enum": ["DTCG", "DTCG_COMPACT", "FIGMA", "FIGMA_COMPACT", "CUSTOM"],
+              "default": "DTCG",
+              "description": "Token reference serialization profile. Optional; defaults to DTCG. CUSTOM delegates projection entirely to the transformer."
+            }
           },
-          "required": ["output", "keys", "layout", "variables", "simplifyVariables", "simplifyStyles"],
+          "required": ["output", "keys", "layout"],
           "additionalProperties": false
         },
         "include": {

@@ -165,10 +165,10 @@ format:
 
 | Value | Token reference output shape |
 |-------|------------------------------|
-| `DTCG` | Full `TokenReference` object: `{ $token, kind, $extensions: { "com.figma": { ... } } }` |
-| `DTCG_COMPACT` | Token path string only: `"DS Color.Text.Primary"` |
+| `DTCG` | Full `TokenReference` object: `{ $token, kind, $extensions: { "com.figma": { ... } } }`. The `$token` path uses dot-delimited format per DTCG §6.7.2: Figma's slash separators (`/`) are transformed to periods (`.`). Example: Figma `"DS Color/Text/Primary"` → `$token: "DS Color.Text.Primary"`. |
+| `DTCG_COMPACT` | Token path string only, dot-delimited per DTCG §6.7.2. Figma's slash separators (`/`) are transformed to periods (`.`). Example: Figma `"DS Color/Text/Primary"` → `"DS Color.Text.Primary"`. Forbidden characters in path segments: `.`, `{`, `}` (DTCG §5.1.1). |
 | `FIGMA` | Full Figma object: `{ id, name, collectionId, collectionName, rawValue? }` |
-| `FIGMA_COMPACT` | Name with collection string: `"DS Color/Text/Primary"` |
+| `FIGMA_COMPACT` | Name with collection string, slash-delimited (Figma native format): `"DS Color/Text/Primary"` |
 | `CUSTOM` | Defined entirely by the transformer; `TokenReference` is the canonical intermediate. Custom projection may populate a new `$extensions` namespace, remap `$token`, or collapse to an enterprise scalar. |
 
 **Updated `DEFAULT_CONFIG`** (`types/Config.ts`):
