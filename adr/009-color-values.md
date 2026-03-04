@@ -1,6 +1,5 @@
 # ADR: Replace Hex String with DTCG Color Object in `ColorStyleValue`
 
-**Branch**: `v0.11.0`
 **Created**: 2026-03-02
 **Status**: DRAFT
 **Deciders**: Nathan Curtis (author)

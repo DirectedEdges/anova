@@ -2,7 +2,7 @@
 
 **Branch**: `v0.11.0`
 **Created**: 2026-03-02
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 

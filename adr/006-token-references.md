@@ -2,7 +2,7 @@
 
 **Branch**: `v0.11.0/006-token-references`
 **Created**: 2026-02-28
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 

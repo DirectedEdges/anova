@@ -5,7 +5,7 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.11.0] - 2026-03-02
+## [0.11.0] - 2026-03-04
 
 ### Added
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Styles.aspectRatio` — aspect ratio constraint; `AspectRatioValue` pair or `null` when unconstrained
 - `AspectRatioValue` — required `x` (numerator) and `y` (denominator) number fields
 - `AspectRatioStyle` — type alias `AspectRatioValue | null`
+- `Config.format.tokens` — token reference serialization profile; five options: `TOKEN` (default, `$token` + `$type`), `TOKEN_NAME` (dot-delimited path string only), `TOKEN_FIGMA_EXTENSIONS` (`$token` + `$type` + `$extensions["com.figma"]`), `FIGMA_NAME` (slash-delimited path string only), `CUSTOM` (same as `TOKEN`, signals custom post-processing)
 - `Metadata.license?` — optional `{ status: string; description: string }` field
 - `styles.textColor` — style key for text colour
 - `styles.cornerSmoothing` — style key for corner smoothing (Figma squircle factor)
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Element.instanceOf` — accepts `string | PropBinding`; bound form is `{ $binding: "#/props/..." }`
 - `Element.text` — accepts `string | PropBinding`; bound form is `{ $binding: "#/props/..." }`
 - `Style` — `PropBinding` replaces `ReferenceValue`; `TokenReference` replaces `VariableStyle` and `FigmaStyle`
+- `Config.format` — `variables`, `simplifyVariables`, and `simplifyStyles` replaced by single `tokens` field; token output shape is now controlled entirely by the `tokens` profile
 - `Styles.backgroundColor` — narrowed to `ColorStyle`; inline gradients representable
 - `Styles.textColor` — narrowed to `ColorStyle`; inline gradients representable
 - `Styles.strokes` — narrowed to `ColorStyle`; inline gradients representable
@@ -45,6 +47,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `Config.format.variables` — removed; use `Config.format.tokens` instead
+- `Config.format.simplifyVariables` — removed; use `Config.format.tokens` profile instead
+- `Config.format.simplifyStyles` — removed; use `Config.format.tokens` profile instead
 - `ReferenceValue` — removed; use `PropBinding` instead
 - `isReferenceValue` — removed; no replacement; prop-binding guards are upstream consumer responsibility
 - `VariableStyle` — removed; use `TokenReference` instead
@@ -67,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration
 
+- `config.format.variables` / `simplifyVariables` / `simplifyStyles` → `config.format.tokens`: set `tokens` to a profile — `TOKEN` (default) for `$token` + `$type`; `TOKEN_NAME` for dot-delimited string; `TOKEN_FIGMA_EXTENSIONS` for full object with Figma metadata; `FIGMA_NAME` for slash-delimited string; `CUSTOM` for custom post-processing
 - `Element.instanceOf` → `Element.instanceOf`: replace `{ $ref: "#/props/..." }` with `{ $binding: "#/props/..." }`; update any `isReferenceValue` guards to narrow against `$binding` directly
 - `Element.text` → `Element.text`: same key rename from `$ref` to `$binding`
 - `Styles.visible` → `Styles.visible`: same key rename from `$ref` to `$binding`

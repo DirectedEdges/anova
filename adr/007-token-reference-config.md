@@ -2,7 +2,7 @@
 
 **Branch**: `007-token-reference-config`
 **Created**: 2026-03-01
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none — extends ADR 006: Unified Token Reference Type)*
 
