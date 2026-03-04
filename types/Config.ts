@@ -22,12 +22,8 @@ export interface Config {
     keys: 'SAFE' | 'CAMEL' | 'SNAKE' | 'KEBAB' | 'PASCAL' | 'TRAIN';
     /** Layout representation format */
     layout: 'LAYOUT' | 'PARENT_CHILDREN' | 'BOTH';
-    /** Variable naming format */
-    variables: 'NAME_WITH_COLLECTION' | 'NAME' | 'OBJECT';
-    /** Whether to simplify variable references */
-    simplifyVariables: boolean;
-    /** Whether to simplify style references */
-    simplifyStyles: boolean;
+    /** Token reference serialization profile. Optional; defaults to TOKEN. */
+    tokens?: 'TOKEN' | 'TOKEN_NAME' | 'TOKEN_FIGMA_EXTENSIONS' | 'FIGMA_NAME' | 'CUSTOM';
   };
   include: {
     /** Include subcomponents in output */
@@ -52,7 +48,7 @@ export interface Config {
  * - processing.details: LAYERED reduces output size by only showing differences from default
  * - format.keys: SAFE prevents corruption of special characters while maintaining readability
  * - format.layout: LAYOUT provides tree structure with layout properties
- * - format.variables: NAME_WITH_COLLECTION shows both collection and variable name for clarity
+ * - format.tokens: TOKEN provides platform-neutral token references with $token path and $type
  * - include.subcomponents: false (opt-in) to avoid unnecessary processing overhead
  * - include.variantNames: false reduces output size (names can be reconstructed from configuration)
  * - include.invalidVariants: false excludes variants that can't be instantiated
@@ -68,9 +64,7 @@ export const DEFAULT_CONFIG: Config = {
     output: 'JSON',
     keys: 'SAFE',
     layout: 'LAYOUT',
-    variables: 'NAME_WITH_COLLECTION',
-    simplifyVariables: true,
-    simplifyStyles: true,
+    tokens: 'TOKEN',
   },
   include: {
     subcomponents: false,

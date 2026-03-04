@@ -1,6 +1,6 @@
 {
   "name": "@directededges/anova",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Anova UI Component Schema - TypeScript types and JSON schema definitions for component specifications",
   "license": "CC BY 4.0",
   "author": "Nathan Curtis <nathan@directededges.com>",

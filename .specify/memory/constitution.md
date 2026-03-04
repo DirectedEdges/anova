@@ -14,7 +14,6 @@ Rationale: Every consumer (`anova-transformer`, `anova-kit`, `anova-plugin`) rel
 ### II. No Logic — Types and Schema Only
 This package MUST NOT contain transformation logic, processing algorithms, or runtime behavior beyond:
 - `DEFAULT_CONFIG` constant exported from `Config.ts`
-- `isReferenceValue` type-guard exported from `ReferenceValue.ts`
 
 All other exports MUST be pure type declarations (`type`, `interface`) or static schema files. No classes, no functions, no async operations.
 
@@ -26,9 +25,10 @@ The exports from `types/index.ts` are the full public API. Every exported type i
 - New types require explicit justification: they MUST represent a genuine, shared concept in the Anova spec — not an internal implementation detail of any one package.
 - Removing or renaming an exported type or a named field within a type is a breaking change and MUST follow semantic versioning.
 - Schema exports (via `exports` in `package.json`) are equally contractual — adding, removing, or restructuring a schema file is a breaking change.
-- `DEFAULT_CONFIG` and `isReferenceValue` are the only permitted runtime exports; adding more requires constitutional amendment.
+- `DEFAULT_CONFIG` is the only permitted runtime export; adding more requires constitutional amendment.
+- **ADRs and spec decisions MUST be justified by the shared contract's own coherence and the needs of all consumers equally. No single downstream package's internal model, class structure, or implementation detail may be cited as a decision driver or rationale. ADRs inform downstream packages; they are not driven by them.**
 
-Rationale: All downstream packages compile against these types. Any change has a multiplied impact across `anova-transformer`, `anova-kit`, and `anova-plugin` simultaneously.
+Rationale: All downstream packages compile against these types. Any change has a multiplied impact across `anova-transformer`, `anova-kit`, and `anova-plugin` simultaneously. Allowing one package's internals to steer the spec contract creates an implicit ownership hierarchy that undermines the shared-language role of this package.
 
 ### IV. Schema Validity Must Be Mechanically Verifiable
 The JSON schemas in `schema/` MUST be valid JSON Schema (Draft 7 or the declared draft).
@@ -88,4 +88,4 @@ Rationale: These types are a published contract. Loose typing undermines compila
   - PATCH: Clarifications, wording, formatting; no semantic change.
 - **Compliance**: Reviewers MUST check Constitution Check items at every feature milestone and before any `MAJOR` or `MINOR` package version bump.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-18 | **Last Amended**: 2026-02-18
+**Version**: 1.1.0 | **Ratified**: 2026-02-18 | **Last Amended**: 2026-03-02

@@ -12,10 +12,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`, `FEATURE_DIR`. All paths must be absolute.
+1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`. All paths must be absolute.
 
 2. **Load context**:
-   - **REQUIRED**: Read `$FEATURE_DIR/adr.md` — confirm Status is `PROPOSED` (if already `ACCEPTED`, report and halt)
+   - **REQUIRED**: Read `$REPO_ROOT/adr/$BRANCH.md` — confirm Status is `DRAFT` (if already `ACCEPTED`, report and halt)
    - Confirm that `types/`, `schema/`, `package.json`, and `CHANGELOG.md` have been modified by `/speckit.implement` (check git status or file timestamps)
    - If no changes are detected, halt: "Run `/speckit.implement` first."
 
@@ -27,7 +27,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Run: `tsc --noEmit --strict tests/*.test-d.ts` (if `tests/*.test-d.ts` files exist)
      - If exit code ≠ 0: halt and display errors. Do not set ACCEPTED.
 
-4. **Mark ADR ACCEPTED**: In `$FEATURE_DIR/adr.md` header, change to `Status: ACCEPTED`.
+4. **Mark ADR ACCEPTED**: In `$REPO_ROOT/adr/$BRANCH.md` header, change `Status: DRAFT` to `Status: ACCEPTED`.
 
 5. **Report**: Confirm all gates passed and the ADR is now ACCEPTED. List the next steps: open PR → merge → `npm publish`.
 

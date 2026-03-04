@@ -1,12 +1,14 @@
-import { ReferenceValue } from "./ReferenceValue.js";
+import { PropBinding } from "./PropBinding.js";
+import { Effects } from "./Effects.js";
+import { GradientValue } from "./Gradient.js";
 
 export type Styles = Partial<{
   rotation: Style;
   visible: Style;
   opacity: Style;
   locked: Style;
-  fills: Style;
-  effectStyleId: Style;
+  backgroundColor: ColorStyle;
+  effects: TokenReference | Effects;
   clipContent: Style;
   cornerRadius: Style;
   width: Style;
@@ -20,29 +22,17 @@ export type Styles = Partial<{
   layoutPositioning: Style;
   layoutSizingHorizontal: Style;
   layoutSizingVertical: Style;
-  strokes: Style;
+  strokes: ColorStyle;
   strokeAlign: Style;
   strokeWeight: Style;
   strokeTopWeight: Style;
   strokeBottomWeight: Style;
   strokeLeftWeight: Style;
   strokeRightWeight: Style;
-  fontSize: Style;
-  fontFamily: Style;
-  fontWeight: Style;
-  lineHeight: Style;
-  letterSpacing: Style;
-  textDecoration: Style;
-  textCase: Style;
-  paragraphIndent: Style;
-  paragraphSpacing: Style;
-  leadingTrim: Style;
-  listSpacing: Style;
-  hangingPunctuation: Style;
-  hangingList: Style;
-  textStyleId: Style;
+  typography: TokenReference | Typography;
   textAlignHorizontal: Style;
   textAlignVertical: Style;
+  textColor: ColorStyle;
   primaryAxisAlignItems: Style;
   primaryAxisSizingMode: Style;
   counterAxisAlignItems: Style;
@@ -60,33 +50,139 @@ export type Styles = Partial<{
   topRightRadius: Style;
   bottomLeftRadius: Style;
   bottomRightRadius: Style;
+  cornerSmoothing: Style;
+  aspectRatio: AspectRatioStyle;
 }>;
 
 /**
+ * Platform-neutral token reference. Uses `$token` and `$type` as the
+ * complete platform-facing API surface; `$extensions["com.figma"]` carries
+ * Figma extraction provenance only and is not required by platform consumers.
+ * @since 0.11.0
+ */
+export interface TokenReference {
+  /** DTCG dot-separated token path, e.g. "DS Color.Text.Primary". Usable directly as DTCG alias {DS Color.Text.Primary}. */
+  $token: string;
+  /**
+   * DTCG token type (Format Module §9). Standard values: color, dimension, string, number, boolean,
+   * shadow, gradient, typography. "effects" is an Anova extension for EffectsGroup references
+   * (multi-shadow + blur composite) with no DTCG equivalent.
+   */
+  $type:
+    | 'color'
+    | 'dimension'
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'shadow'
+    | 'gradient'
+    | 'typography'
+    | 'effects';
+  /** Tool-specific metadata per DTCG §5.2.3 (reverse domain name notation). Optional; not required for platform code generation. */
+  $extensions?: {
+    'com.figma'?: {
+      /** Figma variable or style UUID. */
+      id: string;
+      /** Figma name within collection, e.g. "Text/Primary". */
+      name?: string;
+      /** Figma collection name, e.g. "DS Color" (variables only; presence distinguishes variable from named-style reference). */
+      collectionName?: string;
+      /** Value resolved by Figma at extraction time. No DTCG equivalent; Figma extraction provenance only. */
+      rawValue?: string | number | boolean;
+    };
+  };
+}
+
+/**
  * Style value types supported in the output format.
- * Can be primitives, variable references, Figma style references, or prop bindings.
+ * Can be primitives, token references, or prop bindings.
  */
-export type Style = string | boolean | number | null | VariableStyle | FigmaStyle | ReferenceValue;
+export type Style = string | boolean | number | null | TokenReference | PropBinding;
 
 /**
- * Variable-based style reference
+ * Inline resolved color value per DTCG Color Module §4.1.
+ * `colorSpace` and `components` are required; `alpha` defaults to 1 when omitted;
+ * `hex` is an optional 6-digit sRGB fallback (#RRGGBB — no alpha channel in hex).
+ *
+ * The 14 supported `colorSpace` values correspond to DTCG Color §4.2.
+ * The `colorSpace` field is typed as `string` (not a literal union) to avoid drift
+ * with the schema enum — the schema provides the validation constraint.
+ *
+ * Mirrors `ColorValue` in `schema/styles.schema.json`.
+ * @since 0.11.0
  */
-export interface VariableStyle {
-  id: string;
-  rawValue?: string | number | boolean;
-  name?: string;
-  variableName?: string;
-  collectionName?: string;
-  collectionId?: string;
+export interface ColorValue { /** Candidate */
+  /** Color space identifier per DTCG Color §4.2 (e.g. 'srgb', 'oklch', 'display-p3'). */
+  colorSpace: string;
+  /** Ordered component values for the given color space. Each element is a number or the 'none' keyword. */
+  components: (number | 'none')[];
+  /** Alpha channel 0–1. Defaults to 1 (fully opaque) when omitted. */
+  alpha?: number;
+  /** Optional 6-digit sRGB fallback hex string (#RRGGBB). Alpha is excluded per DTCG §4.1. */
+  hex?: string;
 }
 
 /**
- * Figma published style reference
+ * Colour-specific style value type.
+ * Mirrors `ColorStyleValue` in `schema/styles.schema.json`.
+ * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
+ * whose values are always colour-semantics and may carry gradient data.
  */
-export interface FigmaStyle {
-  id: string;
-  name?: string;
+export type ColorStyle = string | TokenReference | GradientValue | null;
+
+/**
+ * Inline typography properties grouped into a composite object.
+ * All fields are optional; only properties set on the text node are present.
+ * Maps to transformer primitive types: font, mixableNumber, mixableString, pureNumber, boolean, lineHeight.
+ */
+export interface Typography {
+  /** Font size in pixels (mixableNumber primitive) */
+  fontSize?: number | 'mixed' | TokenReference;
+  /** Font family name; 'mixed' when text has multiple families (font primitive) */
+  fontFamily?: string | number | 'mixed';
+  /** Style name or numeric (e.g., 400, "Bold"); 'mixed' allowed (font primitive) */
+  fontStyle?: string | number | 'mixed';
+  /** Line height: "150%", "auto", or pixel value (lineHeight primitive) */
+  lineHeight?: string | number | TokenReference;
+  /** Letter spacing in pixels; 'mixed' allowed (mixableNumber primitive) */
+  letterSpacing?: number | 'mixed' | TokenReference;
+  /** Text case: "UPPER", "LOWER", "TITLE", "ORIGINAL", or 'mixed' (mixableString primitive) */
+  textCase?: string | 'mixed' | TokenReference;
+  /** Text decoration: "UNDERLINE", "STRIKETHROUGH", "NONE", or 'mixed' (mixableString primitive) */
+  textDecoration?: string | 'mixed' | TokenReference;
+  /** Paragraph indent in pixels (pureNumber primitive) */
+  paragraphIndent?: number | TokenReference;
+  /** Spacing between paragraphs in pixels (pureNumber primitive) */
+  paragraphSpacing?: number | TokenReference;
+  /** Leading trim value (mixableNumber primitive) */
+  leadingTrim?: number | 'mixed' | TokenReference;
+  /** Spacing for list items in pixels (pureNumber primitive) */
+  listSpacing?: number | TokenReference;
+  /** Whether hanging punctuation is enabled (boolean primitive) */
+  hangingPunctuation?: boolean | TokenReference;
+  /** Whether hanging list is enabled (boolean primitive) */
+  hangingList?: boolean | TokenReference;
 }
+
+/**
+ * Aspect ratio expressed as a numerator/denominator pair.
+ * `x` is the numerator (e.g. 16), `y` is the denominator (e.g. 9).
+ * Both components are required; irrational ratios are expressed as `{ x: 1.618, y: 1 }`.
+ */
+export interface AspectRatioValue {
+  /** Ratio numerator (e.g. 16 for 16:9) */
+  x: number;
+  /** Ratio denominator (e.g. 9 for 16:9) */
+  y: number;
+}
+
+/**
+ * Aspect ratio style value.
+ * Present only when the node has a locked ratio; `null` when unconstrained.
+ * `TokenReference` is intentionally excluded — aspect ratio is a structural
+ * lock of literal numbers in the Figma API, not a token-driven value.
+ */
+export type AspectRatioStyle = AspectRatioValue | null;
 
 /**
  * Style property keys that can appear in the serialized output
@@ -96,8 +192,8 @@ export type StyleKey =
   | 'visible'
   | 'opacity'
   | 'locked'
-  | 'fills'
-  | 'effectStyleId'
+  | 'backgroundColor'
+  | 'effects'
   | 'clipContent'
   | 'cornerRadius'
   | 'width'
@@ -118,22 +214,10 @@ export type StyleKey =
   | 'strokeBottomWeight'
   | 'strokeLeftWeight'
   | 'strokeRightWeight'
-  | 'fontSize'
-  | 'fontFamily'
-  | 'fontWeight'
-  | 'lineHeight'
-  | 'letterSpacing'
-  | 'textDecoration'
-  | 'textCase'
-  | 'paragraphIndent'
-  | 'paragraphSpacing'
-  | 'leadingTrim'
-  | 'listSpacing'
-  | 'hangingPunctuation'
-  | 'hangingList'
-  | 'textStyleId'
+  | 'typography'
   | 'textAlignHorizontal'
   | 'textAlignVertical'
+  | 'textColor'
   | 'primaryAxisAlignItems'
   | 'primaryAxisSizingMode'
   | 'counterAxisAlignItems'
@@ -147,7 +231,9 @@ export type StyleKey =
   | 'paddingTop'
   | 'paddingBottom'
   | 'counterAxisSpacing'
+  | 'cornerSmoothing'
   | 'topLeftRadius'
   | 'topRightRadius'
   | 'bottomLeftRadius'
-  | 'bottomRightRadius';
+  | 'bottomRightRadius'
+  | 'aspectRatio';
