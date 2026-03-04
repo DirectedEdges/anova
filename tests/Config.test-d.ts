@@ -17,7 +17,7 @@ const fullConfig: Config = {
     output: 'JSON',
     keys: 'SAFE',
     layout: 'LAYOUT',
-    tokens: 'DTCG',
+    tokens: 'TOKEN',
   },
   include: {
     subcomponents: false,
@@ -49,31 +49,31 @@ const configWithoutTokens: Config = {
 };
 
 // All tokens enum values are valid
-const dtcgConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'DTCG' } };
-const dtcgCompactConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'DTCG_COMPACT' } };
-const figmaConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'FIGMA' } };
-const figmaCompactConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'FIGMA_COMPACT' } };
+const tokenConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN' } };
+const tokenNameConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN_NAME' } };
+const tokenFigmaExtConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN_FIGMA_EXTENSIONS' } };
+const figmaNameConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'FIGMA_NAME' } };
 const customConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'CUSTOM' } };
 
 // DEFAULT_CONFIG should be a valid Config
 const defaultIsValid: Config = DEFAULT_CONFIG;
 
-// DEFAULT_CONFIG.format.tokens should be 'DTCG'
-const defaultTokensValue: typeof DEFAULT_CONFIG.format.tokens = 'DTCG';
+// DEFAULT_CONFIG.format.tokens should be 'TOKEN'
+const defaultTokensValue: typeof DEFAULT_CONFIG.format.tokens = 'TOKEN';
 
 // Type narrowing works
 const tokensValue: Config['format']['tokens'] = fullConfig.format.tokens;
-if (tokensValue === 'DTCG') {
-  const _dtcg: 'DTCG' = tokensValue;
+if (tokensValue === 'TOKEN') {
+  const _token: 'TOKEN' = tokensValue;
 }
-if (tokensValue === 'DTCG_COMPACT') {
-  const _compact: 'DTCG_COMPACT' = tokensValue;
+if (tokensValue === 'TOKEN_NAME') {
+  const _tokenName: 'TOKEN_NAME' = tokensValue;
 }
-if (tokensValue === 'FIGMA') {
-  const _figma: 'FIGMA' = tokensValue;
+if (tokensValue === 'TOKEN_FIGMA_EXTENSIONS') {
+  const _tokenFigmaExt: 'TOKEN_FIGMA_EXTENSIONS' = tokensValue;
 }
-if (tokensValue === 'FIGMA_COMPACT') {
-  const _figmaCompact: 'FIGMA_COMPACT' = tokensValue;
+if (tokensValue === 'FIGMA_NAME') {
+  const _figmaName: 'FIGMA_NAME' = tokensValue;
 }
 if (tokensValue === 'CUSTOM') {
   const _custom: 'CUSTOM' = tokensValue;

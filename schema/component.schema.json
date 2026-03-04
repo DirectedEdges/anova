@@ -358,9 +358,9 @@
             "layout": { "type": "string", "enum": ["LAYOUT", "PARENT_CHILDREN", "BOTH"] },
             "tokens": {
               "type": "string",
-              "enum": ["DTCG", "DTCG_COMPACT", "FIGMA", "FIGMA_COMPACT", "CUSTOM"],
-              "default": "DTCG",
-              "description": "Token reference serialization profile. Optional; defaults to DTCG. CUSTOM delegates projection entirely to the transformer."
+              "enum": ["TOKEN", "TOKEN_NAME", "TOKEN_FIGMA_EXTENSIONS", "FIGMA_NAME", "CUSTOM"],
+              "default": "TOKEN",
+              "description": "Token reference serialization profile. Optional; defaults to TOKEN. CUSTOM delegates projection entirely to the transformer."
             }
           },
           "required": ["output", "keys", "layout"],
