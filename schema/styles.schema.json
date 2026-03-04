@@ -1,7 +1,7 @@
 {
   "version": "0.6.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/styles.schema.json",
+  "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/schema/styles.schema.json",
   "title": "Anova Styles Schema",
   "description": "JSON Schema for style properties emitted by the Anova Figma plugin",
   "$comment": "Copyright (c) 2025 Directed Edges. Licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution required.",
