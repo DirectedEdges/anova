@@ -19,25 +19,28 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Interactive setup** — ask the user two questions using VS Code's interactive question UI before doing anything else:
 
-   **Question 1 — Branch name**
-   - Header: `Branch`
-   - Question: "Which branch should this ADR be filed under?"
+   **Question 1 — Release branch**
+   - Header: `Release`
+   - Question: "Which release branch should this ADR target?"
    - Options (single-select):
-     1. `Use the current branch` — read the active git branch name via `git rev-parse --abbrev-ref HEAD` and use it as `BRANCH_NAME`
-     2. `Next minor version` — read the current version from `package.json`, increment the minor component, and format as `v[MAJOR].[MINOR+1].0`
-     3. `New ADR number` — count existing files in `adr/` and format as `[N+1]-[slugified user input]`; prompt user for the short description via the free-form fallback
-     4. `Other` — allow free-form text input
-   - After the user selects, resolve `BRANCH_NAME` per the rule above before continuing.
+     1. `Current branch` — read the active git branch via `git rev-parse --abbrev-ref HEAD`. If it looks like a semver release branch (e.g., `0.12.0`), use it as `RELEASE_BRANCH`. If the current branch is an ADR branch (contains `/` like `0.12.0/009-color-values`), extract the prefix before the `/` as `RELEASE_BRANCH`.
+     2. `Next minor version` — read the current version from `package.json`, increment the minor component, and format as `[MAJOR].[MINOR+1].0`
+     3. `Next major version` — read the current version from `package.json`, increment the major component, and format as `[MAJOR+1].0.0`
+   - After the user selects, resolve `RELEASE_BRANCH` per the rule above before continuing.
 
    **Question 2 — ADR file name**
    - Header: `ADR file`
-   - Question: "What should the ADR file be named? This becomes `adr/[name].md`. Use the format `###-short-description` (e.g. `002-shadows`)."
+   - Question: "What should the ADR file be named? This becomes `adr/[name].md` and the ADR branch `[RELEASE_BRANCH]/[name]`. Use the format `###-short-description` (e.g. `002-shadows`)."
    - Allow free-form input. No predefined options.
 
-   Parse the answers as `BRANCH_NAME` and `ADR_NAME`. All subsequent paths must use these values.
+   Parse the answers as `RELEASE_BRANCH` and `ADR_NAME`.
+   - Derive `ADR_BRANCH` as `$RELEASE_BRANCH/$ADR_NAME` (e.g., `0.12.0/009-color-values`).
+   - All subsequent paths must use these values.
 
-2. **File setup**:
+2. **Branch setup**:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`.
+   - Check that the release branch `$RELEASE_BRANCH` exists (locally or on origin). If it does not, inform the user and ask whether to create it from `main`.
+   - If the current branch is not `$ADR_BRANCH`, check whether `$ADR_BRANCH` already exists. If it does, switch to it. If it does not, create it from `$RELEASE_BRANCH` and switch to it.
    - Set `SPEC_FILE=$REPO_ROOT/adr/$ADR_NAME.md`.
    - Check whether `$SPEC_FILE` already exists. If it does, read it and continue editing rather than overwriting.
    - All paths must be absolute.
@@ -54,7 +57,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Otherwise, identify at least two alternative approaches and for each: assess against the constitution's Decision Drivers (type-schema sync, no logic, stable API, etc.) and state which is selected and which are rejected with clear rationale.
 
 6. **Draft the ADR**: Fill `adr-template.md` and write to `$SPEC_FILE`:
-   - **Branch**: `BRANCH_NAME`
+   - **Branch**: `ADR_NAME`
    - **Status**: `DRAFT`
    - **Context**: Current state of the relevant types/schema and what gap or opportunity this addresses
    - **Decision Drivers**: Enumerate the constraints from the constitution that apply
@@ -65,7 +68,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Semver Decision**: MAJOR / MINOR / PATCH with justification citing the constitution
    - **Consequences**: What becomes true after acceptance
 
-7. **Report**: Output `$SPEC_FILE` path and a one-paragraph summary of the decision.
+7. **Report**: Output `$SPEC_FILE` path, the `$ADR_BRANCH` name, the target `$RELEASE_BRANCH`, and a one-paragraph summary of the decision.
 ## Formatting rules (apply when drafting the ADR)
 
 - **Examples over prose**: Wherever a type shape, schema property, or field change is described, include a YAML example showing the before/after or the new structure. Prefer this over sentences explaining the same idea in abstract terms.

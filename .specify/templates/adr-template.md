@@ -142,9 +142,7 @@ newField:
 
 | Consumer | Impact | Action required |
 |----------|--------|-----------------|
-| `anova-transformer` | [None / Recompile / Update usage] | [e.g., update ProcessingContext to use new field] |
 | `anova-kit` | [None / Recompile / Update usage] | [e.g., pass new config field] |
-| `anova-plugin` | [None / Recompile / Update usage] | [e.g., no action — optional field] |
 
 ---
 

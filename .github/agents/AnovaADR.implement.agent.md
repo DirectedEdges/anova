@@ -17,10 +17,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`, `FEATURE_DIR`. All paths must be absolute.
+1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`. All paths must be absolute.
+   - Derive `RELEASE_BRANCH` and `ADR_NAME` from `BRANCH`:
+     - If `BRANCH` contains `/` (e.g., `0.12.0/009-color-values`), split on the first `/`: `RELEASE_BRANCH` = prefix, `ADR_NAME` = suffix.
+     - If `BRANCH` does not contain `/`, halt: "You must be on an ADR branch (format: `<release>/<adr-name>`) to implement an ADR."
 
 2. **Load context**:
-   - **REQUIRED**: Read `$FEATURE_DIR/adr.md` — source of truth for what changes and why
+   - **REQUIRED**: Read `$REPO_ROOT/adr/$ADR_NAME.md` — source of truth for what changes and why
    - **REQUIRED**: Read `.specify/memory/constitution.md` — all six gates must pass
    - Read every `types/*.ts` file named in the ADR Decision section
    - Read every `schema/*.json` file named in the ADR Decision section
@@ -72,7 +75,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 11. **Bump version in `package.json`**: Apply the `NEW` version from the ADR's Semver Decision.
     - **Gate**: After writing, read `package.json` back and confirm the `"version"` field matches the ADR's `NEW` version. If it does not match, halt and report — do not proceed to step 12.
 
-12. **Report**: List every file modified (with one-line description each). The list **must** include `CHANGELOG.md` and `package.json` — if either is absent from the list, halt: steps 10–11 were not completed. State that the author should review the diff and run `/speckit.accept` once satisfied.
+12. **Report**: List every file modified (with one-line description each). The list **must** include `CHANGELOG.md` and `package.json` — if either is absent from the list, halt: steps 10–11 were not completed. State that the author should review the diff and accept the ADR once satisfied. Remind the author that this ADR branch (`$BRANCH`) targets the release branch (`$RELEASE_BRANCH`), not `main`.
 
 ## Key rules
 
