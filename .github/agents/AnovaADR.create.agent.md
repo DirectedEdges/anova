@@ -15,46 +15,62 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Efficiency mandate
+
+**Ask first, explore later.** This command MUST be fast and interactive. Do NOT read schema files, type files, or any source code until the user has described their proposed change. The user's description drives all subsequent exploration — never explore speculatively.
+
+**Use dedicated tools, not Bash.** Use Read (not `cat`/`head`), Glob (not `find`/`ls`), and Grep (not `grep`/`rg`) for all file operations. Reserve Bash exclusively for git commands and running scripts.
+
 ## Outline
 
-1. **Interactive setup** — ask the user two questions using VS Code's interactive question UI before doing anything else:
+1. **Gather intent** — collect all information from the user before doing any exploration. This step has two parts:
 
-   **Question 1 — Release branch**
+   **Step 1a — Detect release branch (silent, no user prompt)**
+   Before asking any questions, run `git rev-parse --abbrev-ref HEAD` to get the current branch. Infer `RELEASE_BRANCH`:
+   - If the branch looks like a semver release (e.g., `0.12.0`), use it directly as `RELEASE_BRANCH`.
+   - If the branch is an ADR branch (contains `/`, e.g., `0.12.0/009-color-values`), extract the prefix before `/` as `RELEASE_BRANCH`.
+   - If the branch is `main` or doesn't match either pattern, fall back to reading `package.json` version and using the current minor version as `RELEASE_BRANCH`.
+
+   **Step 1b — Ask the user** using VS Code's interactive question UI. Present ALL questions in a single prompt:
+
+   **Question 1 — Describe the change**
+   - Header: `Change`
+   - Question: "What change are you proposing? Describe the types/schema modification at a high level (e.g., 'Add structured border properties to replace flat per-side fields on Styles')."
+   - Allow free-form input. No predefined options.
+
+   **Question 2 — Confirm release branch**
    - Header: `Release`
-   - Question: "Which release branch should this ADR target?"
+   - Question: "Detected release branch: `[RELEASE_BRANCH]`. Target this release?"
    - Options (single-select):
-     1. `Current branch` — read the active git branch via `git rev-parse --abbrev-ref HEAD`. If it looks like a semver release branch (e.g., `0.12.0`), use it as `RELEASE_BRANCH`. If the current branch is an ADR branch (contains `/` like `0.12.0/009-color-values`), extract the prefix before the `/` as `RELEASE_BRANCH`.
-     2. `Next minor version` — read the current version from `package.json`, increment the minor component, and format as `[MAJOR].[MINOR+1].0`
-     3. `Next major version` — read the current version from `package.json`, increment the major component, and format as `[MAJOR+1].0.0`
-   - After the user selects, resolve `RELEASE_BRANCH` per the rule above before continuing.
+     1. `Yes, use [RELEASE_BRANCH]` — keep the detected value
+     2. `Different branch` — allow free-form input to specify another branch
 
-   **Question 2 — ADR file name**
+   **Question 3 — ADR file name**
    - Header: `ADR file`
    - Question: "What should the ADR file be named? This becomes `adr/[name].md` and the ADR branch `[RELEASE_BRANCH]/[name]`. Use the format `###-short-description` (e.g. `002-shadows`)."
    - Allow free-form input. No predefined options.
 
-   Parse the answers as `RELEASE_BRANCH` and `ADR_NAME`.
-   - Derive `ADR_BRANCH` as `$RELEASE_BRANCH/$ADR_NAME` (e.g., `0.12.0/009-color-values`).
-   - All subsequent paths must use these values.
+   Parse answers as `CHANGE_DESCRIPTION`, `RELEASE_BRANCH`, and `ADR_NAME`.
+   - Derive `ADR_BRANCH` as `$RELEASE_BRANCH/$ADR_NAME`.
 
 2. **Branch setup**:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`.
-   - Check that the release branch `$RELEASE_BRANCH` exists (locally or on origin). If it does not, inform the user and ask whether to create it from `main`.
-   - If the current branch is not `$ADR_BRANCH`, check whether `$ADR_BRANCH` already exists. If it does, switch to it. If it does not, create it from `$RELEASE_BRANCH` and switch to it.
+   - Check that `$RELEASE_BRANCH` exists (locally or on origin). If not, ask whether to create it from `main`.
+   - If not already on `$ADR_BRANCH`, check if it exists — switch to it or create from `$RELEASE_BRANCH`.
    - Set `SPEC_FILE=$REPO_ROOT/adr/$ADR_NAME.md`.
-   - Check whether `$SPEC_FILE` already exists. If it does, read it and continue editing rather than overwriting.
+   - If `$SPEC_FILE` exists, read it and continue editing rather than overwriting.
    - All paths must be absolute.
 
-3. **Load context**: Read `.specify/memory/constitution.md`. Read `.specify/templates/adr-template.md` — this is the output template you will fill.
+3. **Load context**: Read `.specify/memory/constitution.md` and `.specify/templates/adr-template.md` (the output template).
 
-4. **Understand the change**: From the user input and any open files, determine:
+4. **Targeted exploration**: Using `CHANGE_DESCRIPTION` as your guide, read **only** the specific type and schema files relevant to the proposed change. Do not scan directories broadly. If the user said "border properties on Styles", read `types/Styles.ts` and `schema/Styles.yaml` — not everything in `types/` and `schema/`. Determine:
    - Which schema files in `schema/` are affected
    - Which types in `types/` are affected (added, removed, renamed fields)
    - Whether the change is MAJOR (breaking), MINOR (additive), or PATCH (non-semantic) per the constitution
 
 5. **Evaluate options** *(skip if the decision is already made)*:
-   - If the user input or context indicates the decision is pre-decided (e.g., "record and implement this decision"), omit this step and leave the Options Considered section of the ADR with a single entry marked *(Pre-decided — no alternatives evaluated)*.
-   - Otherwise, identify at least two alternative approaches and for each: assess against the constitution's Decision Drivers (type-schema sync, no logic, stable API, etc.) and state which is selected and which are rejected with clear rationale.
+   - If the user's description or context indicates the decision is pre-decided (e.g., "record and implement this decision"), omit this step and mark the Options Considered section as *(Pre-decided — no alternatives evaluated)*.
+   - Otherwise, identify at least two alternative approaches, assess each against the constitution's Decision Drivers, and state which is selected with rationale.
 
 6. **Draft the ADR**: Fill `adr-template.md` and write to `$SPEC_FILE`:
    - **Branch**: `ADR_NAME`

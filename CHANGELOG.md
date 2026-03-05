@@ -5,6 +5,40 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-03-05
+
+### Added
+
+- `Sides` — per-side composite object with logical directions: `top`, `end`, `bottom`, `start`
+- `Corners` — per-corner composite object with logical directions: `topStart`, `topEnd`, `bottomEnd`, `bottomStart`
+- `Styles.padding` — scalar when uniform, `Sides` object when per-side values differ
+
+### Changed
+
+- `Styles.strokeWeight` — accepts `Style | Sides` instead of `Style`; scalar when uniform, `Sides` object when per-side values differ
+- `Styles.cornerRadius` — accepts `Style | Corners` instead of `Style`; scalar when uniform, `Corners` object when per-corner values differ
+
+### Removed
+
+- `Styles.paddingLeft` — use `Styles.padding` with `Sides.start` instead
+- `Styles.paddingRight` — use `Styles.padding` with `Sides.end` instead
+- `Styles.paddingTop` — use `Styles.padding` with `Sides.top` instead
+- `Styles.paddingBottom` — use `Styles.padding` with `Sides.bottom` instead
+- `Styles.strokeTopWeight` — use `Styles.strokeWeight` with `Sides.top` instead
+- `Styles.strokeBottomWeight` — use `Styles.strokeWeight` with `Sides.bottom` instead
+- `Styles.strokeLeftWeight` — use `Styles.strokeWeight` with `Sides.start` instead
+- `Styles.strokeRightWeight` — use `Styles.strokeWeight` with `Sides.end` instead
+- `Styles.topLeftRadius` — use `Styles.cornerRadius` with `Corners.topStart` instead
+- `Styles.topRightRadius` — use `Styles.cornerRadius` with `Corners.topEnd` instead
+- `Styles.bottomLeftRadius` — use `Styles.cornerRadius` with `Corners.bottomStart` instead
+- `Styles.bottomRightRadius` — use `Styles.cornerRadius` with `Corners.bottomEnd` instead
+
+### Migration
+
+- `Styles.paddingLeft` / `paddingRight` / `paddingTop` / `paddingBottom` → `Styles.padding`: when all sides are equal, read `padding` as a number; when sides differ, read `padding` as a `Sides` object with `top`, `end`, `bottom`, `start` using logical directions (`start` = left in LTR)
+- `Styles.strokeTopWeight` / `strokeBottomWeight` / `strokeLeftWeight` / `strokeRightWeight` → `Styles.strokeWeight`: same scalar-or-`Sides` pattern; individual per-side stroke weights now live under `Sides.top`, `Sides.end`, `Sides.bottom`, `Sides.start`
+- `Styles.topLeftRadius` / `topRightRadius` / `bottomLeftRadius` / `bottomRightRadius` → `Styles.cornerRadius`: same scalar-or-`Corners` pattern; per-corner values use `Corners.topStart`, `Corners.topEnd`, `Corners.bottomEnd`, `Corners.bottomStart`
+
 ## [0.11.0] - 2026-03-04
 
 ### Added
