@@ -2,7 +2,7 @@
 
 **Branch**: `010-sides-and-corners`
 **Created**: 2026-03-05
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
