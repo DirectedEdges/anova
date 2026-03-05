@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Config.processing.iconNamePattern` — optional naming pattern for detecting icon content assets
 - `Sides` — per-side composite object with logical directions: `top`, `end`, `bottom`, `start`
 - `Corners` — per-corner composite object with logical directions: `topStart`, `topEnd`, `bottomEnd`, `bottomStart`
 - `Styles.padding` — scalar when uniform, `Sides` object when per-side values differ
 
 ### Changed
 
+- `AnatomyElement.type` — constrained from `string` to `ElementType` enum
 - `Styles.strokeWeight` — accepts `Style | Sides` instead of `Style`; scalar when uniform, `Sides` object when per-side values differ
 - `Styles.cornerRadius` — accepts `Style | Corners` instead of `Style`; scalar when uniform, `Corners` object when per-corner values differ
 
