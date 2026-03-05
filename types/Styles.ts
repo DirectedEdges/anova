@@ -10,7 +10,8 @@ export type Styles = Partial<{
   backgroundColor: ColorStyle;
   effects: TokenReference | Effects;
   clipContent: Style;
-  cornerRadius: Style;
+  /** Corner radius. Scalar when uniform; `Corners` object when per-corner values differ. @since 1.0.0 */
+  cornerRadius: Style | Corners;
   width: Style;
   height: Style;
   minWidth: Style;
@@ -24,11 +25,8 @@ export type Styles = Partial<{
   layoutSizingVertical: Style;
   strokes: ColorStyle;
   strokeAlign: Style;
-  strokeWeight: Style;
-  strokeTopWeight: Style;
-  strokeBottomWeight: Style;
-  strokeLeftWeight: Style;
-  strokeRightWeight: Style;
+  /** Stroke weight. Scalar when uniform; `Sides` object when per-side values differ. @since 1.0.0 */
+  strokeWeight: Style | Sides;
   typography: TokenReference | Typography;
   textAlignHorizontal: Style;
   textAlignVertical: Style;
@@ -41,15 +39,9 @@ export type Styles = Partial<{
   layoutWrap: Style;
   itemReverseZIndex: Style;
   itemSpacing: Style;
-  paddingLeft: Style;
-  paddingRight: Style;
-  paddingTop: Style;
-  paddingBottom: Style;
+  /** Padding. Scalar when uniform; `Sides` object when per-side values differ. @since 1.0.0 */
+  padding: Style | Sides;
   counterAxisSpacing: Style;
-  topLeftRadius: Style;
-  topRightRadius: Style;
-  bottomLeftRadius: Style;
-  bottomRightRadius: Style;
   cornerSmoothing: Style;
   aspectRatio: AspectRatioStyle;
 }>;
@@ -185,6 +177,40 @@ export interface AspectRatioValue {
 export type AspectRatioStyle = AspectRatioValue | null;
 
 /**
+ * Per-side values using logical inline-axis directions (`start`/`end`).
+ * Used for `padding` and `strokeWeight` when sides differ.
+ * Each field is optional; only sides that differ from the collapsed value are present.
+ * @since 1.0.0
+ */
+export interface Sides {
+  /** Block-start (top) value */
+  top?: Style;
+  /** Inline-end value (right in LTR, left in RTL) */
+  end?: Style;
+  /** Block-end (bottom) value */
+  bottom?: Style;
+  /** Inline-start value (left in LTR, right in RTL) */
+  start?: Style;
+}
+
+/**
+ * Per-corner values using logical inline-axis directions (`topStart`/`topEnd`/`bottomStart`/`bottomEnd`).
+ * Used for `cornerRadius` when corners differ.
+ * Each field is optional; only corners that differ from the collapsed value are present.
+ * @since 1.0.0
+ */
+export interface Corners {
+  /** Top-start corner (top-left in LTR, top-right in RTL) */
+  topStart?: Style;
+  /** Top-end corner (top-right in LTR, top-left in RTL) */
+  topEnd?: Style;
+  /** Bottom-end corner (bottom-right in LTR, bottom-left in RTL) */
+  bottomEnd?: Style;
+  /** Bottom-start corner (bottom-left in LTR, bottom-right in RTL) */
+  bottomStart?: Style;
+}
+
+/**
  * Style property keys that can appear in the serialized output
  */
 export type StyleKey =
@@ -210,10 +236,6 @@ export type StyleKey =
   | 'strokes'
   | 'strokeAlign'
   | 'strokeWeight'
-  | 'strokeTopWeight'
-  | 'strokeBottomWeight'
-  | 'strokeLeftWeight'
-  | 'strokeRightWeight'
   | 'typography'
   | 'textAlignHorizontal'
   | 'textAlignVertical'
@@ -226,14 +248,7 @@ export type StyleKey =
   | 'layoutWrap'
   | 'itemReverseZIndex'
   | 'itemSpacing'
-  | 'paddingLeft'
-  | 'paddingRight'
-  | 'paddingTop'
-  | 'paddingBottom'
+  | 'padding'
   | 'counterAxisSpacing'
   | 'cornerSmoothing'
-  | 'topLeftRadius'
-  | 'topRightRadius'
-  | 'bottomLeftRadius'
-  | 'bottomRightRadius'
   | 'aspectRatio';

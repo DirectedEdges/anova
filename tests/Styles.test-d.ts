@@ -7,6 +7,7 @@ import type {
   Styles, Shadow, Blur, Effects, Typography,
   TokenReference, ColorStyle, GradientStop, GradientCenter, LinearGradient, RadialGradient,
   AngularGradient, GradientValue, AspectRatioValue, AspectRatioStyle,
+  Sides, Corners,
 } from '../types/index.js';
 
 // ─── ColorStyle ────────────────────────────────────────────────────────────
@@ -321,3 +322,115 @@ const _oldHangingList: Styles = { hangingList: false };
 
 // @ts-expect-error: textStyleId no longer exists on Styles
 const _oldTextStyleId: Styles = { textStyleId: 'S:123' };
+
+// ─── Sides ───────────────────────────────────────────────────────────────────
+
+// All keys optional — empty Sides is valid
+const emptySides: Sides = {};
+
+// Full Sides with numeric values
+const fullSides: Sides = { top: 8, end: 16, bottom: 8, start: 16 };
+
+// Individual sides with TokenReference
+const tokenSides: Sides = {
+  top: { $token: 'Space.4', $type: 'dimension' } satisfies TokenReference,
+  end: 12,
+  bottom: null,
+  start: 12,
+};
+
+// ─── Corners ─────────────────────────────────────────────────────────────────
+
+// All keys optional — empty Corners is valid
+const emptyCorners: Corners = {};
+
+// Full Corners with numeric values
+const fullCorners: Corners = { topStart: 4, topEnd: 4, bottomEnd: 8, bottomStart: 8 };
+
+// Individual corners with TokenReference
+const tokenCorners: Corners = {
+  topStart: { $token: 'Radius.Sm', $type: 'dimension' } satisfies TokenReference,
+  topEnd: 4,
+  bottomEnd: null,
+  bottomStart: 4,
+};
+
+// ─── Styles.padding (scalar or Sides) ────────────────────────────────────────
+
+// Scalar number (uniform padding)
+const uniformPadding: Styles = { padding: 8 };
+
+// Sides object (per-side padding)
+const perSidePadding: Styles = { padding: { top: 8, end: 16, bottom: 8, start: 16 } };
+
+// TokenReference for padding
+const tokenPadding: Styles = {
+  padding: { $token: 'Space.Container', $type: 'dimension' } satisfies TokenReference,
+};
+
+// null is valid
+const nullPadding: Styles = { padding: null };
+
+// ─── Styles.strokeWeight (scalar or Sides) ───────────────────────────────────
+
+// Scalar number (uniform stroke weight)
+const uniformStroke: Styles = { strokeWeight: 1 };
+
+// Sides object (per-side stroke weight)
+const perSideStroke: Styles = { strokeWeight: { top: 1, end: 0, bottom: 2, start: 0 } };
+
+// TokenReference for strokeWeight
+const tokenStroke: Styles = {
+  strokeWeight: { $token: 'Border.Width', $type: 'dimension' } satisfies TokenReference,
+};
+
+// ─── Styles.cornerRadius (scalar or Corners) ────────────────────────────────
+
+// Scalar number (uniform corner radius)
+const uniformRadius: Styles = { cornerRadius: 8 };
+
+// Corners object (per-corner radius)
+const perCornerRadius: Styles = { cornerRadius: { topStart: 8, topEnd: 8, bottomEnd: 0, bottomStart: 0 } };
+
+// TokenReference for cornerRadius
+const tokenRadius: Styles = {
+  cornerRadius: { $token: 'Radius.Md', $type: 'dimension' } satisfies TokenReference,
+};
+
+// ─── Verify flat side/corner properties removed from Styles ──────────────────
+
+// @ts-expect-error: paddingLeft no longer exists on Styles
+const _oldPaddingLeft: Styles = { paddingLeft: 8 };
+
+// @ts-expect-error: paddingRight no longer exists on Styles
+const _oldPaddingRight: Styles = { paddingRight: 8 };
+
+// @ts-expect-error: paddingTop no longer exists on Styles
+const _oldPaddingTop: Styles = { paddingTop: 8 };
+
+// @ts-expect-error: paddingBottom no longer exists on Styles
+const _oldPaddingBottom: Styles = { paddingBottom: 8 };
+
+// @ts-expect-error: strokeTopWeight no longer exists on Styles
+const _oldStrokeTop: Styles = { strokeTopWeight: 1 };
+
+// @ts-expect-error: strokeBottomWeight no longer exists on Styles
+const _oldStrokeBottom: Styles = { strokeBottomWeight: 1 };
+
+// @ts-expect-error: strokeLeftWeight no longer exists on Styles
+const _oldStrokeLeft: Styles = { strokeLeftWeight: 1 };
+
+// @ts-expect-error: strokeRightWeight no longer exists on Styles
+const _oldStrokeRight: Styles = { strokeRightWeight: 1 };
+
+// @ts-expect-error: topLeftRadius no longer exists on Styles
+const _oldTopLeftRadius: Styles = { topLeftRadius: 4 };
+
+// @ts-expect-error: topRightRadius no longer exists on Styles
+const _oldTopRightRadius: Styles = { topRightRadius: 4 };
+
+// @ts-expect-error: bottomLeftRadius no longer exists on Styles
+const _oldBottomLeftRadius: Styles = { bottomLeftRadius: 4 };
+
+// @ts-expect-error: bottomRightRadius no longer exists on Styles
+const _oldBottomRightRadius: Styles = { bottomRightRadius: 4 };
