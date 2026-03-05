@@ -8,7 +8,7 @@
 
 // Core component types
 export type { Component } from './Component.js';
-export type { Anatomy, AnatomyElement } from './Anatomy.js';
+export type { Anatomy, AnatomyElement, ElementTypeRef } from './Anatomy.js';
 export type { Props, AnyProp, BooleanProp, TextProp, IconProp, EnumProp, SlotProp } from './Props.js';
 export type { Variant, Variants } from './Variant.js';
 export type { Metadata } from './Metadata.js';
