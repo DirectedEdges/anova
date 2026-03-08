@@ -1,3 +1,5 @@
+import { ElementType } from "./Element.js";
+
 /**
  * Represents the anatomy of a component.
  */
@@ -23,5 +25,6 @@ export type AnatomyElement = {
    */
   type: string | ElementTypeRef;
   detectedIn?: string;
+  /** The component or component set name that this instance element references. */
   instanceOf?: string;
 };

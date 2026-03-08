@@ -362,6 +362,7 @@
           "type": "object",
           "properties": {
             "subcomponentNamePattern": { "type": "string" },
+            "iconNamePattern": { "type": "string", "description": "Naming pattern used to detect icon content assets (e.g. 'DS Icon Glyph /')" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },
