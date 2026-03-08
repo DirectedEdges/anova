@@ -2,7 +2,7 @@
 
 **Branch**: `001-license-check`
 **Created**: 2026-02-24
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
