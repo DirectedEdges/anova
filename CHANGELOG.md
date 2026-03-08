@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
+
 ### Changed
 
 ### Removed

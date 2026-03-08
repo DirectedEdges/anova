@@ -21,18 +21,23 @@ const withoutLicense: Metadata = {
   config: baseConfig,
 };
 
-// With license present — both subfields required
+// With generator.license present — both subfields required
 const withLicense: Metadata = {
   ...withoutLicense,
-  license: {
-    status: 'active',
-    description: 'License is valid.',
+  generator: {
+    url: 'https://example.com',
+    version: 1,
+    name: 'test',
+    license: {
+      status: 'VALID',
+      level: 'PRO',
+    },
   },
 };
 
-// status and description are strings
-const _status: string = withLicense.license!.status;
-const _description: string = withLicense.license!.description;
+// status and level are strings
+const _status: string = withLicense.generator.license!.status;
+const _level: string = withLicense.generator.license!.level;
 
-// license is optional — can be undefined
-const _optional: { status: string; description: string } | undefined = withoutLicense.license;
+// generator.license is optional — can be undefined
+const _optional: { status: string; level: string } | undefined = withoutLicense.generator.license;
