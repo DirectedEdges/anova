@@ -60,12 +60,30 @@
       "description": "Element types derived from Figma node analysis.",
       "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
     },
+    "ElementTypeRef": {
+      "type": "object",
+      "description": "Reference to an external element type definition.",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/icon')"
+        }
+      },
+      "required": ["$ref"],
+      "additionalProperties": false
+    },
     "AnatomyElement": {
       "type": "object",
       "description": "An element within the anatomy of a component.",
       "examples": [],
       "properties": {
-        "type": { "$ref": "#/definitions/ElementType" },
+        "type": {
+          "oneOf": [
+            { "$ref": "#/definitions/ElementType" },
+            { "$ref": "#/definitions/ElementTypeRef" }
+          ],
+          "description": "Element type as a plain string identifier or a reference to an external definition."
+        },
         "detectedIn": { "type": "string" },
         "instanceOf": { "type": "string" }
       },

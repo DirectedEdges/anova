@@ -1,11 +1,11 @@
 /**
- * Type-level tests for Anatomy and AnatomyElement.
+ * Type-level tests for Anatomy, AnatomyElement, and ElementTypeRef.
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { Anatomy, AnatomyElement, ElementType } from '../types/index.js';
+import type { Anatomy, AnatomyElement, ElementTypeRef } from '../types/index.js';
 
-// AnatomyElement.type accepts all known ElementType values
+// AnatomyElement.type accepts ElementType values
 const textElement: AnatomyElement = { type: 'text' };
 const iconElement: AnatomyElement = { type: 'icon' };
 const vectorElement: AnatomyElement = { type: 'vector' };
@@ -18,27 +18,51 @@ const rectangleElement: AnatomyElement = { type: 'rectangle' };
 const polygonElement: AnatomyElement = { type: 'polygon' };
 const starElement: AnatomyElement = { type: 'star' };
 
-// AnatomyElement.type does NOT accept arbitrary strings
-// @ts-expect-error — 'unknown-type' is not a valid ElementType
-const invalidElement: AnatomyElement = { type: 'unknown-type' };
+// @ts-expect-error — arbitrary strings are not valid ElementType values
+const invalidType: AnatomyElement = { type: 'any-string-value' };
 
-// AnatomyElement with optional fields
-const fullElement: AnatomyElement = {
+// AnatomyElement.type accepts ElementTypeRef objects
+const refElement: AnatomyElement = {
+  type: { $ref: 'foundations#/definitions/icon' },
+};
+const refWithPath: AnatomyElement = {
+  type: { $ref: 'https://example.com/schema#/definitions/container' },
+};
+
+// ElementTypeRef shape
+const ref: ElementTypeRef = { $ref: 'foundations#/definitions/text' };
+
+// @ts-expect-error — ElementTypeRef requires $ref field
+const invalidRef: ElementTypeRef = {};
+
+// @ts-expect-error — ElementTypeRef.$ref must be a string
+const invalidRefType: ElementTypeRef = { $ref: 123 };
+
+// AnatomyElement with optional fields and ref type
+const fullRefElement: AnatomyElement = {
+  type: { $ref: 'foundations#/definitions/icon' },
+  detectedIn: 'variant-1',
+  instanceOf: 'IconGlyph',
+};
+
+// AnatomyElement with optional fields and plain string type
+const fullStringElement: AnatomyElement = {
   type: 'instance',
   detectedIn: 'variant-1',
   instanceOf: 'Button',
 };
 
-// AnatomyElement without optional fields
-const minimalElement: AnatomyElement = { type: 'container' };
-
-// Anatomy is a record of named AnatomyElements
+// Anatomy is a record of named AnatomyElements — mix of string and ref types
 const anatomy: Anatomy = {
   root: { type: 'container' },
   label: { type: 'text' },
-  icon: { type: 'icon' },
+  icon: { type: { $ref: 'foundations#/definitions/icon' } },
 };
 
-// ElementType assignability
-const elementType: ElementType = 'icon';
-const anatomyType: AnatomyElement['type'] = elementType;
+// Type guard discrimination works
+const element: AnatomyElement = { type: 'icon' };
+if (typeof element.type === 'string') {
+  const _str: string = element.type;
+} else {
+  const _ref: string = element.type.$ref;
+}
