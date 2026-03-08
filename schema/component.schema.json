@@ -1,5 +1,5 @@
 {
-  "version": "0.12.0",
+  "version": "0.13.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/schema/component.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -320,7 +320,23 @@
           "properties": {
             "url": { "type": "string" },
             "version": { "type": "number" },
-            "name": { "type": "string" }
+            "name": { "type": "string" },
+            "license": {
+              "type": "object",
+              "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "License validation status (e.g. VALID, EXPIRED, NONE)."
+                },
+                "level": {
+                  "type": "string",
+                  "description": "Output entitlement level (e.g. FREE, PRO, EXTENDED). Plain string for extensibility."
+                }
+              },
+              "required": ["status", "level"],
+              "additionalProperties": false
+            }
           },
           "required": ["url", "version", "name"],
           "additionalProperties": false
@@ -344,17 +360,7 @@
           "required": ["pageId", "nodeId", "nodeType"],
           "additionalProperties": false
         },
-        "config": { "$ref": "#/definitions/Config" },
-        "license": {
-          "type": "object",
-          "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
-          "properties": {
-            "status": { "type": "string" },
-            "description": { "type": "string" }
-          },
-          "required": ["status", "description"],
-          "additionalProperties": false
-        }
+        "config": { "$ref": "#/definitions/Config" }
       },
       "required": ["author", "lastUpdated", "generator", "schema", "source", "config"],
       "additionalProperties": false

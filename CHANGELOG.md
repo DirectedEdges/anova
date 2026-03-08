@@ -5,6 +5,12 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-03-08
+
+### Added
+
+- `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
+
 ## [0.12.0] - 2026-03-05
 
 ### Added
