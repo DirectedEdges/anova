@@ -8,7 +8,7 @@
 
 // Core component types
 export type { Component } from './Component.js';
-export type { Anatomy, AnatomyElement } from './Anatomy.js';
+export type { Anatomy, AnatomyElement, ElementTypeRef } from './Anatomy.js';
 export type { Props, AnyProp, BooleanProp, TextProp, IconProp, EnumProp, SlotProp } from './Props.js';
 export type { Variant, Variants } from './Variant.js';
 export type { Metadata } from './Metadata.js';
@@ -25,7 +25,7 @@ export type { Config } from './Config.js';
 export { DEFAULT_CONFIG } from './Config.js';
 
 // Style types
-export type { Styles, Style, ColorStyle, ColorValue, StyleKey, TokenReference, AspectRatioValue, AspectRatioStyle, Typography } from './Styles.js';
+export type { Styles, Style, ColorStyle, ColorValue, StyleKey, TokenReference, AspectRatioValue, AspectRatioStyle, Typography, Sides, Corners } from './Styles.js';
 export type { Shadow, Blur, Effects } from './Effects.js';
 export type { GradientStop, GradientCenter, LinearGradient, RadialGradient, AngularGradient, GradientValue } from './Gradient.js';
 

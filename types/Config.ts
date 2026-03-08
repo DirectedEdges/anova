@@ -10,6 +10,8 @@ export interface Config {
   processing: {
     /** Pattern for naming subcomponents */
     subcomponentNamePattern: string;
+    /** Naming pattern used to detect icon content assets (e.g. "DS Icon Glyph /"). Optional; absence means no icon detection. */
+    iconNamePattern?: string;
     /** Depth of variant expansion: 1-3 or 9999 for unlimited */
     variantDepth: 1 | 2 | 3 | 9999;
     /** Level of detail in output */

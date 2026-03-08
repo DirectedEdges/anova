@@ -1,5 +1,5 @@
 {
-  "version": "0.11.0",
+  "version": "0.12.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/schema/component.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -55,12 +55,35 @@
       "examples": [],
       "additionalProperties": { "$ref": "#/definitions/AnatomyElement" }
     },
+    "ElementType": {
+      "type": "string",
+      "description": "Element types derived from Figma node analysis.",
+      "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+    },
+    "ElementTypeRef": {
+      "type": "object",
+      "description": "Reference to an external element type definition.",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/icon')"
+        }
+      },
+      "required": ["$ref"],
+      "additionalProperties": false
+    },
     "AnatomyElement": {
       "type": "object",
-      "description": "",
+      "description": "An element within the anatomy of a component.",
       "examples": [],
       "properties": {
-        "type": { "type": "string" },
+        "type": {
+          "oneOf": [
+            { "$ref": "#/definitions/ElementType" },
+            { "$ref": "#/definitions/ElementTypeRef" }
+          ],
+          "description": "Element type as a plain string identifier or a reference to an external definition."
+        },
         "detectedIn": { "type": "string" },
         "instanceOf": { "type": "string" }
       },
@@ -344,6 +367,7 @@
           "type": "object",
           "properties": {
             "subcomponentNamePattern": { "type": "string" },
+            "iconNamePattern": { "type": "string", "description": "Naming pattern used to detect icon content assets (e.g. 'DS Icon Glyph /')" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },

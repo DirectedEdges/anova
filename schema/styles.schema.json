@@ -1,5 +1,5 @@
 {
-  "version": "0.11.0",
+  "version": "0.12.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/schema/styles.schema.json",
   "title": "Anova Styles Schema",
@@ -18,7 +18,7 @@
         "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
         "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Effect output. TokenReference when the node references a named effects style; Effects when effects are defined inline. Replaces effectStyleId." },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
-        "cornerRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Uniform corner radius" },
+        "cornerRadius": { "$ref": "#/definitions/CornersStyleValue", "description": "Corner radius. Scalar when uniform; Corners object when per-corner values differ." },
         "width": { "$ref": "#/definitions/NumberStyleValue", "description": "Width in pixels" },
         "height": { "$ref": "#/definitions/NumberStyleValue", "description": "Height in pixels" },
         "minWidth": { "$ref": "#/definitions/NumberStyleValue", "description": "Minimum width" },
@@ -32,11 +32,7 @@
         "layoutSizingVertical": { "$ref": "#/definitions/StringStyleValue", "description": "Vertical sizing mode" },
         "strokes": { "$ref": "#/definitions/ColorStyleValue", "description": "Stroke colors" },
         "strokeAlign": { "$ref": "#/definitions/MixedStringStyleValue", "description": "Stroke alignment" },
-        "strokeWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Uniform stroke weight" },
-        "strokeTopWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Top stroke weight" },
-        "strokeBottomWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Bottom stroke weight" },
-        "strokeLeftWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Left stroke weight" },
-        "strokeRightWeight": { "$ref": "#/definitions/StrokeStyleValue", "description": "Right stroke weight" },
+        "strokeWeight": { "$ref": "#/definitions/SidesStyleValue", "description": "Stroke weight. Scalar when uniform; Sides object when per-side values differ." },
         "typography": { "$ref": "#/definitions/TypographyStyleValue", "description": "Typography properties. TokenReference when the node references a named text style; Typography when defined inline." },
         "textAlignHorizontal": { "$ref": "#/definitions/StringStyleValue", "description": "Horizontal text alignment" },
         "textAlignVertical": { "$ref": "#/definitions/StringStyleValue", "description": "Vertical text alignment" },
@@ -48,15 +44,8 @@
         "layoutWrap": { "$ref": "#/definitions/StringStyleValue", "description": "Layout wrap mode" },
         "itemReverseZIndex": { "$ref": "#/definitions/BooleanStyleValue", "description": "Reverse z-index stacking" },
         "itemSpacing": { "$ref": "#/definitions/NumberStyleValue", "description": "Item spacing" },
-        "paddingLeft": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Left padding" },
-        "paddingRight": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Right padding" },
-        "paddingTop": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Top padding" },
-        "paddingBottom": { "$ref": "#/definitions/MixedNumberStyleValue", "description": "Bottom padding" },
+        "padding": { "$ref": "#/definitions/SidesStyleValue", "description": "Padding. Scalar when uniform; Sides object when per-side values differ." },
         "counterAxisSpacing": { "$ref": "#/definitions/NumberStyleValue", "description": "Counter axis spacing" },
-        "topLeftRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Top-left corner radius" },
-        "topRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Top-right corner radius" },
-        "bottomLeftRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-left corner radius" },
-        "bottomRightRadius": { "$ref": "#/definitions/CornerStyleValue", "description": "Bottom-right corner radius" },
         "cornerSmoothing": { "$ref": "#/definitions/NumberStyleValue", "description": "Degree of corner smoothing (0 = standard circular corners, 1 = fully smooth iOS-style squircle). Applies to FRAME, COMPONENT, RECTANGLE, POLYGON, STAR, VECTOR, and ELLIPSE element types." },
         "aspectRatio": { "$ref": "#/definitions/AspectRatioStyleValue", "description": "Aspect ratio constraint. Present only when the node has a locked ratio; omitted otherwise." }
       },
@@ -278,6 +267,46 @@
       "oneOf": [
         { "type": "number" },
         { "type": "string", "const": "mixed" },
+        { "$ref": "#/definitions/TokenReference" },
+        { "type": "null" }
+      ]
+    },
+    "Sides": {
+      "type": "object",
+      "description": "Per-side values using logical inline-axis directions (start/end). Used for padding and strokeWeight when sides differ.",
+      "properties": {
+        "top": { "$ref": "#/definitions/NumberStyleValue", "description": "Block-start (top) value" },
+        "end": { "$ref": "#/definitions/NumberStyleValue", "description": "Inline-end value (right in LTR, left in RTL)" },
+        "bottom": { "$ref": "#/definitions/NumberStyleValue", "description": "Block-end (bottom) value" },
+        "start": { "$ref": "#/definitions/NumberStyleValue", "description": "Inline-start value (left in LTR, right in RTL)" }
+      },
+      "additionalProperties": false
+    },
+    "Corners": {
+      "type": "object",
+      "description": "Per-corner values using logical inline-axis directions (topStart/topEnd/bottomStart/bottomEnd). Used for cornerRadius when corners differ.",
+      "properties": {
+        "topStart": { "$ref": "#/definitions/NumberStyleValue", "description": "Top-start corner (top-left in LTR, top-right in RTL)" },
+        "topEnd": { "$ref": "#/definitions/NumberStyleValue", "description": "Top-end corner (top-right in LTR, top-left in RTL)" },
+        "bottomEnd": { "$ref": "#/definitions/NumberStyleValue", "description": "Bottom-end corner (bottom-right in LTR, bottom-left in RTL)" },
+        "bottomStart": { "$ref": "#/definitions/NumberStyleValue", "description": "Bottom-start corner (bottom-left in LTR, bottom-right in RTL)" }
+      },
+      "additionalProperties": false
+    },
+    "SidesStyleValue": {
+      "description": "Sides style value. Scalar number when uniform; Sides object when per-side values differ; TokenReference for token binding; null when absent.",
+      "oneOf": [
+        { "type": "number" },
+        { "$ref": "#/definitions/Sides" },
+        { "$ref": "#/definitions/TokenReference" },
+        { "type": "null" }
+      ]
+    },
+    "CornersStyleValue": {
+      "description": "Corners style value. Scalar number when uniform; Corners object when per-corner values differ; TokenReference for token binding; null when absent.",
+      "oneOf": [
+        { "type": "number" },
+        { "$ref": "#/definitions/Corners" },
         { "$ref": "#/definitions/TokenReference" },
         { "type": "null" }
       ]
