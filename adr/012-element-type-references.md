@@ -2,7 +2,7 @@
 
 **Branch**: `012-element-type-references`
 **Created**: 2026-03-05
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
