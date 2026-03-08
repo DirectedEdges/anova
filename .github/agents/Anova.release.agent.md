@@ -24,7 +24,7 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
    ```bash
    git status --porcelain
    ```
-   If dirty, STOP and report.
+   If dirty, STOP and report. Exception: changes made by this agent (e.g., CHANGELOG date added) are expected.
 
 4. **Verify GitHub Packages auth**:
    ```bash
@@ -40,9 +40,9 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
 
 6. **Run type-level tests**:
    ```bash
-   tsc --noEmit --strict tests/*.test-d.ts
+   npx tsc --noEmit --strict tests/*.test-d.ts
    ```
-   If tests fail, STOP and report errors.
+   If tests fail, report errors and ask the user whether to proceed or abort.
 
 7. **Present setup summary**:
    ```
@@ -52,36 +52,38 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
      ✓ Working tree: clean
      ✓ Auth: [username]
      ✓ Build: passed
-     ✓ Type tests: passed
+     ✓ Type tests: passed (or ⚠ with note)
    ```
 
-8. **Commit gate**: Ask **"Ready to commit @directededges/anova v[version]?"**
-   Wait for confirmation. If there are uncommitted changes (e.g., CHANGELOG date added):
+8. **Commit gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to commit @directededges/anova v[version]?"**
+   On Yes, if there are uncommitted changes:
    ```bash
    git add -A && git commit -m "release: @directededges/anova v[version]"
    ```
 
-9. **Publish gate**: Ask **"Ready to publish @directededges/anova@[version] to GitHub Packages?"**
-   Wait for confirmation.
+9. **Publish gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to publish @directededges/anova@[version] to GitHub Packages?"**
+   On Yes:
    ```bash
    npm publish
    ```
+   If publish fails with "previously published version", report and ask the user whether to bump the patch version or skip.
 
-10. **PR gate**: Ask **"Ready to create a PR to main for @directededges/anova v[version]?"**
-   Wait for confirmation.
-   ```bash
-   gh pr create --base main --title "release: @directededges/anova v[version]" --body "$(cat <<'EOF'
-   ## Summary
-   - Release @directededges/anova v[version]
-   - See CHANGELOG.md for details
-   EOF
-   )"
-   ```
-   Present the PR URL.
+10. **PR gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to create a PR to main for @directededges/anova v[version]?"**
+    On Yes:
+    ```bash
+    gh pr create --base main --title "release: @directededges/anova v[version]" --body "$(cat <<'EOF'
+    ## Summary
+    - Release @directededges/anova v[version]
+    - See CHANGELOG.md for details
+    EOF
+    )"
+    ```
+    If a PR already exists for this branch, report the existing PR URL instead of failing.
+    Push to remote before creating the PR if needed.
 
 ## Key rules
 
 - Use absolute paths for all file operations.
-- Each gate (commit, publish, PR) requires explicit user confirmation before proceeding.
-- If any verification step fails, halt immediately — do not skip to later steps.
+- Each gate (commit, publish, PR) uses `AskUserQuestion` with Yes/No options for clickable confirmation.
+- If any verification step fails, halt immediately — do not skip to later steps. For test failures, ask the user whether to proceed.
 - This package has no @directededges dependencies, so no reference swapping is needed.
