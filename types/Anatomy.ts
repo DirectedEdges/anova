@@ -23,7 +23,7 @@ export type AnatomyElement = {
    * The mapped element type. Either a plain string identifier (e.g. "icon", "text")
    * or an `ElementTypeRef` object referencing an external definition.
    */
-  type: string | ElementTypeRef;
+  type: ElementType | ElementTypeRef;
   detectedIn?: string;
   /** The component or component set name that this instance element references. */
   instanceOf?: string;

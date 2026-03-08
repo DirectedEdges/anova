@@ -5,12 +5,21 @@
  */
 import type { Anatomy, AnatomyElement, ElementTypeRef } from '../types/index.js';
 
-// AnatomyElement.type accepts plain strings
+// AnatomyElement.type accepts ElementType values
 const textElement: AnatomyElement = { type: 'text' };
 const iconElement: AnatomyElement = { type: 'icon' };
 const vectorElement: AnatomyElement = { type: 'vector' };
 const containerElement: AnatomyElement = { type: 'container' };
-const customString: AnatomyElement = { type: 'any-string-value' };
+const slotElement: AnatomyElement = { type: 'slot' };
+const instanceElement: AnatomyElement = { type: 'instance' };
+const lineElement: AnatomyElement = { type: 'line' };
+const ellipseElement: AnatomyElement = { type: 'ellipse' };
+const rectangleElement: AnatomyElement = { type: 'rectangle' };
+const polygonElement: AnatomyElement = { type: 'polygon' };
+const starElement: AnatomyElement = { type: 'star' };
+
+// @ts-expect-error — arbitrary strings are not valid ElementType values
+const invalidType: AnatomyElement = { type: 'any-string-value' };
 
 // AnatomyElement.type accepts ElementTypeRef objects
 const refElement: AnatomyElement = {

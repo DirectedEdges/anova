@@ -55,6 +55,11 @@
       "examples": [],
       "additionalProperties": { "$ref": "#/definitions/AnatomyElement" }
     },
+    "ElementType": {
+      "type": "string",
+      "description": "Element types derived from Figma node analysis.",
+      "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+    },
     "ElementTypeRef": {
       "type": "object",
       "description": "Reference to an external element type definition.",
@@ -74,7 +79,7 @@
       "properties": {
         "type": {
           "oneOf": [
-            { "type": "string" },
+            { "$ref": "#/definitions/ElementType" },
             { "$ref": "#/definitions/ElementTypeRef" }
           ],
           "description": "Element type as a plain string identifier or a reference to an external definition."
