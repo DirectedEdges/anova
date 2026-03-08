@@ -18,9 +18,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Outline
 
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`. All paths must be absolute.
-   - Derive `RELEASE_BRANCH` and `ADR_NAME` from `BRANCH`:
-     - If `BRANCH` contains `/` (e.g., `0.12.0/009-color-values`), split on the first `/`: `RELEASE_BRANCH` = prefix, `ADR_NAME` = suffix.
-     - If `BRANCH` does not contain `/`, halt: "You must be on an ADR branch (format: `<release>/<adr-name>`) to implement an ADR."
+   - Derive `ADR_NAME` from `BRANCH`:
+     - The branch name must match an ADR name pattern (e.g., `009-color-values` — starts with a number sequence followed by a hyphen). If it does not, halt: "You must be on an ADR branch (format: `###-short-description`) to implement an ADR."
+   - Derive `RELEASE_BRANCH`:
+     - Read `package.json` version to determine the current release version (e.g., `0.13.0`). Use this as `RELEASE_BRANCH`.
 
 2. **Load context**:
    - **REQUIRED**: Read `$REPO_ROOT/adr/$ADR_NAME.md` — source of truth for what changes and why

@@ -14,9 +14,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`, `BRANCH`. All paths must be absolute.
    - Derive `ADR_NAME` from `BRANCH`:
-     - If `BRANCH` contains `/` (e.g., `0.12.0/009-color-values`), split on the last `/`: `ADR_NAME` = suffix. Everything before may be a release branch prefix.
-     - If `BRANCH` does not contain `/`, use `BRANCH` directly as `ADR_NAME` (e.g., `011-icon-glyph-as-content`).
-   - The branch name must start with or contain an ADR number pattern (e.g., `011-`). If no ADR number is found, halt: "Branch does not appear to be an ADR branch."
+     - Use `BRANCH` directly as `ADR_NAME` (e.g., `011-icon-glyph-as-content`).
+   - The branch name must match an ADR name pattern (starts with a number sequence followed by a hyphen, e.g., `011-`). If no ADR number is found, halt: "Branch does not appear to be an ADR branch."
 
 2. **Load context**:
    - **REQUIRED**: Read `$REPO_ROOT/adr/$ADR_NAME.md` — confirm Status is `DRAFT` (if already `ACCEPTED`, report and halt)

@@ -27,8 +27,8 @@ You **MUST** consider the user input before proceeding (if not empty).
 
    **Step 1a — Detect release branch (silent, no user prompt)**
    Before asking any questions, run `git rev-parse --abbrev-ref HEAD` to get the current branch. Infer `RELEASE_BRANCH`:
-   - If the branch looks like a semver release (e.g., `0.12.0`), use it directly as `RELEASE_BRANCH`.
-   - If the branch is an ADR branch (contains `/`, e.g., `0.12.0/009-color-values`), extract the prefix before `/` as `RELEASE_BRANCH`.
+   - If the branch looks like a semver release (e.g., `0.13.0`), use it directly as `RELEASE_BRANCH`.
+   - If the branch matches an ADR name pattern (e.g., `009-color-values`), determine the release branch by reading `package.json` version.
    - If the branch is `main` or doesn't match either pattern, fall back to reading `package.json` version and using the current minor version as `RELEASE_BRANCH`.
 
    **Step 1b — Ask the user** using VS Code's interactive question UI. Present ALL questions in a single prompt:
@@ -47,16 +47,16 @@ You **MUST** consider the user input before proceeding (if not empty).
 
    **Question 3 — ADR file name**
    - Header: `ADR file`
-   - Question: "What should the ADR file be named? This becomes `adr/[name].md` and the ADR branch `[RELEASE_BRANCH]/[name]`. Use the format `###-short-description` (e.g. `002-shadows`)."
+   - Question: "What should the ADR file be named? This becomes `adr/[name].md` and the ADR branch `[name]`. Use the format `###-short-description` (e.g. `002-shadows`)."
    - Allow free-form input. No predefined options.
 
    Parse answers as `CHANGE_DESCRIPTION`, `RELEASE_BRANCH`, and `ADR_NAME`.
-   - Derive `ADR_BRANCH` as `$RELEASE_BRANCH/$ADR_NAME`.
+   - Derive `ADR_BRANCH` as `$ADR_NAME`.
 
 2. **Branch setup**:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`.
    - Check that `$RELEASE_BRANCH` exists (locally or on origin). If not, ask whether to create it from `main`.
-   - If not already on `$ADR_BRANCH`, check if it exists — switch to it or create from `$RELEASE_BRANCH`.
+   - If not already on `$ADR_BRANCH`, check if it exists — switch to it or create it from `$RELEASE_BRANCH`.
    - Set `SPEC_FILE=$REPO_ROOT/adr/$ADR_NAME.md`.
    - If `$SPEC_FILE` exists, read it and continue editing rather than overwriting.
    - All paths must be absolute.
