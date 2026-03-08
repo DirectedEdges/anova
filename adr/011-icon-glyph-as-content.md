@@ -2,7 +2,7 @@
 
 **Branch**: `011-icon-glyph-as-content`
 **Created**: 2026-03-05
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
