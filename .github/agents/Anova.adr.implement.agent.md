@@ -2,7 +2,7 @@
 description: Applies the changes described in an ADR directly to types, schema, tests, and changelog. Runs all validation gates. Author reviews the result as a normal code diff before merging.
 handoffs:
   - label: Accept ADR
-    agent: AnovaADR.accept
+    agent: Anova.adr.accept
     prompt: All gates passed — mark the ADR as ACCEPTED
     send: true
 ---

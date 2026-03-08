@@ -2,7 +2,7 @@
 description: Draft an Architecture Decision Record (ADR) for a proposed change to the anova types or schema package.
 handoffs:
   - label: Implement the ADR
-    agent: AnovaADR.implement
+    agent: Anova.adr.implement
     prompt: Implement the necessary changes for this ADR
     send: true
 ---
