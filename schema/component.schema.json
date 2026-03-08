@@ -55,12 +55,17 @@
       "examples": [],
       "additionalProperties": { "$ref": "#/definitions/AnatomyElement" }
     },
+    "ElementType": {
+      "type": "string",
+      "description": "Element types derived from Figma node analysis.",
+      "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+    },
     "AnatomyElement": {
       "type": "object",
-      "description": "",
+      "description": "An element within the anatomy of a component.",
       "examples": [],
       "properties": {
-        "type": { "type": "string" },
+        "type": { "$ref": "#/definitions/ElementType" },
         "detectedIn": { "type": "string" },
         "instanceOf": { "type": "string" }
       },
@@ -344,6 +349,7 @@
           "type": "object",
           "properties": {
             "subcomponentNamePattern": { "type": "string" },
+            "iconNamePattern": { "type": "string", "description": "Naming pattern used to detect icon content assets (e.g. 'DS Icon Glyph /')" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },
