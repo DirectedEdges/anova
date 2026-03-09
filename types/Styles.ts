@@ -8,6 +8,8 @@ export type Styles = Partial<{
   opacity: Style;
   locked: Style;
   backgroundColor: ColorStyle;
+  /** Icon fill color. Present on ICON element type only. Represented in Figma as fills. @since 0.13.0 */
+  fillColor: ColorStyle;
   effects: TokenReference | Effects;
   clipContent: Style;
   /** Corner radius. Scalar when uniform; `Corners` object when per-corner values differ. @since 1.0.0 */
@@ -117,7 +119,7 @@ export interface ColorValue { /** Candidate */
 /**
  * Colour-specific style value type.
  * Mirrors `ColorStyleValue` in `schema/styles.schema.json`.
- * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
+ * Used for `backgroundColor`, `fillColor`, `textColor`, and `strokes` — the four properties
  * whose values are always colour-semantics and may carry gradient data.
  */
 export type ColorStyle = string | TokenReference | GradientValue | null;
@@ -219,6 +221,7 @@ export type StyleKey =
   | 'opacity'
   | 'locked'
   | 'backgroundColor'
+  | 'fillColor'
   | 'effects'
   | 'clipContent'
   | 'cornerRadius'

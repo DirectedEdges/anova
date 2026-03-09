@@ -53,6 +53,34 @@ const withNullBackground: Styles = {
   backgroundColor: null,
 };
 
+// ─── Styles.fillColor (icon fill) ────────────────────────────────────────
+
+// String arm (hex color)
+const withFillColor: Styles = { fillColor: '#ff007f' };
+
+// TokenReference arm
+const withFillColorToken: Styles = {
+  fillColor: { $token: 'DS Color.Icon.Primary', $type: 'color' } satisfies TokenReference,
+};
+
+// GradientValue arm
+const withFillColorGradient: Styles = {
+  fillColor: {
+    type: 'LINEAR',
+    angle: 45,
+    stops: [
+      { position: 0, color: '#ff007f' },
+      { position: 1, color: '#0000ff' },
+    ],
+  } satisfies GradientValue,
+};
+
+// null is valid (no icon fill)
+const withNullFillColor: Styles = { fillColor: null };
+
+// fillColor is optional — omitting it is valid
+const withNoFillColor: Styles = {};
+
 // Hex strings are valid for color fields
 const withBgHexString: Styles = { backgroundColor: '#ff007f' };
 const withTextColorHexString: Styles = { textColor: '#000000' };
