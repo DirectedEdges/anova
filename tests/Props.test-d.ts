@@ -1,0 +1,58 @@
+/**
+ * Type-level tests for TextProp and IconProp examples field
+ * and optional default.
+ *
+ * These files are intentionally never executed — they are compiled with tsc
+ * to assert that the type shape is correct.
+ */
+import type { TextProp, IconProp, BooleanProp, EnumProp, SlotProp } from '../types/index.js';
+
+// ─── TextProp — examples field ──────────────────────────────────────────────
+
+// examples is optional and accepts string[]
+const textWithExamples: TextProp = { type: 'string', examples: ['Label', 'Title'] };
+const textNoExamples: TextProp = { type: 'string' };
+
+// default is now optional
+const textWithDefault: TextProp = { type: 'string', default: 'Label' };
+const textBoth: TextProp = { type: 'string', default: 'Label', examples: ['Label'] };
+
+// @ts-expect-error: examples must be string[], not number[]
+const _textBadExamples: TextProp = { type: 'string', examples: [42] };
+
+// @ts-expect-error: examples must be an array, not a string
+const _textBadExamplesStr: TextProp = { type: 'string', examples: 'Label' };
+
+// ─── IconProp — examples field ──────────────────────────────────────────────
+
+// examples is optional and accepts string[]
+const iconWithExamples: IconProp = { type: 'string', examples: ['Check', 'Close'] };
+const iconNoExamples: IconProp = { type: 'string' };
+
+// default is now optional
+const iconWithDefault: IconProp = { type: 'string', default: 'Check' };
+const iconBoth: IconProp = { type: 'string', default: 'Check', examples: ['Check'] };
+
+// @ts-expect-error: examples must be string[], not number[]
+const _iconBadExamples: IconProp = { type: 'string', examples: [42] };
+
+// ─── BooleanProp — default remains required, no examples ────────────────────
+
+const boolProp: BooleanProp = { type: 'boolean', default: true };
+
+// @ts-expect-error: default is required on BooleanProp
+const _boolNoDefault: BooleanProp = { type: 'boolean' };
+
+// ─── EnumProp — default remains required, no examples ───────────────────────
+
+const enumProp: EnumProp = { type: 'string', default: 'sm', enum: ['sm', 'md', 'lg'] };
+
+// @ts-expect-error: default is required on EnumProp
+const _enumNoDefault: EnumProp = { type: 'string', enum: ['sm', 'md'] };
+
+// ─── SlotProp — default remains required, no examples ───────────────────────
+
+const slotProp: SlotProp = { type: 'slot', default: 'Content' };
+
+// @ts-expect-error: default is required on SlotProp
+const _slotNoDefault: SlotProp = { type: 'slot' };
