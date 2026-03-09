@@ -31,7 +31,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If the branch matches an ADR name pattern (e.g., `009-color-values`), determine the release branch by reading `package.json` version.
    - If the branch is `main` or doesn't match either pattern, fall back to reading `package.json` version and using the current minor version as `RELEASE_BRANCH`.
 
-   **Step 1b — Ask the user** using VS Code's interactive question UI. Present ALL questions in a single prompt:
+   **Step 1b — Sync release branch and determine next ADR number (silent, no user prompt)**
+   Run `git fetch origin $RELEASE_BRANCH` and fast-forward the local branch if behind (`git pull origin $RELEASE_BRANCH`). Then list `adr/` on the synced branch to find the highest existing ADR number and compute `NEXT_ADR_NUMBER` (zero-padded to 3 digits).
+
+   **Step 1c — Ask the user** using VS Code's interactive question UI. Present ALL questions in a single prompt:
 
    **Question 1 — Describe the change**
    - Header: `Change`
@@ -47,7 +50,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
    **Question 3 — ADR file name**
    - Header: `ADR file`
-   - Question: "What should the ADR file be named? This becomes `adr/[name].md` and the ADR branch `[name]`. Use the format `###-short-description` (e.g. `002-shadows`)."
+   - Question: "Next ADR number is `[NEXT_ADR_NUMBER]`. What should the ADR be named? This becomes `adr/[name].md` and the ADR branch `[name]`. Use the format `###-short-description` (e.g. `[NEXT_ADR_NUMBER]-shadows`)."
    - Allow free-form input. No predefined options.
 
    Parse answers as `CHANGE_DESCRIPTION`, `RELEASE_BRANCH`, and `ADR_NAME`.
@@ -55,7 +58,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Branch setup**:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --paths-only` from repo root. Parse `REPO_ROOT`.
-   - Check that `$RELEASE_BRANCH` exists (locally or on origin). If not, ask whether to create it from `main`.
+   - Verify `$RELEASE_BRANCH` is synced with remote (already fetched and fast-forwarded in Step 1b).
    - If not already on `$ADR_BRANCH`, check if it exists — switch to it or create it from `$RELEASE_BRANCH`.
    - Set `SPEC_FILE=$REPO_ROOT/adr/$ADR_NAME.md`.
    - If `$SPEC_FILE` exists, read it and continue editing rather than overwriting.

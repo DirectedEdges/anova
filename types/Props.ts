@@ -21,8 +21,11 @@ export interface BooleanProp {
  */
 export interface TextProp {
   type: 'string';
-  default: string;
+  /** @deprecated Use `examples` for demo content */
+  default?: string;
   nullable?: boolean;
+  /** Sample values demonstrating typical content for this prop */
+  examples?: string[];
 }
 
 /**
@@ -30,8 +33,11 @@ export interface TextProp {
  */
 export interface IconProp {
   type: 'string';
-  default: string;
+  /** @deprecated Use `examples` for demo content */
+  default?: string;
   nullable?: boolean;
+  /** Sample values demonstrating typical content for this prop */
+  examples?: string[];
 }
 
 /**

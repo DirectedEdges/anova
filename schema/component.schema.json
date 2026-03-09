@@ -142,9 +142,14 @@
       "properties": {
         "type": { "type": "string", "const": "string" },
         "default": { "type": "string" },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "examples": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sample values demonstrating typical content for this prop"
+        }
       },
-      "required": ["type", "default"],
+      "required": ["type"],
       "additionalProperties": false
     },
     "IconProp": {
@@ -154,9 +159,14 @@
       "properties": {
         "type": { "type": "string", "const": "string" },
         "default": { "type": "string" },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "examples": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sample values demonstrating typical content for this prop"
+        }
       },
-      "required": ["type", "default"],
+      "required": ["type"],
       "additionalProperties": false
     },
     "EnumProp": {

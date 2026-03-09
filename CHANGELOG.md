@@ -11,8 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
 - `Styles.fillColor` — icon fill color for ICON element type
+- `TextProp.examples` — sample values demonstrating typical text content
+- `IconProp.examples` — sample values demonstrating typical icon content
 
 ### Changed
+
+- `TextProp.default` — now optional; use `examples` for demo content
+- `IconProp.default` — now optional; use `examples` for demo content
 
 ### Removed
 
