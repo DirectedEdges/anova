@@ -17,7 +17,7 @@ export type Element = {
   styles?: Styles;
   propConfigurations?: PropConfigurations;
   instanceOf?: string | PropBinding;
-  /** The content for content-bearing elements: text string for text elements, glyph name for icon elements, or a PropBinding reference. */
+  /** The content for content-bearing elements: text string for text elements, glyph name for glyph elements, or a PropBinding reference. */
   content?: string | PropBinding;
 };
 
@@ -26,7 +26,7 @@ export type Element = {
  */
 export type ElementType =
   | 'text'
-  | 'icon'
+  | 'glyph'
   | 'vector'
   | 'container'
   | 'slot'

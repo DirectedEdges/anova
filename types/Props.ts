@@ -6,7 +6,7 @@ export type Props = Record<string, AnyProp>;
 /**
  * Union of all supported property types
  */
-export type AnyProp = BooleanProp | TextProp | IconProp | EnumProp | SlotProp;
+export type AnyProp = BooleanProp | TextProp | GlyphProp | EnumProp | SlotProp;
 
 /**
  * Boolean property definition
@@ -29,9 +29,9 @@ export interface TextProp {
 }
 
 /**
- * Icon/instance swap property definition
+ * Glyph/instance swap property definition
  */
-export interface IconProp {
+export interface GlyphProp {
   type: 'string';
   /** @deprecated Use `examples` for demo content */
   default?: string;

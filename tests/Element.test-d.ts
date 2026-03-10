@@ -9,7 +9,7 @@ import type { Element, PropBinding } from '../types/index.js';
 // ─── Element.content accepts string | PropBinding ───────────────────────────
 
 const contentString: Element = { content: 'Submit' };
-const contentIcon: Element = { content: 'caret-down' };
+const contentGlyph: Element = { content: 'caret-down' };
 const contentBound: Element = { content: { $binding: '#/props/label' } };
 
 // content is optional — empty element is valid

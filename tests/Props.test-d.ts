@@ -1,11 +1,11 @@
 /**
- * Type-level tests for TextProp and IconProp examples field
+ * Type-level tests for TextProp and GlyphProp examples field
  * and optional default.
  *
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { TextProp, IconProp, BooleanProp, EnumProp, SlotProp } from '../types/index.js';
+import type { TextProp, GlyphProp, BooleanProp, EnumProp, SlotProp } from '../types/index.js';
 
 // ─── TextProp — examples field ──────────────────────────────────────────────
 
@@ -23,18 +23,18 @@ const _textBadExamples: TextProp = { type: 'string', examples: [42] };
 // @ts-expect-error: examples must be an array, not a string
 const _textBadExamplesStr: TextProp = { type: 'string', examples: 'Label' };
 
-// ─── IconProp — examples field ──────────────────────────────────────────────
+// ─── GlyphProp — examples field ─────────────────────────────────────────────
 
 // examples is optional and accepts string[]
-const iconWithExamples: IconProp = { type: 'string', examples: ['Check', 'Close'] };
-const iconNoExamples: IconProp = { type: 'string' };
+const glyphWithExamples: GlyphProp = { type: 'string', examples: ['Check', 'Close'] };
+const glyphNoExamples: GlyphProp = { type: 'string' };
 
 // default is now optional
-const iconWithDefault: IconProp = { type: 'string', default: 'Check' };
-const iconBoth: IconProp = { type: 'string', default: 'Check', examples: ['Check'] };
+const glyphWithDefault: GlyphProp = { type: 'string', default: 'Check' };
+const glyphBoth: GlyphProp = { type: 'string', default: 'Check', examples: ['Check'] };
 
 // @ts-expect-error: examples must be string[], not number[]
-const _iconBadExamples: IconProp = { type: 'string', examples: [42] };
+const _glyphBadExamples: GlyphProp = { type: 'string', examples: [42] };
 
 // ─── BooleanProp — default remains required, no examples ────────────────────
 
