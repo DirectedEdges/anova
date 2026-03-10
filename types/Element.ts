@@ -17,7 +17,8 @@ export type Element = {
   styles?: Styles;
   propConfigurations?: PropConfigurations;
   instanceOf?: string | PropBinding;
-  text?: string | PropBinding;
+  /** The content for content-bearing elements: text string for text elements, glyph name for icon elements, or a PropBinding reference. */
+  content?: string | PropBinding;
 };
 
 /**
