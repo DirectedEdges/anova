@@ -13,13 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Styles.fillColor` — icon fill color for ICON element type
 - `TextProp.examples` — sample values demonstrating typical text content
 - `IconProp.examples` — sample values demonstrating typical icon content
+- `Element.content` — unified content for text strings and icon glyph names
 
 ### Changed
 
 - `TextProp.default` — now optional; use `examples` for demo content
 - `IconProp.default` — now optional; use `examples` for demo content
+- `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
+
+- `Element.text` — use `Element.content` instead
+
+### Migration
+
+- `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and icon glyph names
 
 ## [0.12.0] - 2026-03-05
 
