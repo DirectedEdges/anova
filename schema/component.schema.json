@@ -58,7 +58,7 @@
     "ElementType": {
       "type": "string",
       "description": "Element types derived from Figma node analysis.",
-      "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+      "enum": ["text", "glyph", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
     },
     "ElementTypeRef": {
       "type": "object",
@@ -66,7 +66,7 @@
       "properties": {
         "$ref": {
           "type": "string",
-          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/icon')"
+          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/glyph')"
         }
       },
       "required": ["$ref"],
@@ -102,7 +102,7 @@
       "oneOf": [
         { "$ref": "#/definitions/BooleanProp" },
         { "$ref": "#/definitions/TextProp" },
-        { "$ref": "#/definitions/IconProp" },
+        { "$ref": "#/definitions/GlyphProp" },
         { "$ref": "#/definitions/EnumProp" },
         { "$ref": "#/definitions/SlotProp" }
       ]
@@ -152,7 +152,7 @@
       "required": ["type"],
       "additionalProperties": false
     },
-    "IconProp": {
+    "GlyphProp": {
       "type": "object",
       "description": "",
       "examples": [],
@@ -297,7 +297,7 @@
             { "type": "string" },
             { "$ref": "#/definitions/PropBinding" }
           ],
-          "description": "The content for content-bearing elements: text string for text elements, glyph name for icon elements, or a PropBinding reference"
+          "description": "The content for content-bearing elements: text string for text elements, glyph name for glyph elements, or a PropBinding reference"
         },
         "styles": { "$ref": "#/definitions/Styles" },
         "propConfigurations": { "$ref": "#/definitions/PropConfigurations" }
@@ -383,7 +383,7 @@
           "type": "object",
           "properties": {
             "subcomponentNamePattern": { "type": "string" },
-            "iconNamePattern": { "type": "string", "description": "Naming pattern used to detect icon content assets (e.g. 'DS Icon Glyph /')" },
+            "glyphNamePattern": { "type": "string", "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },

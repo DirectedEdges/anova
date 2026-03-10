@@ -53,7 +53,7 @@ const withNullBackground: Styles = {
   backgroundColor: null,
 };
 
-// ─── Styles.fillColor (icon fill) ────────────────────────────────────────
+// ─── Styles.fillColor (glyph fill) ───────────────────────────────────────
 
 // String arm (hex color)
 const withFillColor: Styles = { fillColor: '#ff007f' };
@@ -75,7 +75,7 @@ const withFillColorGradient: Styles = {
   } satisfies GradientValue,
 };
 
-// null is valid (no icon fill)
+// null is valid (no glyph fill)
 const withNullFillColor: Styles = { fillColor: null };
 
 // fillColor is optional — omitting it is valid

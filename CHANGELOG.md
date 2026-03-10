@@ -10,15 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
-- `Styles.fillColor` — icon fill color for ICON element type
+- `Styles.fillColor` — glyph fill color for GLYPH element type
 - `TextProp.examples` — sample values demonstrating typical text content
-- `IconProp.examples` — sample values demonstrating typical icon content
-- `Element.content` — unified content for text strings and icon glyph names
+- `GlyphProp.examples` — sample values demonstrating typical glyph content
+- `Element.content` — unified content for text strings and glyph names
 
 ### Changed
 
+- `ElementType` — `'icon'` renamed to `'glyph'` to distinguish raw visual assets from composed Icon components
+- `IconProp` → `GlyphProp` — glyph/instance swap property definition
+- `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `TextProp.default` — now optional; use `examples` for demo content
-- `IconProp.default` — now optional; use `examples` for demo content
+- `GlyphProp.default` — now optional; use `examples` for demo content
 - `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
@@ -27,7 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration
 
-- `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and icon glyph names
+- `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and glyph names
+- `ElementType` `'icon'` → `'glyph'`: update all references to the `'icon'` literal in element type checks
+- `IconProp` → `GlyphProp`: update all type imports and references
+- `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern`: update config objects and any code referencing this field
 
 ## [0.12.0] - 2026-03-05
 

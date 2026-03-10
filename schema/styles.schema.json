@@ -15,7 +15,7 @@
         "opacity": { "$ref": "#/definitions/NumberStyleValue", "description": "Opacity 0-1" },
         "locked": { "$ref": "#/definitions/BooleanStyleValue", "description": "Lock state" },
         "backgroundColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Background fill color. Present on all non-text element types. Represented in Figma as fills." },
-        "fillColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Icon fill color. Present on ICON element type only. Represented in Figma as fills." },
+        "fillColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Glyph fill color. Present on GLYPH element type only. Represented in Figma as fills." },
         "textColor": { "$ref": "#/definitions/ColorStyleValue", "description": "Text fill color. Present on TEXT element type only. Represented in Figma as fills." },
         "effects": { "$ref": "#/definitions/EffectsStyleValue", "description": "Effect output. TokenReference when the node references a named effects style; Effects when effects are defined inline. Replaces effectStyleId." },
         "clipContent": { "$ref": "#/definitions/BooleanStyleValue", "description": "Clip content" },
