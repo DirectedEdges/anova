@@ -86,11 +86,12 @@
       ]
     },
     "BooleanBindableStyleValue": {
-      "description": "Boolean style value that can be bound to props (visible only)",
+      "description": "Boolean style value that can be bound to props or conditional expressions (visible only)",
       "oneOf": [
         { "type": "boolean" },
         { "$ref": "#/definitions/TokenReference" },
         { "$ref": "#/definitions/PropBinding" },
+        { "$ref": "#/definitions/Conditional" },
         { "type": "null" }
       ]
     },
@@ -390,6 +391,78 @@
         }
       },
       "required": ["$binding"],
+      "additionalProperties": false
+    },
+    "ConditionArgs": {
+      "type": "object",
+      "description": "Arguments for a condition expression. value is the prop binding to test; compareTo is the operand for binary operations.",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/PropBinding",
+          "description": "The prop binding whose value is tested"
+        },
+        "compareTo": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "boolean" },
+            { "type": "null" }
+          ],
+          "description": "Comparison operand for binary operations (equals, notEquals). Omitted for unary operations."
+        }
+      },
+      "required": ["value"],
+      "additionalProperties": false
+    },
+    "ConditionExpression": {
+      "type": "object",
+      "description": "A declarative condition expression pairing an operation with its arguments.",
+      "properties": {
+        "op": {
+          "type": "string",
+          "description": "Predicate operation name (e.g. 'isNull', 'isNotNull', 'equals', 'notEquals')"
+        },
+        "args": {
+          "$ref": "#/definitions/ConditionArgs"
+        }
+      },
+      "required": ["op", "args"],
+      "additionalProperties": false
+    },
+    "Conditional": {
+      "type": "object",
+      "description": "A conditional binding. Evaluates the condition against a bound prop and resolves to the then or else branch.",
+      "properties": {
+        "if": {
+          "type": "object",
+          "properties": {
+            "condition": {
+              "$ref": "#/definitions/ConditionExpression"
+            },
+            "then": {
+              "description": "Value when condition is true",
+              "oneOf": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "type": "number" },
+                { "type": "null" }
+              ]
+            },
+            "else": {
+              "description": "Value when condition is false",
+              "oneOf": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "type": "number" },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": ["condition", "then", "else"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["if"],
       "additionalProperties": false
     },
     "ReferenceValue": {

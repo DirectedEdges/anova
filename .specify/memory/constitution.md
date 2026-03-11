@@ -51,6 +51,7 @@ Rationale: These types are a published contract. Loose typing undermines compila
 
 ## Additional Constraints & Standards
 
+- **Naming — no abbreviations**: Type names, field names, schema properties, and API identifiers MUST use full, unabbreviated words. Prefer `Operation` over `Op`, `Button` over `Btn`, `Configuration` over `Config` (exception: `Config` is grandfathered). Clarity takes priority over brevity in the public contract.
 - **Language/Tooling**: TypeScript strict mode (`tsconfig.build.json`); ESM only; no runtime dependencies permitted (devDependencies: `typescript` only).
 - **Build**: `tsc -p tsconfig.build.json` emits `.js` shims into `dist/`. The source of truth is `types/*.ts` — `dist/` is a compatibility artifact only.
 - **No test framework required** for a pure types/schema package, but schema consistency checks and type compilation serve as the quality gate.

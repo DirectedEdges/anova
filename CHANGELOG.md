@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TextProp.examples` — sample values demonstrating typical text content
 - `GlyphProp.examples` — sample values demonstrating typical glyph content
 - `Element.content` — unified content for text strings and glyph names
+- `Conditional` — conditional binding with `if`/`condition`/`then`/`else` for derived values
+- `ConditionExpression` — declarative condition pairing an `op` (string) with `args`
+- `ConditionArgs` — condition arguments: `value` (PropBinding) and optional `compareTo`
 
 ### Changed
 
