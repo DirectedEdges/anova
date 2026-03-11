@@ -17,6 +17,13 @@ const textNoExamples: TextProp = { type: 'string' };
 const textWithDefault: TextProp = { type: 'string', default: 'Label' };
 const textBoth: TextProp = { type: 'string', default: 'Label', examples: ['Label'] };
 
+// default accepts null for nullable props
+const textNullDefault: TextProp = { type: 'string', default: null, nullable: true };
+const textNullDefaultOnly: TextProp = { type: 'string', default: null };
+
+// @ts-expect-error: default must be string | null, not number
+const _textBadDefault: TextProp = { type: 'string', default: 42 };
+
 // @ts-expect-error: examples must be string[], not number[]
 const _textBadExamples: TextProp = { type: 'string', examples: [42] };
 
@@ -32,6 +39,13 @@ const glyphNoExamples: GlyphProp = { type: 'string' };
 // default is now optional
 const glyphWithDefault: GlyphProp = { type: 'string', default: 'Check' };
 const glyphBoth: GlyphProp = { type: 'string', default: 'Check', examples: ['Check'] };
+
+// default accepts null for nullable props
+const glyphNullDefault: GlyphProp = { type: 'string', default: null, nullable: true };
+const glyphNullDefaultOnly: GlyphProp = { type: 'string', default: null };
+
+// @ts-expect-error: default must be string | null, not number
+const _glyphBadDefault: GlyphProp = { type: 'string', default: 42 };
 
 // @ts-expect-error: examples must be string[], not number[]
 const _glyphBadExamples: GlyphProp = { type: 'string', examples: [42] };

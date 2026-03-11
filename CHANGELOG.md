@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `TextProp.default` — now optional; use `examples` for demo content
 - `GlyphProp.default` — now optional; use `examples` for demo content
+- `TextProp.default` — widened to `string | null` for nullable props
+- `GlyphProp.default` — widened to `string | null` for nullable props
 - `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
