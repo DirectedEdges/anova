@@ -22,7 +22,7 @@ export interface BooleanProp {
 export interface StringProp {
   type: 'string';
   /** @deprecated Use `examples` for demo content */
-  default?: string;
+  default?: string | null;
   nullable?: boolean;
   /** Sample values demonstrating typical content for this prop */
   examples?: string[];

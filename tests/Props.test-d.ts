@@ -20,6 +20,13 @@ const stringBoth: StringProp = { type: 'string', default: 'Label', examples: ['L
 // nullable is optional
 const stringNullable: StringProp = { type: 'string', nullable: true };
 
+// default accepts null for nullable props
+const stringNullDefault: StringProp = { type: 'string', default: null, nullable: true };
+const stringNullDefaultOnly: StringProp = { type: 'string', default: null };
+
+// @ts-expect-error: default must be string | null, not number
+const _stringBadDefault: StringProp = { type: 'string', default: 42 };
+
 // @ts-expect-error: examples must be string[], not number[]
 const _stringBadExamples: StringProp = { type: 'string', examples: [42] };
 

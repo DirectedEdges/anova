@@ -140,7 +140,7 @@
       "examples": [],
       "properties": {
         "type": { "type": "string", "const": "string" },
-        "default": { "type": "string" },
+        "default": { "type": ["string", "null"] },
         "nullable": { "type": "boolean" },
         "examples": {
           "type": "array",

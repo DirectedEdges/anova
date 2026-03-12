@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ElementType` — `'icon'` renamed to `'glyph'` to distinguish raw visual assets from composed Icon components
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `StringProp.default` — now optional; use `examples` for demo content
+- `StringProp.default` — widened to `string | null` for nullable props
 - `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
