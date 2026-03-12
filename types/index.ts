@@ -1,6 +1,6 @@
 /**
  * Anova Schema Types
- * 
+ *
  * TypeScript type definitions matching the Anova JSON schema.
  * These types represent the serialized output format produced by
  * @directededges/anova-transformer and other Anova-compatible tools.
@@ -9,7 +9,7 @@
 // Core component types
 export type { Component } from './Component.js';
 export type { Anatomy, AnatomyElement, ElementTypeRef } from './Anatomy.js';
-export type { Props, AnyProp, BooleanProp, TextProp, GlyphProp, EnumProp, SlotProp } from './Props.js';
+export type { Props, AnyProp, BooleanProp, StringProp, EnumProp, SlotProp } from './Props.js';
 export type { Variant, Variants } from './Variant.js';
 export type { Metadata } from './Metadata.js';
 export type { Subcomponent, Subcomponents } from './Subcomponent.js';

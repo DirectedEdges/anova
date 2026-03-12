@@ -101,8 +101,7 @@
       "examples": [],
       "oneOf": [
         { "$ref": "#/definitions/BooleanProp" },
-        { "$ref": "#/definitions/TextProp" },
-        { "$ref": "#/definitions/GlyphProp" },
+        { "$ref": "#/definitions/StringProp" },
         { "$ref": "#/definitions/EnumProp" },
         { "$ref": "#/definitions/SlotProp" }
       ]
@@ -135,26 +134,9 @@
       "required": ["type", "default"],
       "additionalProperties": false
     },
-    "TextProp": {
+    "StringProp": {
       "type": "object",
-      "description": "",
-      "examples": [],
-      "properties": {
-        "type": { "type": "string", "const": "string" },
-        "default": { "type": ["string", "null"] },
-        "nullable": { "type": "boolean" },
-        "examples": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Sample values demonstrating typical content for this prop"
-        }
-      },
-      "required": ["type"],
-      "additionalProperties": false
-    },
-    "GlyphProp": {
-      "type": "object",
-      "description": "",
+      "description": "String property definition for text content, glyph/instance swap, or other string-valued props.",
       "examples": [],
       "properties": {
         "type": { "type": "string", "const": "string" },
