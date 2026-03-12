@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Component.invalidVariantCombinations` → `Component.invalidPropConfigurations` — renamed to match item type `PropConfigurations`
 - `ElementType` — `'icon'` renamed to `'glyph'` to distinguish raw visual assets from composed Icon components
 - `IconProp` → `GlyphProp` — glyph/instance swap property definition
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration
 
+- `Component.invalidVariantCombinations` → `Component.invalidPropConfigurations`: update all references to the renamed field
 - `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and glyph names
 - `ElementType` `'icon'` → `'glyph'`: update all references to the `'icon'` literal in element type checks
 - `IconProp` → `GlyphProp`: update all type imports and references

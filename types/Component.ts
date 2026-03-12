@@ -43,9 +43,9 @@ export type Component = {
   variants?: Variants;
 
   /**
-   * Invalid variant combinations for the component.
+   * Prop configurations that represent invalid component states.
    */
-  invalidVariantCombinations?: PropConfigurations[];
+  invalidPropConfigurations?: PropConfigurations[];
 
   /**
    * Metadata associated with the component.
