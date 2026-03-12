@@ -36,7 +36,7 @@ This ADR introduces a **conditional expression** type that can be used anywhere 
 
 ### Option A: `$condition` on `PropBinding` (flat, no `then`/`else`) *(Rejected)*
 
-Introduce a `ConditionalBinding` type that pairs a `$binding` reference with a declarative `$condition` object. The condition uses an `op` field from a fixed set of operations and an `args` array.
+Introduce a `ConditionalBinding` type that pairs a `$binding` reference with a declarative `$condition` object. The condition uses an operation field from a fixed set and an `args` array.
 
 ```yaml
 # visible bound to "show when label is not null"
@@ -86,16 +86,16 @@ visible:
 
 ---
 
-### Option C: `if` / `op` + `args` condition / `then` / `else` *(Selected)*
+### Option C: `if` / `operation` + `args` condition / `then` / `else` *(Selected)*
 
-Same `if`/`then`/`else` wrapper, but the condition uses an explicit `op` field and an `args` object where the binding is a named argument.
+Same `if`/`then`/`else` wrapper, but the condition uses an explicit `operation` field and an `args` object where the binding is a named argument.
 
 ```yaml
 # "visible when label is not null"
 visible:
   if:
     condition:
-      op: "isNotNull"
+      operation: "isNotNull"
       args:
         value:
           $binding: "#/props/label"
@@ -106,7 +106,7 @@ visible:
 visible:
   if:
     condition:
-      op: "equals"
+      operation: "equals"
       args:
         value:
           $binding: "#/props/icon"
@@ -117,14 +117,14 @@ visible:
 
 **Pros**:
 - `then`/`else` make output values explicit — no implied mapping from condition result to style value
-- Uniform `condition` shape: every operation has the same `op` + `args` structure — easy to validate with a single schema definition and `additionalProperties: false`
+- Uniform `condition` shape: every operation has the same `operation` + `args` structure — easy to validate with a single schema definition and `additionalProperties: false`
 - `args` as a named object (not positional array) is self-documenting
 - `$binding` nested inside `args.value` clearly separates "what to test" from "the operation"
 - Fewer new types than Option A: the `if` wrapper is a single `ConditionalStyle` type, no need for a separate `ConditionalBinding` that overlaps with `PropBinding`
 
 **Cons / Trade-offs**:
-- More verbose than Option B for simple cases (`op` + `args.value.$binding` vs just `isNull.$binding`)
-- `args` keys vary per operation (`value` only vs `value` + `compareTo`), so consumers still need per-op handling
+- More verbose than Option B for simple cases (`operation` + `args.value.$binding` vs just `isNull.$binding`)
+- `args` keys vary per operation (`value` only vs `value` + `compareTo`), so consumers still need per-operation handling
 
 ---
 
@@ -185,7 +185,7 @@ ConditionArgs:
   compareTo?: string | number | boolean | null    # operand for binary operations
 
 ConditionExpression:
-  op: string                  # operation name (e.g. "isNull", "equals")
+  operation: string            # operation name (e.g. "isNull", "equals")
   args: ConditionArgs
 
 Conditional:
@@ -233,12 +233,12 @@ ConditionArgs:
 ConditionExpression:
   type: object
   properties:
-    op:
+    operation:
       type: string
       description: "Predicate operation name (e.g. 'isNull', 'isNotNull', 'equals', 'notEquals')"
     args:
       $ref: "#/definitions/ConditionArgs"
-  required: ["op", "args"]
+  required: ["operation", "args"]
   additionalProperties: false
 
 Conditional:
@@ -268,7 +268,7 @@ Conditional:
 - `ConditionArgs.value` is always a `PropBinding` — the binding is the subject of the condition, not the condition itself.
 - `compareTo` is optional: unary operations (`isNull`, `isNotNull`) ignore it; binary operations (`equals`, `notEquals`) require it. Schema validation enforces `value` is always present.
 - `then` and `else` are both required, making the output explicit for every condition — no implicit default values.
-- `ConditionExpression.op` is typed as `string` (not a literal union) so that consumers and future extensions can introduce custom operations without a type or schema change. Built-in operations include `isNull`, `isNotNull`, `equals`, `notEquals`.
+- `ConditionExpression.operation` is typed as `string` (not a literal union) so that consumers and future extensions can introduce custom operations without a type or schema change. Built-in operations include `isNull`, `isNotNull`, `equals`, `notEquals`.
 
 ---
 
@@ -304,5 +304,5 @@ Conditional:
 - Consumers can now express "this element's visibility depends on whether prop X is null" as a first-class spec declaration rather than an implicit convention
 - The `if`/`condition`/`then`/`else` pattern establishes a general-purpose conditional mechanism that can be extended beyond `visible` in future ADRs
 - All consumers must handle the new `Conditional` discriminant (check for `if` key) alongside `PropBinding` and primitives when processing style values
-- `ConditionExpression.op` is an open `string` — consumers can define custom operations without schema changes; built-in operations (`isNull`, `isNotNull`, `equals`, `notEquals`) are documented by convention
+- `ConditionExpression.operation` is an open `string` — consumers can define custom operations without schema changes; built-in operations (`isNull`, `isNotNull`, `equals`, `notEquals`) are documented by convention
 - `then` and `else` are always explicit — no ambiguity about what value resolves in either branch

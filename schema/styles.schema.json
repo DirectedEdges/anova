@@ -418,7 +418,7 @@
       "type": "object",
       "description": "A declarative condition expression pairing an operation with its arguments.",
       "properties": {
-        "op": {
+        "operation": {
           "type": "string",
           "description": "Predicate operation name (e.g. 'isNull', 'isNotNull', 'equals', 'notEquals')"
         },
@@ -426,7 +426,7 @@
           "$ref": "#/definitions/ConditionArgs"
         }
       },
-      "required": ["op", "args"],
+      "required": ["operation", "args"],
       "additionalProperties": false
     },
     "Conditional": {

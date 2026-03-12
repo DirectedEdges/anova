@@ -15,16 +15,17 @@ export interface ConditionArgs {
 
 /**
  * A declarative condition expression evaluated against a bound prop's value.
- * Pairs an `op` (operation name as a plain string) with `args` to form a predicate.
+ * Pairs an `operation` name (plain string) with `args` to form a predicate.
  *
  * Built-in operations include `isNull`, `isNotNull`, `equals`, `notEquals`.
- * The `op` field is typed as `string` — not a literal union — so that consumers
- * and future extensions can introduce custom operations without a schema change.
+ * The `operation` field is typed as `string` — not a literal union — so that
+ * consumers and future extensions can introduce custom operations without a
+ * schema change.
  * @since 0.13.0
  */
 export interface ConditionExpression {
   /** The predicate operation name (e.g. `"isNull"`, `"equals"`). */
-  op: string;
+  operation: string;
   /** Arguments for the operation: the binding to test and optional comparison operand. */
   args: ConditionArgs;
 }

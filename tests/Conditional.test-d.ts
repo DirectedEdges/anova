@@ -9,30 +9,30 @@ import type {
   Style, PropBinding,
 } from '../types/index.js';
 
-// ─── ConditionExpression.op accepts any string ─────────────────────────────
+// ─── ConditionExpression.operation accepts any string ──────────────────────
 
 const exprBuiltIn: ConditionExpression = {
-  op: 'isNotNull',
+  operation: 'isNotNull',
   args: { value: { $binding: '#/props/label' } },
 };
 
 const exprCustom: ConditionExpression = {
-  op: 'myCustomOperation',
+  operation: 'myCustomOperation',
   args: { value: { $binding: '#/props/label' } },
 };
 
 const exprBinary: ConditionExpression = {
-  op: 'equals',
+  operation: 'equals',
   args: { value: { $binding: '#/props/icon' }, compareTo: 'check' },
 };
 
-// @ts-expect-error: op is required
+// @ts-expect-error: operation is required
 const _badExprNoOp: ConditionExpression = {
   args: { value: { $binding: '#/props/label' } },
 };
 
 // @ts-expect-error: args is required
-const _badExprNoArgs: ConditionExpression = { op: 'isNull' };
+const _badExprNoArgs: ConditionExpression = { operation: 'isNull' };
 
 // ─── ConditionArgs shape ───────────────────────────────────────────────────
 
@@ -71,7 +71,7 @@ const _badArgsMissing: ConditionArgs = { compareTo: 'x' };
 const conditional: Conditional = {
   if: {
     condition: {
-      op: 'isNotNull',
+      operation: 'isNotNull',
       args: { value: { $binding: '#/props/label' } },
     },
     then: true,
@@ -82,7 +82,7 @@ const conditional: Conditional = {
 const conditionalString: Conditional = {
   if: {
     condition: {
-      op: 'equals',
+      operation: 'equals',
       args: { value: { $binding: '#/props/status' }, compareTo: 'active' },
     },
     then: 'visible',
@@ -93,7 +93,7 @@ const conditionalString: Conditional = {
 const conditionalNull: Conditional = {
   if: {
     condition: {
-      op: 'isNull',
+      operation: 'isNull',
       args: { value: { $binding: '#/props/label' } },
     },
     then: null,
@@ -107,12 +107,12 @@ const _badNoIf: Conditional = {};
 // then and else are both required — missing either is a compile error
 const _badNoThen: Conditional = {
   // @ts-expect-error: then is required but missing
-  if: { condition: { op: 'isNull', args: { value: { $binding: '#/props/x' } } }, else: false },
+  if: { condition: { operation: 'isNull', args: { value: { $binding: '#/props/x' } } }, else: false },
 };
 
 const _badNoElse: Conditional = {
   // @ts-expect-error: else is required but missing
-  if: { condition: { op: 'isNull', args: { value: { $binding: '#/props/x' } } }, then: true },
+  if: { condition: { operation: 'isNull', args: { value: { $binding: '#/props/x' } } }, then: true },
 };
 
 // ─── Style union accepts Conditional ───────────────────────────────────────
@@ -120,7 +120,7 @@ const _badNoElse: Conditional = {
 const styleConditional: Style = {
   if: {
     condition: {
-      op: 'isNotNull',
+      operation: 'isNotNull',
       args: { value: { $binding: '#/props/label' } },
     },
     then: true,
