@@ -6,7 +6,7 @@ export type Props = Record<string, AnyProp>;
 /**
  * Union of all supported property types
  */
-export type AnyProp = BooleanProp | TextProp | GlyphProp | EnumProp | SlotProp;
+export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp;
 
 /**
  * Boolean property definition
@@ -17,21 +17,9 @@ export interface BooleanProp {
 }
 
 /**
- * Text content property definition
+ * String property definition (text content, glyph/instance swap, or other string-valued props)
  */
-export interface TextProp {
-  type: 'string';
-  /** @deprecated Use `examples` for demo content */
-  default?: string;
-  nullable?: boolean;
-  /** Sample values demonstrating typical content for this prop */
-  examples?: string[];
-}
-
-/**
- * Glyph/instance swap property definition
- */
-export interface GlyphProp {
+export interface StringProp {
   type: 'string';
   /** @deprecated Use `examples` for demo content */
   default?: string;
