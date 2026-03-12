@@ -43,5 +43,7 @@ export interface EnumProp {
  */
 export interface SlotProp {
   type: 'slot';
-  default: string;
+  default: string | null;
+  /** Whether this slot prop accepts a null value */
+  nullable?: boolean;
 }
