@@ -31,3 +31,6 @@ export type { GradientStop, GradientCenter, LinearGradient, RadialGradient, Angu
 
 // Reference types
 export type { PropBinding, BindingKey } from './PropBinding.js';
+
+// Conditional types
+export type { Conditional, ConditionExpression, ConditionArgs } from './Conditional.js';
