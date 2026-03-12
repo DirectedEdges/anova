@@ -11,7 +11,7 @@ export type Anatomy = Record<string, AnatomyElement>;
  * rather than using plain string identifiers.
  */
 export type ElementTypeRef = {
-  /** URI reference to an external element type definition (e.g. "foundations#/definitions/icon"). */
+  /** URI reference to an external element type definition (e.g. "foundations#/definitions/glyph"). */
   $ref: string;
 };
 
@@ -20,7 +20,7 @@ export type ElementTypeRef = {
  */
 export type AnatomyElement = {
   /**
-   * The mapped element type. Either a plain string identifier (e.g. "icon", "text")
+   * The mapped element type. Either a plain string identifier (e.g. "glyph", "text")
    * or an `ElementTypeRef` object referencing an external definition.
    */
   type: ElementType | ElementTypeRef;

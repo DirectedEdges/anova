@@ -15,6 +15,6 @@ export interface PropBinding {
 
 /**
  * Keys for properties that can be bound to component props.
- * Maps to Element properties: `instanceOf`, `text`, `children`; and Style property: `visible`.
+ * Maps to Element properties: `instanceOf`, `content`, `children`; and Style property: `visible`.
  */
-export type BindingKey = 'children' | 'instanceOf' | 'visible' | 'text';
+export type BindingKey = 'children' | 'instanceOf' | 'visible' | 'content';

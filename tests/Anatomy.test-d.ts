@@ -7,7 +7,7 @@ import type { Anatomy, AnatomyElement, ElementTypeRef } from '../types/index.js'
 
 // AnatomyElement.type accepts ElementType values
 const textElement: AnatomyElement = { type: 'text' };
-const iconElement: AnatomyElement = { type: 'icon' };
+const glyphElement: AnatomyElement = { type: 'glyph' };
 const vectorElement: AnatomyElement = { type: 'vector' };
 const containerElement: AnatomyElement = { type: 'container' };
 const slotElement: AnatomyElement = { type: 'slot' };
@@ -23,7 +23,7 @@ const invalidType: AnatomyElement = { type: 'any-string-value' };
 
 // AnatomyElement.type accepts ElementTypeRef objects
 const refElement: AnatomyElement = {
-  type: { $ref: 'foundations#/definitions/icon' },
+  type: { $ref: 'foundations#/definitions/glyph' },
 };
 const refWithPath: AnatomyElement = {
   type: { $ref: 'https://example.com/schema#/definitions/container' },
@@ -40,7 +40,7 @@ const invalidRefType: ElementTypeRef = { $ref: 123 };
 
 // AnatomyElement with optional fields and ref type
 const fullRefElement: AnatomyElement = {
-  type: { $ref: 'foundations#/definitions/icon' },
+  type: { $ref: 'foundations#/definitions/glyph' },
   detectedIn: 'variant-1',
   instanceOf: 'IconGlyph',
 };
@@ -56,11 +56,11 @@ const fullStringElement: AnatomyElement = {
 const anatomy: Anatomy = {
   root: { type: 'container' },
   label: { type: 'text' },
-  icon: { type: { $ref: 'foundations#/definitions/icon' } },
+  icon: { type: { $ref: 'foundations#/definitions/glyph' } },
 };
 
 // Type guard discrimination works
-const element: AnatomyElement = { type: 'icon' };
+const element: AnatomyElement = { type: 'glyph' };
 if (typeof element.type === 'string') {
   const _str: string = element.type;
 } else {

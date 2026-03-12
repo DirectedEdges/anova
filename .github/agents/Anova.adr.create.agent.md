@@ -32,7 +32,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If the branch is `main` or doesn't match either pattern, fall back to reading `package.json` version and using the current minor version as `RELEASE_BRANCH`.
 
    **Step 1b — Sync release branch and determine next ADR number (silent, no user prompt)**
-   Run `git fetch origin $RELEASE_BRANCH` and fast-forward the local branch if behind (`git pull origin $RELEASE_BRANCH`). Then list `adr/` on the synced branch to find the highest existing ADR number and compute `NEXT_ADR_NUMBER` (zero-padded to 3 digits).
+   Run `git fetch origin $RELEASE_BRANCH` and fast-forward the local branch if behind (`git pull origin $RELEASE_BRANCH`). Then determine `NEXT_ADR_NUMBER` by finding the highest existing ADR number across **both** sources (zero-padded to 3 digits):
+   1. List `adr/` on the synced branch to find numbered ADR files (e.g., `014-prop-examples.md` → 14).
+   2. List remote branches matching the `###-*` pattern (`git branch -r --list 'origin/[0-9][0-9][0-9]-*'`) to find in-flight ADR branches that may not have merged files yet (e.g., `origin/015-some-feature` → 15).
+   Take the maximum number from both sources and add 1.
 
    **Step 1c — Ask the user** using VS Code's interactive question UI. Present ALL questions in a single prompt:
 

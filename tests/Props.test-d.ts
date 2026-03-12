@@ -1,5 +1,5 @@
 /**
- * Type-level tests for StringProp (merged from TextProp + IconProp)
+ * Type-level tests for StringProp (merged from TextProp + GlyphProp)
  * and other prop types.
  *
  * These files are intentionally never executed — they are compiled with tsc
@@ -31,13 +31,16 @@ const _stringBadExamplesStr: StringProp = { type: 'string', examples: 'Label' };
 const anyFromString: AnyProp = { type: 'string' } satisfies StringProp;
 const anyFromStringExamples: AnyProp = { type: 'string', examples: ['Check', 'Close'] } satisfies StringProp;
 
-// ─── TextProp and IconProp no longer exist ────────────────────────────────────
+// ─── TextProp, IconProp, and GlyphProp no longer exist ────────────────────────
 
 // @ts-expect-error: TextProp is not exported
 type _TextPropCheck = import('../types/index.js').TextProp;
 
 // @ts-expect-error: IconProp is not exported
 type _IconPropCheck = import('../types/index.js').IconProp;
+
+// @ts-expect-error: GlyphProp is not exported
+type _GlyphPropCheck = import('../types/index.js').GlyphProp;
 
 // ─── BooleanProp — default remains required, no examples ────────────────────
 

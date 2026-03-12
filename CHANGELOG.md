@@ -10,21 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
-- `Styles.fillColor` — icon fill color for ICON element type
+- `Styles.fillColor` — glyph fill color for GLYPH element type
 - `StringProp.examples` — sample values demonstrating typical content for string props
+- `Element.content` — unified content for text strings and glyph names
 
 ### Changed
 
+- `ElementType` — `'icon'` renamed to `'glyph'` to distinguish raw visual assets from composed Icon components
+- `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `StringProp.default` — now optional; use `examples` for demo content
+- `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
 
 - `TextProp` — merged into `StringProp`
-- `IconProp` — merged into `StringProp`
+- `IconProp` / `GlyphProp` — merged into `StringProp`
+- `Element.text` — use `Element.content` instead
 
 ### Migration
 
-- `TextProp` / `IconProp` → `StringProp`: replace all imports and type references with `StringProp`; the shape is identical
+- `TextProp` / `IconProp` / `GlyphProp` → `StringProp`: replace all type imports and references with `StringProp`; the shape is identical
+- `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and glyph names
+- `ElementType` `'icon'` → `'glyph'`: update all references to the `'icon'` literal in element type checks
+- `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern`: update config objects and any code referencing this field
 
 ## [0.12.0] - 2026-03-05
 

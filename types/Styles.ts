@@ -8,7 +8,7 @@ export type Styles = Partial<{
   opacity: Style;
   locked: Style;
   backgroundColor: ColorStyle;
-  /** Icon fill color. Present on ICON element type only. Represented in Figma as fills. @since 0.13.0 */
+  /** Glyph fill color. Present on GLYPH element type only. Represented in Figma as fills. @since 0.13.0 */
   fillColor: ColorStyle;
   effects: TokenReference | Effects;
   clipContent: Style;

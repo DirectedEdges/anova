@@ -17,7 +17,7 @@ export interface BooleanProp {
 }
 
 /**
- * String property definition (text content, icon/instance swap, or other string-valued props)
+ * String property definition (text content, glyph/instance swap, or other string-valued props)
  */
 export interface StringProp {
   type: 'string';

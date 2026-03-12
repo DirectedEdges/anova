@@ -1,6 +1,6 @@
 /**
  * Anova Schema Types
- * 
+ *
  * TypeScript type definitions matching the Anova JSON schema.
  * These types represent the serialized output format produced by
  * @directededges/anova-transformer and other Anova-compatible tools.

@@ -82,8 +82,8 @@ if (tokensValue === 'CUSTOM') {
 // tokens can be undefined
 const _undefined: Config['format']['tokens'] = undefined;
 
-// iconNamePattern is optional — Config compiles without it
-const configWithoutIcon: Config = {
+// glyphNamePattern is optional — Config compiles without it
+const configWithoutGlyph: Config = {
   processing: {
     subcomponentNamePattern: '{C} / _ / {S}',
     variantDepth: 9999,
@@ -93,11 +93,11 @@ const configWithoutIcon: Config = {
   include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
 };
 
-// iconNamePattern accepts a string
-const configWithIcon: Config = {
+// glyphNamePattern accepts a string
+const configWithGlyph: Config = {
   processing: {
     subcomponentNamePattern: '{C} / _ / {S}',
-    iconNamePattern: 'DS Icon Glyph /',
+    glyphNamePattern: 'DS Icon Glyph /',
     variantDepth: 9999,
     details: 'LAYERED',
   },
@@ -105,5 +105,5 @@ const configWithIcon: Config = {
   include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
 };
 
-// iconNamePattern can be undefined
-const _iconUndefined: Config['processing']['iconNamePattern'] = undefined;
+// glyphNamePattern can be undefined
+const _glyphUndefined: Config['processing']['glyphNamePattern'] = undefined;
