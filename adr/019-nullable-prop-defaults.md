@@ -2,7 +2,7 @@
 
 **Branch**: `019-nullable-prop-defaults`
 **Created**: 2026-03-11
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
