@@ -1,4 +1,4 @@
-# ADR: Allow null in TextProp.default and GlyphProp.default
+# ADR: Allow null in StringProp.default
 
 **Branch**: `019-nullable-prop-defaults`
 **Created**: 2026-03-11
@@ -10,9 +10,9 @@
 
 ## Context
 
-`TextProp` and `GlyphProp` both declare a `nullable?: boolean` field that signals the prop can hold a null value in the design system output. However, the `default` field on both types is typed as `string | undefined` (TypeScript) and `{ "type": "string" }` (JSON Schema). This means a nullable prop cannot express that its default value is `null`.
+`StringProp` (the unified string property type, consolidated from the former `TextProp`, `GlyphProp`, and `IconProp`) declares a `nullable?: boolean` field that signals the prop can hold a null value in the design system output. However, the `default` field is typed as `string | undefined` (TypeScript) and `{ "type": "string" }` (JSON Schema). This means a nullable prop cannot express that its default value is `null`.
 
-When a prop is nullable and has no meaningful default text or glyph, the correct representation of its default state is `null` — not an empty string and not the absence of the field. The current contract forces producers to either omit `default` or use an empty string as a stand-in, both of which lose semantic information.
+When a prop is nullable and has no meaningful default, the correct representation of its default state is `null` — not an empty string and not the absence of the field. The current contract forces producers to either omit `default` or use an empty string as a stand-in, both of which lose semantic information.
 
 ---
 
@@ -29,7 +29,7 @@ When a prop is nullable and has no meaningful default text or glyph, the correct
 
 ### Option A: Widen `default` to `string | null` *(Selected)*
 
-Change the `default` field type from `string` to `string | null` on both `TextProp` and `GlyphProp`. In the schema, change `"type": "string"` to `"type": ["string", "null"]` for the `default` property.
+Change the `default` field type from `string` to `string | null` on `StringProp`. In the schema, change `"type": "string"` to `"type": ["string", "null"]` for the `default` property.
 
 **Pros**:
 - Directly expresses the semantic intent — nullable props can declare `null` as their default
@@ -56,47 +56,41 @@ Add a `nullDefault?: boolean` field to indicate the default is null rather than 
 
 | File | Change | Bump |
 |------|--------|------|
-| `Props.ts` | Widen `TextProp.default` from `string` to `string \| null` | MINOR |
-| `Props.ts` | Widen `GlyphProp.default` from `string` to `string \| null` | MINOR |
+| `Props.ts` | Widen `StringProp.default` from `string` to `string \| null` | MINOR |
 
 **Example — new shape** (`types/Props.ts`):
 ```yaml
 # Before
-TextProp:
+StringProp:
   type: 'string'
   default?: string
   nullable?: boolean
   examples?: string[]
 
 # After
-TextProp:
+StringProp:
   type: 'string'
   default?: string | null
   nullable?: boolean
   examples?: string[]
 ```
 
-The same change applies to `GlyphProp`.
-
 ### Schema changes (`schema/`)
 
 | File | Change | Bump |
 |------|--------|------|
-| `component.schema.json` | Widen `TextProp.default` type from `"string"` to `["string", "null"]` | MINOR |
-| `component.schema.json` | Widen `GlyphProp.default` type from `"string"` to `["string", "null"]` | MINOR |
+| `component.schema.json` | Widen `StringProp.default` type from `"string"` to `["string", "null"]` | MINOR |
 
 **Example — new shape** (`schema/component.schema.json`):
 ```yaml
-# Before — TextProp/properties/default
+# Before — StringProp/properties/default
 default:
   type: string
 
-# After — TextProp/properties/default
+# After — StringProp/properties/default
 default:
   type: ["string", "null"]
 ```
-
-The same change applies to the `GlyphProp` definition.
 
 ### Notes
 
@@ -107,8 +101,8 @@ The same change applies to the `GlyphProp` definition.
 
 ## Type ↔ Schema Impact
 
-- **Symmetric**: Yes — both `TextProp` and `GlyphProp` receive identical changes in `types/Props.ts` and `schema/component.schema.json`
-- **Parity check**: `TextProp.default: string | null` ↔ `TextProp/properties/default/type: ["string", "null"]`; same for `GlyphProp`
+- **Symmetric**: Yes — `StringProp` receives identical changes in `types/Props.ts` and `schema/component.schema.json`
+- **Parity check**: `StringProp.default: string | null` ↔ `StringProp/properties/default/type: ["string", "null"]`
 
 ---
 
@@ -116,7 +110,7 @@ The same change applies to the `GlyphProp` definition.
 
 | Consumer | Impact | Action required |
 |----------|--------|-----------------|
-| `anova-kit` | Recompile — `default` may now be `null` | Handle `null` when reading `TextProp.default` or `GlyphProp.default` (field was already optional, so null-check paths likely exist) |
+| `anova-kit` | Recompile — `default` may now be `null` | Handle `null` when reading `StringProp.default` (field was already optional, so null-check paths likely exist) |
 
 ---
 
@@ -130,7 +124,7 @@ The same change applies to the `GlyphProp` definition.
 
 ## Consequences
 
-- Nullable `TextProp` and `GlyphProp` instances can now express `default: null` to indicate the prop's default state is explicitly null
+- Nullable `StringProp` instances can now express `default: null` to indicate the prop's default state is explicitly null
 - Consumers reading `default` must account for a `null` value in addition to `string` and `undefined`
-- Schema validation will accept `null` as a valid `default` value for these two prop types
+- Schema validation will accept `null` as a valid `default` value for `StringProp`
 - No changes to `BooleanProp`, `EnumProp`, or `SlotProp`
