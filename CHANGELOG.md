@@ -11,15 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
 - `Styles.fillColor` — icon fill color for ICON element type
-- `TextProp.examples` — sample values demonstrating typical text content
-- `IconProp.examples` — sample values demonstrating typical icon content
+- `StringProp.examples` — sample values demonstrating typical content for string props
 
 ### Changed
 
-- `TextProp.default` — now optional; use `examples` for demo content
-- `IconProp.default` — now optional; use `examples` for demo content
+- `StringProp.default` — now optional; use `examples` for demo content
 
 ### Removed
+
+- `TextProp` — merged into `StringProp`
+- `IconProp` — merged into `StringProp`
+
+### Migration
+
+- `TextProp` / `IconProp` → `StringProp`: replace all imports and type references with `StringProp`; the shape is identical
 
 ## [0.12.0] - 2026-03-05
 

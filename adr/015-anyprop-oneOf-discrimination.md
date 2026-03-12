@@ -43,7 +43,7 @@ This is a violation of **Constitution IV** (Schema Validity Must Be Mechanically
 
 ## Options Considered
 
-### Option A: Merge `TextProp` and `IconProp` into a single `StringProp`
+### Option A: Merge `TextProp` and `IconProp` into a single `StringProp` *(Selected)*
 
 Collapse both types into one `StringProp` since they are structurally identical. The `oneOf` would have four branches instead of five, each structurally distinct.
 
@@ -80,22 +80,24 @@ StringProp:
 - Eliminates the `oneOf` violation cleanly — four branches, all structurally unique
 - Reflects truth: the output shape genuinely has no text-vs-icon distinction *today*
 - Simplest structural change to the schema
+- **Does not foreclose future re-separation**: If text and icon props later need distinct shapes, `StringProp` can be split back into two types at that point. A future discriminator (see Option B variants below) can be introduced alongside the structural divergence in a single MAJOR bump, rather than paying for the discriminator now when the shapes are identical.
 
 **Cons / Trade-offs**:
 - **Breaking change**: Removes two exported types (`TextProp`, `IconProp`) from the public API and replaces them with `StringProp` — requires a MAJOR bump
 - Erases the semantic intent that text props and icon props are conceptually different prop categories
 - All downstream consumers must update import references
-- **Forecloses divergence**: If text and icon props later need different shapes — e.g., icon `examples` items become asset references (`{ name: "check", set: "system-icons" }`) while text `examples` remain plain strings — the merged type would need to be re-split, incurring a second MAJOR bump. The merge optimizes for today's identical shape at the cost of a harder future separation.
 
 ---
 
-### Option B: Add a `kind` discriminator property
+### Option B: Add a discriminator property *(Rejected — deferred as future work)*
 
-Add a required `kind` field with a `const` value to each prop type, making them structurally distinguishable.
+Add a discriminating field to each prop type, making them structurally distinguishable. Three sub-variants were considered for where to house the discriminator:
 
-**Type changes**:
+**B1 — Top-level `kind` field**
+
+A required `kind` field with a `const` value on each prop type. Standard JSON Schema discrimination pattern.
+
 ```yaml
-# After
 TextProp:
   kind: "text"        # const — new required field
   type: "string"
@@ -111,23 +113,65 @@ IconProp:
   examples?: string[]
 ```
 
-**Schema changes**: Add `kind` as a required `const` property to both `TextProp` and `IconProp` definitions.
+Simple and idiomatic, but introduces a field whose sole purpose is schema discrimination — it carries no domain meaning beyond "this is a text prop" vs "this is an icon prop."
 
-**Pros**:
+**B2 — `x-platform` metadata**
+
+Use the `x-platform` pattern already established by `BooleanProp` to carry Figma-origin type information:
+
+```yaml
+TextProp:
+  type: "string"
+  x-platform:
+    FIGMA:
+      type: "TEXT"    # maps back to Figma's ComponentPropertyType
+
+IconProp:
+  type: "string"
+  x-platform:
+    FIGMA:
+      type: "INSTANCE_SWAP"
+```
+
+Leverages an existing schema pattern and carries real provenance data. The discriminator would reflect the actual Figma property type that produced this prop. However, `x-platform` is currently optional on `BooleanProp` — making it required here to achieve `oneOf` discrimination would be inconsistent, and leaving it optional doesn't fix the `oneOf` problem.
+
+**B3 — `$extensions` metadata**
+
+Use the DTCG `$extensions` pattern already established by `TokenReference` (which uses `$extensions["com.figma"]` for platform provenance):
+
+```yaml
+TextProp:
+  type: "string"
+  $extensions:
+    "com.figma":
+      type: "TEXT"
+
+IconProp:
+  type: "string"
+  $extensions:
+    "com.figma":
+      type: "INSTANCE_SWAP"
+```
+
+Aligns with the DTCG convention used elsewhere in the schema. Carries real Figma provenance. Same optional-vs-required tension as B2.
+
+**Pros** (all B variants):
 - Preserves the semantic distinction between text and icon props
 - Both existing type names survive — no breaking rename
-- Standard JSON Schema discrimination pattern
-- **Supports future divergence**: Once `kind` is in place, `TextProp` and `IconProp` can evolve independently (e.g., icon-specific `examples` item shapes, text-specific formatting hints) without another breaking change to the discrimination mechanism
+- Supports future divergence: once a discriminator is in place, `TextProp` and `IconProp` can evolve independently without another breaking change to the discrimination mechanism
+- B2/B3 carry real platform provenance data, not just a synthetic tag
 
-**Cons / Trade-offs**:
-- Adds a new required field to the output — all producers must emit `kind`, all consumers must handle it
-- Breaking change if `kind` is required (existing valid output lacks it), or weakens the schema if optional
-- Adds structural overhead for a distinction that no current consumer acts on at the output level
-- Introduces a field whose sole purpose is schema discrimination — it carries no domain meaning beyond "this is a text prop" vs "this is an icon prop"
+**Cons / Trade-offs** (all B variants):
+- Adds a new field to the output — all producers must emit it, all consumers must handle it
+- Breaking change if the discriminator field is required (existing valid output lacks it); optional doesn't fix `oneOf`
+- **Premature when shapes are identical**: Adding a discriminator to distinguish two types that have no structural difference solves a schema-mechanics problem but doesn't reflect a genuine domain distinction in the output *today*. The discriminator becomes meaningful only when the shapes actually diverge.
+- B2/B3 carry additional complexity (nested objects) compared to B1's flat `kind` field
+
+**Compatibility with Option A**: All B variants are additive and can be introduced later on top of a merged `StringProp` (or a re-split `TextProp`/`IconProp`) when the shapes actually diverge. Selecting A now does not preclude B later.
 
 ---
 
-### Option C: Replace `oneOf` with `anyOf` on `AnyProp`
+### Option C: Replace `oneOf` with `anyOf` on `AnyProp` *(Rejected)*
 
 Switch `AnyProp` from `oneOf` (exactly one match) to `anyOf` (at least one match). Multiple matching branches would no longer cause a validation failure.
 
@@ -158,7 +202,7 @@ AnyProp:
 
 ---
 
-### Option D: Add an icon-specific structural property to `IconProp`
+### Option D: Add an icon-specific structural property to `IconProp` *(Rejected)*
 
 Introduce a property unique to `IconProp` (e.g., `iconSet`, `iconLibrary`, or `iconName`) that makes it structurally distinct from `TextProp`.
 
@@ -191,14 +235,82 @@ IconProp:
 
 ## Decision
 
-**No option selected.** This ADR is in DRAFT for collaborative review. The decision will be recorded after discussion with collaborators.
+**Selected: Option A** — Merge `TextProp` and `IconProp` into a single `StringProp`.
+
+### Type changes (`types/`)
+
+| File | Change | Bump |
+|------|--------|------|
+| `Props.ts` | Remove `TextProp` and `IconProp` interfaces; add `StringProp` interface with identical shape | MAJOR |
+| `Props.ts` | Update `AnyProp` union: `BooleanProp \| StringProp \| EnumProp \| SlotProp` | MAJOR |
+| `index.ts` | Remove `TextProp`, `IconProp` exports; add `StringProp` export | MAJOR |
+
+**Example — new shape** (`types/Props.ts`):
+```yaml
+# Before
+AnyProp: BooleanProp | TextProp | IconProp | EnumProp | SlotProp
+
+TextProp:
+  type: "string"
+  default?: string
+  nullable?: boolean
+  examples?: string[]
+
+IconProp:
+  type: "string"
+  default?: string
+  nullable?: boolean
+  examples?: string[]
+
+# After
+AnyProp: BooleanProp | StringProp | EnumProp | SlotProp
+
+StringProp:
+  type: "string"
+  default?: string
+  nullable?: boolean
+  examples?: string[]
+```
+
+### Schema changes (`schema/`)
+
+| File | Change | Bump |
+|------|--------|------|
+| `component.schema.json` | Remove `TextProp` and `IconProp` definitions; add `StringProp` definition with identical shape | MAJOR |
+| `component.schema.json` | Update `AnyProp.oneOf`: replace `TextProp` and `IconProp` refs with single `StringProp` ref | MAJOR |
+
+**Example — new shape** (`schema/component.schema.json`):
+```yaml
+# Before — AnyProp.oneOf
+- $ref: "#/definitions/BooleanProp"
+- $ref: "#/definitions/TextProp"
+- $ref: "#/definitions/IconProp"
+- $ref: "#/definitions/EnumProp"
+- $ref: "#/definitions/SlotProp"
+
+# After — AnyProp.oneOf
+- $ref: "#/definitions/BooleanProp"
+- $ref: "#/definitions/StringProp"
+- $ref: "#/definitions/EnumProp"
+- $ref: "#/definitions/SlotProp"
+```
+
+### Notes
+
+**Deferred decision — discriminator property for future re-separation**: If `StringProp` is later split back into distinct text and icon types (e.g., because icon `examples` items evolve to structured asset references while text `examples` remain plain strings), the re-separated types will need a discriminator to satisfy `oneOf`. Three candidate patterns were evaluated in Option B:
+
+- **`kind`**: Flat top-level const field (`kind: "text"` / `kind: "icon"`). Simplest, but purely synthetic.
+- **`x-platform`**: Nested platform-origin metadata following the `BooleanProp` pattern (`x-platform.FIGMA.type: "TEXT"` / `"INSTANCE_SWAP"`). Carries real provenance.
+- **`$extensions`**: DTCG-aligned metadata following the `TokenReference` pattern (`$extensions["com.figma"].type: "TEXT"` / `"INSTANCE_SWAP"`). Consistent with existing DTCG conventions in this schema.
+
+The choice between these patterns is deferred until the shapes actually diverge and a discriminator is needed. At that point, the discriminator and structural divergence can be introduced together in a single MAJOR bump.
 
 ---
 
 ## Type <> Schema Impact
 
-- **Symmetric**: All options maintain or restore type-schema symmetry
-- **Current state**: The types and schema are symmetric in their brokenness — both define `TextProp` and `IconProp` with identical shapes. The fix must update both in tandem per Constitution I.
+- **Symmetric**: Yes — both `types/Props.ts` and `schema/component.schema.json` replace the same two definitions with one
+- **Parity check**: `StringProp` interface ↔ `#/definitions/StringProp` schema definition; `AnyProp` union ↔ `AnyProp.oneOf`
 
 ---
 
@@ -206,28 +318,22 @@ IconProp:
 
 | Consumer | Impact | Action required |
 |----------|--------|-----------------|
-| `anova-kit` | Depends on option selected — ranges from none (Option C) to recompile with updated type imports (Options A, B, D) | TBD after option selection |
+| `anova-kit` | Recompile — `TextProp` and `IconProp` imports no longer exist | Replace `TextProp` / `IconProp` imports with `StringProp` |
 
 ---
 
 ## Semver Decision
 
-**Depends on option selected**:
+**Version bump**: Part of `0.13.0` (pre-1.0 — breaking changes are permitted within minor releases)
 
-| Option | Bump | Rationale |
-|--------|------|-----------|
-| A (Merge into `StringProp`) | **MAJOR** | Removes two exported types — breaking change per Constitution III |
-| B (Add `kind` discriminator) | **MAJOR** | Adds a required field to existing types — breaking for existing output |
-| C (`anyOf` instead of `oneOf`) | **PATCH** | Schema-only keyword change, no type changes, no output shape change |
-| D (Add icon-specific property) | **MINOR** | Additive optional field — non-breaking per Constitution III |
+**Justification**: Removes two exported types (`TextProp`, `IconProp`) from the public API and replaces them with `StringProp`. This is a breaking change per Constitution III, but acceptable within a pre-1.0 minor release where the public API is not yet stabilized.
 
 ---
 
 ## Consequences
 
-Outcomes common to all options:
-- `AnyProp` schema validation will no longer reject valid prop instances
-- Schema compliance with Constitution IV is restored
-- Runtime validators consuming `component.schema.json` will produce correct results for text and icon props
-
-Option-specific consequences are deferred until an option is selected.
+- `AnyProp` schema validation will no longer reject valid prop instances — Constitution IV compliance is restored
+- Runtime validators consuming `component.schema.json` will produce correct results for string-typed props
+- The semantic distinction between "text prop" and "icon prop" is no longer encoded in the type system or schema — consumers that need this distinction must derive it from context (e.g., element type, prop name)
+- `TextProp` and `IconProp` are removed from the public API — all downstream consumers must update imports to `StringProp`
+- Future re-separation into distinct text/icon types remains possible; the discriminator pattern (Option B) is documented and deferred until structural divergence justifies it
