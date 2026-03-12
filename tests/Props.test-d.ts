@@ -1,40 +1,46 @@
 /**
- * Type-level tests for TextProp and GlyphProp examples field
- * and optional default.
+ * Type-level tests for StringProp (merged from TextProp + GlyphProp)
+ * and other prop types.
  *
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { TextProp, GlyphProp, BooleanProp, EnumProp, SlotProp } from '../types/index.js';
+import type { StringProp, BooleanProp, EnumProp, SlotProp, AnyProp } from '../types/index.js';
 
-// ─── TextProp — examples field ──────────────────────────────────────────────
+// ─── StringProp — examples field ──────────────────────────────────────────────
 
 // examples is optional and accepts string[]
-const textWithExamples: TextProp = { type: 'string', examples: ['Label', 'Title'] };
-const textNoExamples: TextProp = { type: 'string' };
+const stringWithExamples: StringProp = { type: 'string', examples: ['Label', 'Title'] };
+const stringNoExamples: StringProp = { type: 'string' };
 
-// default is now optional
-const textWithDefault: TextProp = { type: 'string', default: 'Label' };
-const textBoth: TextProp = { type: 'string', default: 'Label', examples: ['Label'] };
+// default is optional
+const stringWithDefault: StringProp = { type: 'string', default: 'Label' };
+const stringBoth: StringProp = { type: 'string', default: 'Label', examples: ['Label'] };
+
+// nullable is optional
+const stringNullable: StringProp = { type: 'string', nullable: true };
 
 // @ts-expect-error: examples must be string[], not number[]
-const _textBadExamples: TextProp = { type: 'string', examples: [42] };
+const _stringBadExamples: StringProp = { type: 'string', examples: [42] };
 
 // @ts-expect-error: examples must be an array, not a string
-const _textBadExamplesStr: TextProp = { type: 'string', examples: 'Label' };
+const _stringBadExamplesStr: StringProp = { type: 'string', examples: 'Label' };
 
-// ─── GlyphProp — examples field ─────────────────────────────────────────────
+// ─── StringProp assignable to AnyProp ─────────────────────────────────────────
 
-// examples is optional and accepts string[]
-const glyphWithExamples: GlyphProp = { type: 'string', examples: ['Check', 'Close'] };
-const glyphNoExamples: GlyphProp = { type: 'string' };
+const anyFromString: AnyProp = { type: 'string' } satisfies StringProp;
+const anyFromStringExamples: AnyProp = { type: 'string', examples: ['Check', 'Close'] } satisfies StringProp;
 
-// default is now optional
-const glyphWithDefault: GlyphProp = { type: 'string', default: 'Check' };
-const glyphBoth: GlyphProp = { type: 'string', default: 'Check', examples: ['Check'] };
+// ─── TextProp, IconProp, and GlyphProp no longer exist ────────────────────────
 
-// @ts-expect-error: examples must be string[], not number[]
-const _glyphBadExamples: GlyphProp = { type: 'string', examples: [42] };
+// @ts-expect-error: TextProp is not exported
+type _TextPropCheck = import('../types/index.js').TextProp;
+
+// @ts-expect-error: IconProp is not exported
+type _IconPropCheck = import('../types/index.js').IconProp;
+
+// @ts-expect-error: GlyphProp is not exported
+type _GlyphPropCheck = import('../types/index.js').GlyphProp;
 
 // ─── BooleanProp — default remains required, no examples ────────────────────
 
