@@ -2,9 +2,9 @@
 
 **Branch**: `015-anyprop-oneOf-discrimination`
 **Created**: 2026-03-09
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author), *(collaborators TBD)*
-**Supersedes**: *(none)*
+**Supersedes**: ADR 017 (`017-icon-or-glyph-element-name`) — prop rename portion only. ADR 017 renamed `IconProp` → `GlyphProp`; this ADR merges both `TextProp` and `IconProp` into `StringProp`, making the intermediate `GlyphProp` rename moot. The element type rename (`icon` → `glyph`) and other non-prop changes from ADR 017 remain in effect.
 
 ---
 

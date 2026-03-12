@@ -24,12 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - `TextProp` — merged into `StringProp`
-- `IconProp` / `GlyphProp` — merged into `StringProp`
+- `IconProp` — merged into `StringProp`
 - `Element.text` — use `Element.content` instead
 
 ### Migration
 
-- `TextProp` / `IconProp` / `GlyphProp` → `StringProp`: replace all type imports and references with `StringProp`; the shape is identical
+- `TextProp` / `IconProp` → `StringProp`: replace all type imports and references with `StringProp`; the shape is identical
 - `Element.text` → `Element.content`: read element content from `content` instead of `text`; applies to both text strings and glyph names
 - `ElementType` `'icon'` → `'glyph'`: update all references to the `'icon'` literal in element type checks
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern`: update config objects and any code referencing this field
