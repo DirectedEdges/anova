@@ -1,4 +1,5 @@
 import { PropBinding } from "./PropBinding.js";
+import { Conditional } from "./Conditional.js";
 import { Effects } from "./Effects.js";
 import { GradientValue } from "./Gradient.js";
 
@@ -89,9 +90,9 @@ export interface TokenReference {
 
 /**
  * Style value types supported in the output format.
- * Can be primitives, token references, or prop bindings.
+ * Can be primitives, token references, prop bindings, or conditional expressions.
  */
-export type Style = string | boolean | number | null | TokenReference | PropBinding;
+export type Style = string | boolean | number | null | TokenReference | PropBinding | Conditional;
 
 /**
  * Inline resolved color value per DTCG Color Module §4.1.
