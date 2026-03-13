@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Styles.fillColor` — glyph fill color for GLYPH element type
 - `StringProp.examples` — sample values demonstrating typical content for string props
 - `Element.content` — unified content for text strings and glyph names
+- `SlotProp.nullable` — optional flag indicating the slot prop accepts null
 - `Conditional` — conditional binding with `if`/`condition`/`then`/`else` for derived values
 - `ConditionExpression` — declarative condition pairing an `operation` (string) with `args`
 - `ConditionArgs` — condition arguments: `value` (PropBinding) and optional `compareTo`
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `StringProp.default` — now optional; use `examples` for demo content
 - `StringProp.default` — widened to `string | null` for nullable props
+- `SlotProp.default` — widened to `string | null` for nullable slot props
 - `BindingKey` — `'text'` replaced by `'content'`
 
 ### Removed
