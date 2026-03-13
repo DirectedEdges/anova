@@ -33,6 +33,9 @@ const _badBindingRef: PropBinding = { $binding: '#/props/x', $ref: '#/props/x' }
 const _bkChildren: BindingKey = 'children';
 const _bkInstanceOf: BindingKey = 'instanceOf';
 const _bkVisible: BindingKey = 'visible';
+const _bkContent: BindingKey = 'content';
+
+// @ts-expect-error: 'text' is no longer a BindingKey — replaced by 'content'
 const _bkText: BindingKey = 'text';
 
 // @ts-expect-error: 'styles' is not a BindingKey
@@ -47,14 +50,14 @@ const elemBound: Element = { instanceOf: { $binding: '#/props/swap' } };
 // @ts-expect-error: ReferenceValue ($ref) is no longer valid for instanceOf
 const _oldInstanceOf: Element = { instanceOf: { $ref: '#/props/swap' } };
 
-// ─── Element.text accepts string | PropBinding ──────────────────────────────
+// ─── Element.content accepts string | PropBinding ───────────────────────────
 
-const textUnbound: Element = { text: 'Submit' };
-const textBound: Element = { text: { $binding: '#/props/label' } };
+const contentUnbound: Element = { content: 'Submit' };
+const contentBound: Element = { content: { $binding: '#/props/label' } };
 
-// Old { $ref } shape must NOT compile as Element.text
-// @ts-expect-error: ReferenceValue ($ref) is no longer valid for text
-const _oldText: Element = { text: { $ref: '#/props/label' } };
+// Old { $ref } shape must NOT compile as Element.content
+// @ts-expect-error: ReferenceValue ($ref) is no longer valid for content
+const _oldContent: Element = { content: { $ref: '#/props/label' } };
 
 // ─── Style accepts PropBinding (for visible) ────────────────────────────────
 

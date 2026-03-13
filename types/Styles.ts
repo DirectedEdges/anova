@@ -1,4 +1,5 @@
 import { PropBinding } from "./PropBinding.js";
+import { Conditional } from "./Conditional.js";
 import { Effects } from "./Effects.js";
 import { GradientValue } from "./Gradient.js";
 
@@ -8,6 +9,8 @@ export type Styles = Partial<{
   opacity: Style;
   locked: Style;
   backgroundColor: ColorStyle;
+  /** Glyph fill color. Present on GLYPH element type only. Represented in Figma as fills. @since 0.13.0 */
+  fillColor: ColorStyle;
   effects: TokenReference | Effects;
   clipContent: Style;
   /** Corner radius. Scalar when uniform; `Corners` object when per-corner values differ. @since 1.0.0 */
@@ -87,9 +90,9 @@ export interface TokenReference {
 
 /**
  * Style value types supported in the output format.
- * Can be primitives, token references, or prop bindings.
+ * Can be primitives, token references, prop bindings, or conditional expressions.
  */
-export type Style = string | boolean | number | null | TokenReference | PropBinding;
+export type Style = string | boolean | number | null | TokenReference | PropBinding | Conditional;
 
 /**
  * Inline resolved color value per DTCG Color Module §4.1.
@@ -117,7 +120,7 @@ export interface ColorValue { /** Candidate */
 /**
  * Colour-specific style value type.
  * Mirrors `ColorStyleValue` in `schema/styles.schema.json`.
- * Used for `backgroundColor`, `textColor`, and `strokes` — the three properties
+ * Used for `backgroundColor`, `fillColor`, `textColor`, and `strokes` — the four properties
  * whose values are always colour-semantics and may carry gradient data.
  */
 export type ColorStyle = string | TokenReference | GradientValue | null;
@@ -219,6 +222,7 @@ export type StyleKey =
   | 'opacity'
   | 'locked'
   | 'backgroundColor'
+  | 'fillColor'
   | 'effects'
   | 'clipContent'
   | 'cornerRadius'

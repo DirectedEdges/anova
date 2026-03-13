@@ -1,5 +1,5 @@
 {
-  "version": "0.12.0",
+  "version": "0.13.0",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/DirectedEdges/anova/main/schema/component.schema.json",
   "title": "Anova Plugin Output Schema",
@@ -58,7 +58,7 @@
     "ElementType": {
       "type": "string",
       "description": "Element types derived from Figma node analysis.",
-      "enum": ["text", "icon", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+      "enum": ["text", "glyph", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
     },
     "ElementTypeRef": {
       "type": "object",
@@ -66,7 +66,7 @@
       "properties": {
         "$ref": {
           "type": "string",
-          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/icon')"
+          "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/glyph')"
         }
       },
       "required": ["$ref"],
@@ -101,8 +101,7 @@
       "examples": [],
       "oneOf": [
         { "$ref": "#/definitions/BooleanProp" },
-        { "$ref": "#/definitions/TextProp" },
-        { "$ref": "#/definitions/IconProp" },
+        { "$ref": "#/definitions/StringProp" },
         { "$ref": "#/definitions/EnumProp" },
         { "$ref": "#/definitions/SlotProp" }
       ]
@@ -133,30 +132,25 @@
         }
       },
       "required": ["type", "default"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
-    "TextProp": {
+    "StringProp": {
       "type": "object",
-      "description": "",
+      "description": "String property definition for text content, glyph/instance swap, or other string-valued props.",
       "examples": [],
       "properties": {
         "type": { "type": "string", "const": "string" },
-        "default": { "type": "string" },
-        "nullable": { "type": "boolean" }
+        "default": { "type": ["string", "null"] },
+        "nullable": { "type": "boolean" },
+        "examples": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sample values demonstrating typical content for this prop"
+        }
       },
-      "required": ["type", "default"],
-      "additionalProperties": false
-    },
-    "IconProp": {
-      "type": "object",
-      "description": "",
-      "examples": [],
-      "properties": {
-        "type": { "type": "string", "const": "string" },
-        "default": { "type": "string" },
-        "nullable": { "type": "boolean" }
-      },
-      "required": ["type", "default"],
+      "required": ["type"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "EnumProp": {
@@ -173,6 +167,7 @@
         "nullable": { "type": "boolean" }
       },
       "required": ["type", "default", "enum"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "SlotProp": {
@@ -184,7 +179,8 @@
         "default": { "type": ["null", "string"] },
         "nullable": { "type": "boolean" }
       },
-      "required": ["type", "default"],
+      "required": ["type"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "Variants": {
@@ -282,12 +278,12 @@
           ],
           "description": "The component or component set name that this instance element references, or a reference to an instance swap prop binding"
         },
-        "text": {
+        "content": {
           "oneOf": [
             { "type": "string" },
             { "$ref": "#/definitions/PropBinding" }
           ],
-          "description": "The text content for text elements, or a reference to a text prop binding"
+          "description": "The content for content-bearing elements: text string for text elements, glyph name for glyph elements, or a PropBinding reference"
         },
         "styles": { "$ref": "#/definitions/Styles" },
         "propConfigurations": { "$ref": "#/definitions/PropConfigurations" }
@@ -306,6 +302,78 @@
       "required": ["$binding"],
       "additionalProperties": false
     },
+    "ConditionArgs": {
+      "type": "object",
+      "description": "Arguments for a condition expression. value is the prop binding to test; compareTo is the operand for binary operations.",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/PropBinding",
+          "description": "The prop binding whose value is tested"
+        },
+        "compareTo": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "boolean" },
+            { "type": "null" }
+          ],
+          "description": "Comparison operand for binary operations (equals, notEquals). Omitted for unary operations."
+        }
+      },
+      "required": ["value"],
+      "additionalProperties": false
+    },
+    "ConditionExpression": {
+      "type": "object",
+      "description": "A declarative condition expression pairing an operation with its arguments.",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "description": "Predicate operation name (e.g. 'isNull', 'isNotNull', 'equals', 'notEquals')"
+        },
+        "args": {
+          "$ref": "#/definitions/ConditionArgs"
+        }
+      },
+      "required": ["operation", "args"],
+      "additionalProperties": false
+    },
+    "Conditional": {
+      "type": "object",
+      "description": "A conditional binding. Evaluates the condition against a bound prop and resolves to the then or else branch.",
+      "properties": {
+        "if": {
+          "type": "object",
+          "properties": {
+            "condition": {
+              "$ref": "#/definitions/ConditionExpression"
+            },
+            "then": {
+              "description": "Value when condition is true",
+              "oneOf": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "type": "number" },
+                { "type": "null" }
+              ]
+            },
+            "else": {
+              "description": "Value when condition is false",
+              "oneOf": [
+                { "type": "string" },
+                { "type": "boolean" },
+                { "type": "number" },
+                { "type": "null" }
+              ]
+            }
+          },
+          "required": ["condition", "then", "else"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["if"],
+      "additionalProperties": false
+    },
     "Styles": {
       "$ref": "styles.schema.json#/definitions/Styles"
     },
@@ -320,7 +388,23 @@
           "properties": {
             "url": { "type": "string" },
             "version": { "type": "number" },
-            "name": { "type": "string" }
+            "name": { "type": "string" },
+            "license": {
+              "type": "object",
+              "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "License validation status (e.g. VALID, EXPIRED, NONE)."
+                },
+                "level": {
+                  "type": "string",
+                  "description": "Output entitlement level (e.g. FREE, PRO, EXTENDED). Plain string for extensibility."
+                }
+              },
+              "required": ["status", "level"],
+              "additionalProperties": false
+            }
           },
           "required": ["url", "version", "name"],
           "additionalProperties": false
@@ -328,8 +412,15 @@
         "schema": {
           "type": "object",
           "properties": {
-            "url": { "type": "string" },
-            "version": { "type": "string" }
+            "url": {
+              "type": "string",
+              "description": "Versioned schema URL pinned to a git tag (e.g. https://raw.githubusercontent.com/.../v0.13.0/schema/component.schema.json)"
+            },
+            "version": { "type": "string" },
+            "latest": {
+              "type": "string",
+              "description": "Stable URL pointing to the latest schema on the main branch for discovery"
+            }
           },
           "required": ["url", "version"],
           "additionalProperties": false
@@ -344,17 +435,7 @@
           "required": ["pageId", "nodeId", "nodeType"],
           "additionalProperties": false
         },
-        "config": { "$ref": "#/definitions/Config" },
-        "license": {
-          "type": "object",
-          "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
-          "properties": {
-            "status": { "type": "string" },
-            "description": { "type": "string" }
-          },
-          "required": ["status", "description"],
-          "additionalProperties": false
-        }
+        "config": { "$ref": "#/definitions/Config" }
       },
       "required": ["author", "lastUpdated", "generator", "schema", "source", "config"],
       "additionalProperties": false
@@ -367,7 +448,7 @@
           "type": "object",
           "properties": {
             "subcomponentNamePattern": { "type": "string" },
-            "iconNamePattern": { "type": "string", "description": "Naming pattern used to detect icon content assets (e.g. 'DS Icon Glyph /')" },
+            "glyphNamePattern": { "type": "string", "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },

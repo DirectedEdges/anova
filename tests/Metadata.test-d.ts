@@ -21,18 +21,40 @@ const withoutLicense: Metadata = {
   config: baseConfig,
 };
 
-// With license present — both subfields required
+// With generator.license present — both subfields required
 const withLicense: Metadata = {
   ...withoutLicense,
-  license: {
-    status: 'active',
-    description: 'License is valid.',
+  generator: {
+    url: 'https://example.com',
+    version: 1,
+    name: 'test',
+    license: {
+      status: 'VALID',
+      level: 'PRO',
+    },
   },
 };
 
-// status and description are strings
-const _status: string = withLicense.license!.status;
-const _description: string = withLicense.license!.description;
+// status and level are strings
+const _status: string = withLicense.generator.license!.status;
+const _level: string = withLicense.generator.license!.level;
 
-// license is optional — can be undefined
-const _optional: { status: string; description: string } | undefined = withoutLicense.license;
+// generator.license is optional — can be undefined
+const _optional: { status: string; level: string } | undefined = withoutLicense.generator.license;
+
+// ─── schema.latest — optional discovery URL (ADR 023) ───────────────────────
+
+// latest is optional — absent is valid
+const withoutLatest: Metadata = {
+  ...withoutLicense,
+  schema: { url: 'https://example.com/schema/v0.13.0/component.schema.json', version: '0.13.0' },
+};
+
+// latest can be provided
+const withLatest: Metadata = {
+  ...withoutLicense,
+  schema: { url: 'https://example.com/schema/v0.13.0/component.schema.json', version: '0.13.0', latest: 'https://example.com/schema/main/component.schema.json' },
+};
+
+// latest is a string when present
+const _latestVal: string | undefined = withLatest.schema.latest;

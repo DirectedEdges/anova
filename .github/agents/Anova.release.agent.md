@@ -61,15 +61,25 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
    git add -A && git commit -m "release: @directededges/anova v[version]"
    ```
 
-9. **Publish gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to publish @directededges/anova@[version] to GitHub Packages?"**
-   On Yes:
+9. **Tag**: Create a Git tag for the release commit:
    ```bash
-   npm publish
+   git tag -a "v[version]" -m "release: @directededges/anova v[version]"
    ```
-   If publish fails with "previously published version", report and ask the user whether to bump the patch version or skip.
 
-10. **PR gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to create a PR to main for @directededges/anova v[version]?"**
+10. **Publish gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to publish @directededges/anova@[version] to GitHub Packages?"**
     On Yes:
+    ```bash
+    npm publish
+    ```
+    If publish fails with "previously published version", report and ask the user whether to bump the patch version or skip.
+
+11. **PR gate**: Use `AskUserQuestion` with Yes/No options: **"Ready to create a PR to main for @directededges/anova v[version]?"**
+    On Yes:
+    Push to remote before creating the PR if needed, including the tag:
+    ```bash
+    git push --follow-tags
+    ```
+    Then create the PR:
     ```bash
     gh pr create --base main --title "release: @directededges/anova v[version]" --body "$(cat <<'EOF'
     ## Summary
@@ -79,9 +89,8 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
     )"
     ```
     If a PR already exists for this branch, report the existing PR URL instead of failing.
-    Push to remote before creating the PR if needed.
 
-11. **Cleanup gate** (after PR is merged): Use `AskUserQuestion` with Yes/No options: **"PR merged. Switch to main and delete the release branch?"**
+12. **Cleanup gate** (after PR is merged): Use `AskUserQuestion` with Yes/No options: **"PR merged. Switch to main and delete the release branch?"**
     On Yes:
     ```bash
     git checkout main && git pull && git branch -d [release-branch] && git push origin --delete [release-branch]

@@ -65,7 +65,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **All gates have now passed. Steps 10 and 11 are REQUIRED before reporting completion. Do not skip to step 12.**
 
 10. **Update CHANGELOG.md**:
-    - Prepend a new entry at the top using the existing format in the file
+    - The release branch scaffolds an `## [X.Y.Z] - Unreleased` heading with empty sections. Add entries into the existing scaffold — do **not** replace `Unreleased` with a date (the date is set at release time). If no scaffold heading exists, prepend one using `Unreleased` as the date.
     - **Format**: one top-level bullet per user-visible change; no sub-bullets; no bold; no code blocks; no wrapping prose paragraphs
     - **Entry line**: `` `Parent.field` `` — one-phrase description; aim for ≤ 12 words; omit implementation detail (class names, file paths, method names)
     - **Names**: `<Parent>.<field>` in backticks, em dash separator — e.g. `Styles.cornerSmoothing` — corner smoothing factor (0–1)
