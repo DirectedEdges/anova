@@ -132,6 +132,7 @@
         }
       },
       "required": ["type", "default"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "StringProp": {
@@ -149,6 +150,7 @@
         }
       },
       "required": ["type"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "EnumProp": {
@@ -165,6 +167,7 @@
         "nullable": { "type": "boolean" }
       },
       "required": ["type", "default", "enum"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "SlotProp": {
@@ -176,7 +179,8 @@
         "default": { "type": ["null", "string"] },
         "nullable": { "type": "boolean" }
       },
-      "required": ["type", "default"],
+      "required": ["type"],
+      "patternProperties": { "^\\$": {} },
       "additionalProperties": false
     },
     "Variants": {
@@ -408,8 +412,15 @@
         "schema": {
           "type": "object",
           "properties": {
-            "url": { "type": "string" },
-            "version": { "type": "string" }
+            "url": {
+              "type": "string",
+              "description": "Versioned schema URL pinned to a git tag (e.g. https://raw.githubusercontent.com/.../v0.13.0/schema/component.schema.json)"
+            },
+            "version": { "type": "string" },
+            "latest": {
+              "type": "string",
+              "description": "Stable URL pointing to the latest schema on the main branch for discovery"
+            }
           },
           "required": ["url", "version"],
           "additionalProperties": false

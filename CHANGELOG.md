@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Metadata.schema.latest` — optional stable URL pointing to the latest schema on main for discovery
 - `Metadata.generator.license` — optional resolved license state: `status` and `level` nested inside generator
 - `Styles.fillColor` — glyph fill color for GLYPH element type
 - `StringProp.examples` — sample values demonstrating typical content for string props
@@ -20,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `SlotProp.default` — now optional; omitted when no meaningful default exists
+- `ColorStyleValue` — accepts bare hex strings (e.g. `#666E74`) matching the existing `ColorStyle` type
+- `BooleanProp`, `StringProp`, `EnumProp`, `SlotProp` — allow `$`-prefixed metadata fields via `patternProperties`
+- `Metadata.schema.url` — clarified as versioned schema URL pinned to a git tag
 - `ElementType` — `'icon'` renamed to `'glyph'` to distinguish raw visual assets from composed Icon components
 - `Config.processing.iconNamePattern` → `Config.processing.glyphNamePattern` — glyph detection pattern
 - `StringProp.default` — now optional; use `examples` for demo content
