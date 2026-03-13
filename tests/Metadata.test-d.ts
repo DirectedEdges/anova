@@ -41,3 +41,20 @@ const _level: string = withLicense.generator.license!.level;
 
 // generator.license is optional — can be undefined
 const _optional: { status: string; level: string } | undefined = withoutLicense.generator.license;
+
+// ─── schema.latest — optional discovery URL (ADR 023) ───────────────────────
+
+// latest is optional — absent is valid
+const withoutLatest: Metadata = {
+  ...withoutLicense,
+  schema: { url: 'https://example.com/schema/v0.13.0/component.schema.json', version: '0.13.0' },
+};
+
+// latest can be provided
+const withLatest: Metadata = {
+  ...withoutLicense,
+  schema: { url: 'https://example.com/schema/v0.13.0/component.schema.json', version: '0.13.0', latest: 'https://example.com/schema/main/component.schema.json' },
+};
+
+// latest is a string when present
+const _latestVal: string | undefined = withLatest.schema.latest;

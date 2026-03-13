@@ -39,8 +39,11 @@ export type Metadata = {
     };
   };
   schema: {
+    /** Versioned schema URL pinned to a git tag (e.g. https://raw.githubusercontent.com/.../v0.13.0/schema/component.schema.json) */
     url: string;
     version: string;
+    /** Stable URL pointing to the latest schema on the main branch for discovery */
+    latest?: string;
   };
   source: {
     pageId: string;

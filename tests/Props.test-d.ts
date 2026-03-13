@@ -63,15 +63,15 @@ const enumProp: EnumProp = { type: 'string', default: 'sm', enum: ['sm', 'md', '
 // @ts-expect-error: default is required on EnumProp
 const _enumNoDefault: EnumProp = { type: 'string', enum: ['sm', 'md'] };
 
-// ─── SlotProp — default required, nullable optional, null default ────────────
+// ─── SlotProp — default optional, nullable optional, null default ────────────
 
 const slotProp: SlotProp = { type: 'slot', default: 'Content' };
 const slotNullable: SlotProp = { type: 'slot', default: 'Content', nullable: true };
 const slotNullDefault: SlotProp = { type: 'slot', default: null, nullable: true };
 const slotNullDefaultOnly: SlotProp = { type: 'slot', default: null };
 
-// @ts-expect-error: default is required on SlotProp
-const _slotNoDefault: SlotProp = { type: 'slot' };
+// default is now optional — SlotProp without default is valid (ADR 023)
+const slotNoDefault: SlotProp = { type: 'slot' };
 
 // @ts-expect-error: default must be string | null, not number
 const _slotBadDefault: SlotProp = { type: 'slot', default: 42 };

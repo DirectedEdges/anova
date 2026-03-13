@@ -43,7 +43,8 @@ export interface EnumProp {
  */
 export interface SlotProp {
   type: 'slot';
-  default: string | null;
+  /** Default slot content. Optional — omitted when no meaningful default exists. */
+  default?: string | null;
   /** Whether this slot prop accepts a null value */
   nullable?: boolean;
 }
