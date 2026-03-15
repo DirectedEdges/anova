@@ -16,8 +16,15 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
 
 2. **Verify CHANGELOG**: Read `CHANGELOG.md`. Confirm:
    - An entry exists for this version (e.g., `## [0.12.0]`)
-   - The entry has a date (use today if missing)
-   - The entry has content under Added/Changed/Removed/Fixed
+   - The entry has an appended date (e.g., `## [0.12.0] - 2024-06-12`). If missing, use today's date.
+   - A **Summary** line exists at the top of the version entry (immediately after the heading), providing a 3–4 sentence high-level overview of the release changes. 
+      - If missing, draft one by reading the entry's Added/Changed/Removed/Fixed sections and add it.
+      - When summarizing:
+         - Combine related points into a single summary sentence where possible
+         - Favor summarizing the most impactful changes, such as features at a higher-level in the spec and/or with more individual changelog items
+
+   - The entry groups content under Added/Changed/Removed/Fixed
+   
    If incomplete, STOP and report what's missing.
 
 3. **Verify clean working tree**:
@@ -90,7 +97,15 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
     ```
     If a PR already exists for this branch, report the existing PR URL instead of failing.
 
-12. **Cleanup gate** (after PR is merged): Use `AskUserQuestion` with Yes/No options: **"PR merged. Switch to main and delete the release branch?"**
+12. **Cleanup gate**: First, verify the PR is actually merged:
+    ```bash
+    gh pr view [PR-number] --json state --jq '.state'
+    ```
+    - If `MERGED`: proceed with cleanup.
+    - If `OPEN`: report that the PR is still open and STOP. Do NOT delete the branch.
+    - If `CLOSED`: report that the PR was closed without merging and STOP. Do NOT delete the branch.
+
+    Once confirmed merged, use `AskUserQuestion` with Yes/No options: **"PR is merged. Switch to main and delete the release branch?"**
     On Yes:
     ```bash
     git checkout main && git pull && git branch -d [release-branch] && git push origin --delete [release-branch]
