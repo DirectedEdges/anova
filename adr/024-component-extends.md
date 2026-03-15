@@ -6,6 +6,34 @@
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
+## Table of Contents
+
+- [Context](#context)
+- [Decision Drivers](#decision-drivers)
+- [Open Design Questions](#open-design-questions)
+  - [Q1: What is the shape of the `extends` field?](#q1-what-is-the-shape-of-the-extends-field)
+  - [Q2: How should the base component be referenced?](#q2-how-should-the-base-component-be-referenced)
+  - [Q3: Where should prop relationship metadata live?](#q3-where-should-prop-relationship-metadata-live)
+  - [Q4: How do extended component variants interact with base component variants?](#q4-how-do-extended-component-variants-interact-with-base-component-variants)
+- [Options Considered](#options-considered)
+  - [Q1: Shape of the `extends` field](#q1-shape-of-the-extends-field)
+  - [Q2: How to reference the base component](#q2-how-to-reference-the-base-component)
+  - [Q3: Where prop relationship metadata lives](#q3-where-prop-relationship-metadata-lives)
+- [Variant Layering with Extended Components](#variant-layering-with-extended-components)
+  - [Example: IconButton (base)](#example-iconbutton-base)
+  - [Example: FavoriteButton (derived)](#example-favoritebutton-derived)
+  - [How set vs. bypassed affects which base variants apply](#how-set-vs-bypassed-affects-which-base-variants-apply)
+  - [Precedence model](#precedence-model)
+- [Figma Implementation Patterns](#figma-implementation-patterns)
+  - [Pattern 1: Duplicated variants](#pattern-1-duplicated-variants)
+  - [Pattern 2: Wrapper instance](#pattern-2-wrapper-instance)
+  - [Pattern 3: Use both patterns selectively](#pattern-3-use-both-patterns-selectively)
+- [Decision](#decision)
+- [Type ↔ Schema Impact](#type--schema-impact)
+- [Downstream Impact](#downstream-impact)
+- [Semver Decision](#semver-decision)
+- [Consequences](#consequences)
+
 ---
 
 ## Context
