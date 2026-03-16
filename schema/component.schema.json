@@ -106,6 +106,28 @@
         { "$ref": "#/definitions/SlotProp" }
       ]
     },
+    "FigmaPropExtension": {
+      "type": "object",
+      "description": "DTCG §5.2.3 Figma-specific metadata for a prop definition.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"],
+          "description": "Figma-native property type"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PropExtensions": {
+      "type": "object",
+      "description": "DTCG §5.2.3 platform-specific extensions for prop definitions. Each property is a reverse-domain key whose value is a platform extension type.",
+      "properties": {
+        "com.figma": {
+          "$ref": "#/definitions/FigmaPropExtension"
+        }
+      },
+      "additionalProperties": true
+    },
     "BooleanProp": {
       "type": "object",
       "description": "",
@@ -113,23 +135,7 @@
       "properties": {
         "type": { "type": "string", "const": "boolean" },
         "default": { "type": "boolean" },
-        "x-platform": {
-          "type": "object",
-          "properties": {
-            "FIGMA": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"]
-                }
-              },
-              "required": ["type"],
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
-        }
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type", "default"],
       "patternProperties": { "^\\$": {} },
@@ -147,7 +153,8 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Sample values demonstrating typical content for this prop"
-        }
+        },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type"],
       "patternProperties": { "^\\$": {} },
@@ -164,7 +171,8 @@
           "type": "array",
           "items": { "type": "string" }
         },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type", "default", "enum"],
       "patternProperties": { "^\\$": {} },
@@ -177,7 +185,8 @@
       "properties": {
         "type": { "type": "string", "const": "slot" },
         "default": { "type": ["null", "string"] },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type"],
       "patternProperties": { "^\\$": {} },

@@ -173,78 +173,80 @@ Leave `x-platform` on props and `$extensions` on `TokenReference` as-is, documen
 
 ## Decision
 
+### Type hierarchy
+
+Three types compose the extension system. Each platform extension interface describes the metadata shape for that platform. `PropExtensions` is the container that maps reverse-domain keys to their platform extension types:
+
+```typescript
+// Platform-specific metadata shape
+interface FigmaPropExtension {
+  type?: string;   // Figma-native prop type (BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT)
+}
+
+// Container: maps reverse-domain keys to platform extension types
+interface PropExtensions {
+  'com.figma'?: FigmaPropExtension;
+}
+
+// Usage on each prop interface
+interface BooleanProp {
+  type: 'boolean';
+  default: boolean;
+  $extensions?: PropExtensions;   // optional — MINOR
+}
+```
+
+When a second platform is added, create a new extension interface and add it as a property on `PropExtensions`:
+
+```typescript
+interface ReactPropExtension {
+  propName?: string;
+  type?: string;
+}
+
+interface PropExtensions {
+  'com.figma'?: FigmaPropExtension;
+  'com.reactjs'?: ReactPropExtension;
+}
+```
+
 ### Type changes (`types/`)
 
 | File | Change | Bump |
 |------|--------|------|
-| `Props.ts` | Add optional `$extensions` property to `BooleanProp`, `StringProp`, `EnumProp`, `SlotProp` | MINOR |
-
-**Example — new shape** (`types/Props.ts`):
-```yaml
-# Before
-BooleanProp:
-  type: 'boolean'
-  default: boolean
-
-# After
-BooleanProp:
-  type: 'boolean'
-  default: boolean
-  $extensions?:                    # optional — MINOR
-    com.figma?:
-      type?: string                # Figma-native prop type
-```
-
-A shared `PropExtensions` type should be introduced to avoid duplicating the `$extensions` shape across all four prop interfaces:
-
-```typescript
-/** DTCG §5.2.3 tool-specific metadata for prop definitions. */
-interface PropExtensions {
-  'com.figma'?: {
-    /** Figma-native property type (e.g., BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT). */
-    type?: string;
-  };
-}
-```
-
-Each prop interface gains:
-```typescript
-$extensions?: PropExtensions;
-```
+| `Props.ts` | Add `FigmaPropExtension`, `PropExtensions`; add optional `$extensions` to `BooleanProp`, `StringProp`, `EnumProp`, `SlotProp` | MINOR |
 
 ### Schema changes (`schema/`)
 
 | File | Change | Bump |
 |------|--------|------|
-| `component.schema.json` | Remove `x-platform` from `BooleanProp`; add `$extensions` definition to `BooleanProp`, `StringProp`, `EnumProp`, `SlotProp` | MINOR |
+| `component.schema.json` | Remove `x-platform` from `BooleanProp`; add shared `FigmaPropExtension` and `PropExtensions` definitions; add `$extensions` via `$ref` to all four prop types | MINOR |
 
-**Example — new shape** (`component.schema.json` under `BooleanProp/properties`):
+The schema mirrors the type hierarchy using `$ref`:
+
 ```yaml
-# Remove
-x-platform:
+# FigmaPropExtension — the Figma metadata shape
+FigmaPropExtension:
   type: object
   properties:
-    FIGMA:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT]
+    type:
+      type: string
+      enum: [BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT]
+  additionalProperties: false
 
-# Add
-$extensions:
+# PropExtensions — container mapping reverse-domain keys to platform types
+PropExtensions:
   type: object
-  description: "DTCG §5.2.3 tool-specific metadata (reverse domain name notation)."
   properties:
     com.figma:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT]
-          description: "Figma-native property type"
-      additionalProperties: false
-  additionalProperties: true
+      $ref: "#/definitions/FigmaPropExtension"
+  additionalProperties: true          # allows unknown platform keys to pass
+
+# Each prop type uses a one-line $ref
+BooleanProp:
+  properties:
+    $extensions:
+      $ref: "#/definitions/PropExtensions"
 ```
 
 The existing `patternProperties: { "^\\$": {} }` on all prop definitions already permits `$`-prefixed keys, so adding explicit `$extensions` properties is purely additive.
@@ -253,7 +255,7 @@ The existing `patternProperties: { "^\\$": {} }` on all prop definitions already
 
 - `TokenReference.$extensions` in `types/Styles.ts` and `styles.schema.json` is **unchanged** — it already follows the target pattern.
 - The `x-platform` property has no TypeScript counterpart today, so its removal from the schema does not break any typed consumer. Downstream transformers that emit `x-platform` will need to emit `$extensions` instead.
-- The `$extensions` object uses `additionalProperties: true` at the top level to allow future platform keys beyond `com.figma` without schema changes.
+- `PropExtensions` uses `additionalProperties: true` so that unknown platform keys pass validation. Each platform key is independently optional — no key is required.
 
 ---
 
