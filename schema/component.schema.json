@@ -499,6 +499,7 @@
             "subcomponentNamePattern": { "type": "string" },
             "glyphNamePattern": { "type": "string", "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')" },
             "codeOnlyPropsPattern": { "type": "string", "description": "Naming pattern used to detect the code-only props container layer (e.g. 'Code only props')" },
+            "slotConstraints": { "type": "boolean", "description": "Whether to consolidate slot constraints (anyOf, minItems, maxItems) from code-only props into the slot property" },
             "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
             "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
           },

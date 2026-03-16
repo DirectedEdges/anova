@@ -117,6 +117,7 @@ items:
 | `Props.ts` | Add optional `minItems?: number` to `SlotProp` | MINOR |
 | `Props.ts` | Add optional `maxItems?: number` to `SlotProp` | MINOR |
 | `Props.ts` | Add optional `anyOf?: string[]` to `SlotProp` | MINOR |
+| `Config.ts` | Add optional `processing.slotConstraints?: boolean` to `Config` | MINOR |
 
 **Example — new shape** (`types/Props.ts`):
 ```yaml
@@ -145,6 +146,7 @@ SlotProp:
 | `component.schema.json` | Add `minItems` property to `SlotProp` definition | MINOR |
 | `component.schema.json` | Add `maxItems` property to `SlotProp` definition | MINOR |
 | `component.schema.json` | Add `anyOf` property to `SlotProp` definition | MINOR |
+| `component.schema.json` | Add `slotConstraints` property to `Config.processing` definition | MINOR |
 
 **Example — new shape** (`schema/component.schema.json`):
 ```yaml
@@ -172,16 +174,18 @@ anyOf:
 - The schema uses `minimum: 0` — negative item counts are invalid.
 - No `required` changes — all three fields are optional. A `SlotProp` without constraints behaves exactly as it does today (unconstrained).
 - The transformer is responsible for detecting code-only props named "Min Items", "Max Items", etc. on slot layers and promoting them to these first-class fields. That mapping logic belongs in `anova-transformer`, not here.
+- `Config.processing.slotConstraints` is an opt-in boolean (defaults to `false` when omitted) that controls whether the transformer consolidates slot constraint code-only props into first-class `SlotProp` fields. This follows the same optional-pattern pattern as `glyphNamePattern` and `codeOnlyPropsPattern`.
 
 ---
 
 ## Type ↔ Schema Impact
 
-- **Symmetric**: Yes — each new TypeScript field maps 1:1 to a new schema property under `#/definitions/SlotProp/properties`
+- **Symmetric**: Yes — each new TypeScript field maps 1:1 to a new schema property
 - **Parity check**:
   - `SlotProp.minItems` (TS) ↔ `SlotProp.properties.minItems` (schema)
   - `SlotProp.maxItems` (TS) ↔ `SlotProp.properties.maxItems` (schema)
   - `SlotProp.anyOf` (TS) ↔ `SlotProp.properties.anyOf` (schema)
+  - `Config.processing.slotConstraints` (TS) ↔ `Config.properties.processing.properties.slotConstraints` (schema)
 
 ---
 
