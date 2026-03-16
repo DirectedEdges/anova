@@ -130,3 +130,38 @@ const anyFromBoolExt: AnyProp = boolWithExt;
 const anyFromStringExt: AnyProp = stringWithExt;
 const anyFromEnumExt: AnyProp = enumWithExt;
 const anyFromSlotExt: AnyProp = slotWithExt;
+
+// ─── SlotProp — slot constraints (ADR 028) ──────────────────────────────────
+
+// minItems is optional
+const slotWithMin: SlotProp = { type: 'slot', minItems: 1 };
+
+// maxItems is optional
+const slotWithMax: SlotProp = { type: 'slot', maxItems: 4 };
+
+// anyOf is optional
+const slotWithAnyOf: SlotProp = { type: 'slot', anyOf: ['Avatar'] };
+
+// All three constraints together
+const slotFullConstraints: SlotProp = { type: 'slot', default: null, nullable: true, minItems: 1, maxItems: 4, anyOf: ['Avatar', 'Badge'] };
+
+// Constraints with $extensions
+const slotConstraintsWithExt: SlotProp = { type: 'slot', minItems: 1, maxItems: 4, anyOf: ['Avatar'], $extensions: { 'com.figma': { type: 'INSTANCE_SWAP' } } };
+
+// No constraints — still valid (backwards compatible)
+const slotNoConstraints: SlotProp = { type: 'slot' };
+
+// Constrained slot assignable to AnyProp
+const anyFromConstrainedSlot: AnyProp = slotFullConstraints;
+
+// @ts-expect-error: minItems must be number, not string
+const _slotBadMinItems: SlotProp = { type: 'slot', minItems: '1' };
+
+// @ts-expect-error: maxItems must be number, not string
+const _slotBadMaxItems: SlotProp = { type: 'slot', maxItems: '4' };
+
+// @ts-expect-error: anyOf must be string[], not string
+const _slotBadAnyOf: SlotProp = { type: 'slot', anyOf: 'Avatar' };
+
+// @ts-expect-error: anyOf must be string[], not number[]
+const _slotBadAnyOfNumbers: SlotProp = { type: 'slot', anyOf: [1, 2, 3] };
