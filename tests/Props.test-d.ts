@@ -76,58 +76,57 @@ const slotNoDefault: SlotProp = { type: 'slot' };
 // @ts-expect-error: default must be string | null, not number
 const _slotBadDefault: SlotProp = { type: 'slot', default: 42 };
 
-// ─── FigmaCodeOnlySource — code-only prop provenance ────────────────────────
+// ─── $extensions — DTCG §5.2.3 platform metadata (ADR 026) ─────────────────
 
-const codeOnlyText: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Accessibility label' };
-const codeOnlyEnum: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' };
+// FigmaPropExtension is the Figma metadata shape
+const _figmaExt: FigmaPropExtension = { type: 'BOOLEAN' };
+const _figmaExtEmpty: FigmaPropExtension = {};
 
-// @ts-expect-error: kind must be 'codeOnlyProp'
-const _badKind: FigmaCodeOnlySource = { kind: 'other', layer: 'x' };
+// PropExtensions composes platform extensions
+const _extCheck: PropExtensions = { 'com.figma': { type: 'BOOLEAN' } };
+const _extEmpty: PropExtensions = {};
 
-// @ts-expect-error: layer is required
-const _noLayer: FigmaCodeOnlySource = { kind: 'codeOnlyProp' };
+// $extensions is optional on all prop types
+const boolWithExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.figma': { type: 'BOOLEAN' } } };
+const boolNoExt: BooleanProp = { type: 'boolean', default: false };
+const stringWithExt: StringProp = { type: 'string', $extensions: { 'com.figma': { type: 'TEXT' } } };
+const enumWithExt: EnumProp = { type: 'string', default: 'sm', enum: ['sm', 'md'], $extensions: { 'com.figma': { type: 'VARIANT' } } };
+const slotWithExt: SlotProp = { type: 'slot', $extensions: { 'com.figma': { type: 'INSTANCE_SWAP' } } };
 
-// ─── FigmaPropExtension — Figma-specific metadata on props ──────────────────
+// $extensions with empty com.figma
+const boolEmptyFigma: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.figma': {} } };
 
-const figmaExt: FigmaPropExtension = { type: 'TEXT' };
-const figmaExtWithSource: FigmaPropExtension = { type: 'BOOLEAN', source: { kind: 'codeOnlyProp', layer: 'hasA11y' } };
-const figmaExtEmpty: FigmaPropExtension = {};
+// $extensions with empty object
+const boolEmptyExt: BooleanProp = { type: 'boolean', default: true, $extensions: {} };
 
-// ─── PropExtensions — $extensions on prop interfaces ────────────────────────
+// ─── FigmaCodeOnlySource — code-only prop provenance (ADR 027) ──────────────
 
-const extensions: PropExtensions = { 'com.figma': { type: 'TEXT' } };
-const extensionsEmpty: PropExtensions = {};
+// FigmaCodeOnlySource requires kind and layer
+const _codeOnlyBasic: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Accessibility label' };
 
-// ─── $extensions on each prop type ──────────────────────────────────────────
+// instanceOf is optional (for enum code-only props)
+const _codeOnlyWithInstance: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' };
 
-const boolWithExt: BooleanProp = {
-  type: 'boolean',
-  default: false,
-  $extensions: { 'com.figma': { type: 'BOOLEAN', source: { kind: 'codeOnlyProp', layer: 'hasOverrides' } } }
-};
+// source is optional on FigmaPropExtension
+const _figmaExtWithSource: FigmaPropExtension = { type: 'TEXT', source: { kind: 'codeOnlyProp', layer: 'Accessibility label' } };
+const _figmaExtNoSource: FigmaPropExtension = { type: 'BOOLEAN' };
 
-const stringWithExt: StringProp = {
-  type: 'string',
-  $extensions: { 'com.figma': { type: 'TEXT', source: { kind: 'codeOnlyProp', layer: 'ariaLabel' } } }
-};
+// Code-only string prop with source metadata
+const stringCodeOnly: StringProp = { type: 'string', examples: ['Submit form'], $extensions: { 'com.figma': { type: 'TEXT', source: { kind: 'codeOnlyProp', layer: 'Accessibility label' } } } };
 
-const enumWithExt: EnumProp = {
-  type: 'string',
-  default: 'h2',
-  enum: ['h1', 'h2', 'h3'],
-  $extensions: { 'com.figma': { type: 'VARIANT', source: { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' } } }
-};
+// Code-only enum prop with source and instanceOf
+const enumCodeOnly: EnumProp = { type: 'string', default: 'h2', enum: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], $extensions: { 'com.figma': { type: 'VARIANT', source: { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' } } } };
 
-const slotWithExt: SlotProp = {
-  type: 'slot',
-  $extensions: { 'com.figma': { type: 'INSTANCE_SWAP' } }
-};
+// Code-only boolean prop with source
+const boolCodeOnly: BooleanProp = { type: 'boolean', default: false, $extensions: { 'com.figma': { type: 'BOOLEAN', source: { kind: 'codeOnlyProp', layer: 'hasA11yOverrides' } } } };
 
-// $extensions is optional — all props work without it
-const boolNoExt: BooleanProp = { type: 'boolean', default: true };
-const stringNoExt: StringProp = { type: 'string' };
+// Code-only props are assignable to AnyProp
+const anyFromStringCodeOnly: AnyProp = stringCodeOnly;
+const anyFromEnumCodeOnly: AnyProp = enumCodeOnly;
+const anyFromBoolCodeOnly: AnyProp = boolCodeOnly;
 
-// $extensions assignable to AnyProp
-const anyWithExt: AnyProp = boolWithExt;
-const anyWithExt2: AnyProp = stringWithExt;
-const anyWithExt3: AnyProp = enumWithExt;
+// Props with $extensions are assignable to AnyProp
+const anyFromBoolExt: AnyProp = boolWithExt;
+const anyFromStringExt: AnyProp = stringWithExt;
+const anyFromEnumExt: AnyProp = enumWithExt;
+const anyFromSlotExt: AnyProp = slotWithExt;

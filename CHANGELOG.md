@@ -9,15 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `FigmaCodeOnlySource` — provenance metadata for props extracted from a Figma code-only container layer
-- `FigmaPropExtension` — Figma-specific metadata for prop definitions: native type and optional code-only source
-- `PropExtensions` — DTCG §5.2.3 platform-specific extensions container for prop definitions
-- `BooleanProp.$extensions` — optional platform-specific extensions
-- `StringProp.$extensions` — optional platform-specific extensions
-- `EnumProp.$extensions` — optional platform-specific extensions
-- `SlotProp.$extensions` — optional platform-specific extensions
+- `FigmaCodeOnlySource` — provenance metadata for props extracted from a Figma code-only container layer (`kind`, `layer`, `instanceOf?`)
+- `FigmaPropExtension.source` — optional `FigmaCodeOnlySource` on the Figma extension, present only for code-only props
+- `FigmaPropExtension` — Figma-specific metadata for prop definitions (native prop type)
+- `PropExtensions` — DTCG §5.2.3 platform-specific extensions container, keyed by reverse-domain notation
+- `BooleanProp.$extensions` — optional platform metadata on boolean props
+- `StringProp.$extensions` — optional platform metadata on string props
+- `EnumProp.$extensions` — optional platform metadata on enum props
+- `SlotProp.$extensions` — optional platform metadata on slot props
 
 ### Changed
+
+- `BooleanProp` — `x-platform` replaced by `$extensions` to align with DTCG convention used on `TokenReference`
 
 ### Removed
 

@@ -13,6 +13,7 @@ export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp;
  * Code-only props are non-visual properties embedded in a hidden container layer
  * within the Figma component, used to encode accessibility labels, semantic
  * heading levels, ARIA roles, and similar concerns.
+ * @since 0.14.0
  */
 export interface FigmaCodeOnlySource {
   /** Discriminator identifying this prop as originating from a code-only container. */
@@ -24,21 +25,23 @@ export interface FigmaCodeOnlySource {
 }
 
 /**
- * DTCG §5.2.3 tool-specific metadata for prop definitions.
- * Carries Figma-native property type and optional code-only prop provenance.
+ * DTCG §5.2.3 Figma-specific metadata for a prop definition.
+ * @since 0.14.0
  */
 export interface FigmaPropExtension {
   /** Figma-native property type (e.g., BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT). */
   type?: string;
-  /** Provenance metadata — present only for props extracted from a code-only container layer. */
+  /** Provenance metadata — present only for props extracted from a code-only container layer. @since 0.14.0 */
   source?: FigmaCodeOnlySource;
 }
 
 /**
  * DTCG §5.2.3 platform-specific extensions for prop definitions.
- * Uses reverse-domain namespacing (e.g., "com.figma") for extensibility.
+ * Each property is a reverse-domain key whose value is a platform extension type.
+ * @since 0.14.0
  */
 export interface PropExtensions {
+  /** Figma extraction provenance for this prop. */
   'com.figma'?: FigmaPropExtension;
 }
 
@@ -48,7 +51,7 @@ export interface PropExtensions {
 export interface BooleanProp {
   type: 'boolean';
   default: boolean;
-  /** DTCG §5.2.3 platform-specific extensions. */
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
 }
 
@@ -62,7 +65,7 @@ export interface StringProp {
   nullable?: boolean;
   /** Sample values demonstrating typical content for this prop */
   examples?: string[];
-  /** DTCG §5.2.3 platform-specific extensions. */
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
 }
 
@@ -74,7 +77,7 @@ export interface EnumProp {
   default: string;
   enum: string[];
   nullable?: boolean;
-  /** DTCG §5.2.3 platform-specific extensions. */
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
 }
 
@@ -87,6 +90,6 @@ export interface SlotProp {
   default?: string | null;
   /** Whether this slot prop accepts a null value */
   nullable?: boolean;
-  /** DTCG §5.2.3 platform-specific extensions. */
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
 }

@@ -129,7 +129,7 @@
     },
     "FigmaPropExtension": {
       "type": "object",
-      "description": "DTCG §5.2.3 Figma-specific metadata for prop definitions.",
+      "description": "DTCG §5.2.3 Figma-specific metadata for a prop definition.",
       "properties": {
         "type": {
           "type": "string",
@@ -137,14 +137,15 @@
           "description": "Figma-native property type"
         },
         "source": {
-          "$ref": "#/definitions/FigmaCodeOnlySource"
+          "$ref": "#/definitions/FigmaCodeOnlySource",
+          "description": "Provenance metadata — present only for props extracted from a code-only container layer"
         }
       },
       "additionalProperties": false
     },
     "PropExtensions": {
       "type": "object",
-      "description": "DTCG §5.2.3 platform-specific extensions for prop definitions. Uses reverse-domain namespacing.",
+      "description": "DTCG §5.2.3 platform-specific extensions for prop definitions. Each property is a reverse-domain key whose value is a platform extension type.",
       "properties": {
         "com.figma": {
           "$ref": "#/definitions/FigmaPropExtension"
@@ -159,23 +160,6 @@
       "properties": {
         "type": { "type": "string", "const": "boolean" },
         "default": { "type": "boolean" },
-        "x-platform": {
-          "type": "object",
-          "properties": {
-            "FIGMA": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"]
-                }
-              },
-              "required": ["type"],
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
-        },
         "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type", "default"],
