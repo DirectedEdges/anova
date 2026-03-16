@@ -38,6 +38,7 @@ schema/                      # JSON Schema definitions (for validation)
 ├── components.schema.json   # Collection of components
 ├── styles.schema.json       # Styles schema
 └── root.schema.json         # Root schema
+docs/                        # Technical reference documentation
 adr/                         # Architecture Decision Records
 reference/                   # Reference documentation
 ```
