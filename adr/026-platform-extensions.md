@@ -18,6 +18,20 @@ The schema currently uses **two different patterns** to carry Figma-specific met
 
 As more Figma-specific metadata needs arise (e.g., native prop types on `StringProp`, `EnumProp`, `SlotProp`; element-level Figma node IDs; other extraction provenance), the inconsistency will spread. A single, well-defined pattern is needed before additional Figma extensions are added.
 
+### Industry precedent
+
+Three established standards address the problem of attaching tool-specific or platform-specific metadata to structured data:
+
+- **JSON Schema `x-` prefix** — JSON Schema officially treats any keyword starting with `x-` as a custom annotation that does not affect validation. This is the same convention OpenAPI/Swagger uses for vendor extensions (e.g., `x-logo`, `x-internal`). Simple and familiar, but provides no formal namespacing — collisions are prevented only by convention.
+- **DTCG `$extensions` with reverse-domain notation** — The Design Tokens Community Group specification (§5.2.3) defines a dedicated `$extensions` object where keys use reverse-domain notation (`com.figma`, `com.sketch`). Content is freeform. The rationale: it eliminates naming collisions, keeps metadata in a designated container, and lets tokens pass through multiple tools without data loss.
+- **XState `meta` property** — XState attaches a `meta` object to state nodes for static metadata (UI hints, analytics, documentation). XState ignores its contents entirely — a passthrough bag with no namespacing.
+
+| Pattern | Convention | Namespacing | Used by |
+|---------|-----------|-------------|---------|
+| `x-` prefix | Top-level properties | By convention only | JSON Schema, OpenAPI, HTTP headers |
+| `$extensions` | Dedicated container object | Reverse-domain keys | DTCG Design Tokens |
+| `meta` | Dedicated container object | None (freeform) | XState |
+
 ---
 
 ## Decision Drivers
@@ -26,7 +40,7 @@ As more Figma-specific metadata needs arise (e.g., native prop types on `StringP
 - **No logic (Constitution II)**: The solution must be pure type/schema additions only.
 - **Stable, intentional API (Constitution III)**: The chosen pattern should align with established community standards to avoid inventing a bespoke convention.
 - **Additive change preferred**: A MINOR bump is preferable to a MAJOR bump. The existing `x-platform` field is schema-only with no typed consumer, so removing it is low-risk.
-- **Extensibility**: The pattern must scale to additional platforms and additional Figma metadata categories without schema restructuring.
+- **Extensibility**: The pattern must scale to additional design tool platforms (Figma, Sketch, Penpot) and code implementation platforms (React, Web Components, iOS, Android) without schema restructuring.
 
 ---
 
@@ -34,16 +48,67 @@ As more Figma-specific metadata needs arise (e.g., native prop types on `StringP
 
 ### Option A: `$extensions` with DTCG reverse-domain namespacing *(Selected)*
 
-Adopt the DTCG `$extensions` pattern already used on `TokenReference` as the single standard for all platform-specific metadata throughout the schema. Figma metadata lives under the `com.figma` key.
+Adopt the DTCG `$extensions` pattern already used on `TokenReference` as the single standard for all platform-specific metadata throughout the schema. Design tool metadata (Figma extraction provenance) lives under keys like `com.figma`. Code implementation platform hints live under keys like `com.reactjs`, `org.webcomponents`, `com.apple.swiftui`, or `dev.android.compose`.
 
 ```yaml
-# On prop types (BooleanProp example)
+# Design tool provenance — Figma-native prop type
 showLabel:
   type: boolean
   default: true
   $extensions:
     com.figma:
-      type: BOOLEAN          # Figma-native prop type
+      type: BOOLEAN
+
+# Code platform hints — React
+showLabel:
+  type: boolean
+  default: true
+  $extensions:
+    com.reactjs:
+      propName: showLabel       # mapped React prop name
+      type: boolean             # React/TS prop type
+
+# Code platform hints — Web Components
+showLabel:
+  type: boolean
+  default: true
+  $extensions:
+    org.webcomponents:
+      attribute: show-label     # HTML attribute (kebab-case)
+      property: showLabel       # JS property (camelCase)
+      reflect: true             # attribute reflects to property
+
+# Code platform hints — iOS (SwiftUI)
+showLabel:
+  type: boolean
+  default: true
+  $extensions:
+    com.apple.swiftui:
+      parameter: showLabel
+      type: Bool
+
+# Code platform hints — Android (Jetpack Compose)
+showLabel:
+  type: boolean
+  default: true
+  $extensions:
+    dev.android.compose:
+      parameter: showLabel
+      type: Boolean
+
+# Combined — design tool + multiple code platforms on one prop
+showLabel:
+  type: boolean
+  default: true
+  $extensions:
+    com.figma:
+      type: BOOLEAN
+    com.reactjs:
+      propName: showLabel
+      type: boolean
+    org.webcomponents:
+      attribute: show-label
+      reflect: true
 
 # On TokenReference (already uses this pattern — no change)
 $token: "DS Color.Text.Primary"
@@ -56,13 +121,18 @@ $extensions:
 
 **Pros**:
 - Aligns with the DTCG Design Tokens specification (§5.2.3) — the same standard `TokenReference` already follows
-- Reverse-domain namespacing (`com.figma`, `com.sketch`, etc.) is extensible to other platforms without schema changes
+- Aligns with the JSON Schema community's direction on structured extension metadata (the `x-` prefix convention solves annotation but not namespacing; `$extensions` solves both)
+- Reverse-domain namespacing (`com.figma`, `com.reactjs`, `org.webcomponents`, `com.apple.swiftui`, `dev.android.compose`) scales to arbitrary platforms without schema changes
 - Eliminates the current inconsistency — one pattern everywhere
 - Already validated in production on `TokenReference`
 - `$`-prefixed properties are already permitted by `patternProperties: { "^\\$": {} }` on all prop schemas
+- Multiple platform keys can coexist on the same node — a prop can carry Figma provenance alongside React, Web Components, and iOS hints simultaneously
 
 **Cons / Trade-offs**:
-- Slightly more verbose than `x-platform` (`$extensions.com.figma.type` vs `x-platform.FIGMA.type`)
+- **Not a JSON Schema standard** — unlike the `x-` prefix, `$extensions` is not recognized by JSON Schema itself. It originates from the DTCG spec, which is a domain-specific standard for design tokens. JSON Schema tooling will not treat `$extensions` specially; it's just another property.
+- **Deeper nesting than `x-` prefix** — accessing a value requires three levels (`$extensions` → `com.figma` → `type`) versus two with `x-platform` (`x-platform` → `FIGMA` → `type`) or one with a flat `x-` annotation (`x-figma-type`). This adds verbosity to both the schema definitions and any code that reads the values.
+- **Reverse-domain keys are not validated** — nothing enforces that `com.figma` is actually Figma's domain or that keys follow reverse-domain notation. A consumer could write `figma` or `FIGMA` and the schema would accept it (since the top-level `$extensions` uses `additionalProperties: true`). Discipline is convention-only, same as `x-` prefixes.
+- **DTCG is a community group standard, not a W3C recommendation** — the Design Tokens Community Group specification is stable and broadly adopted by design tooling (Figma, Style Dictionary, Tokens Studio), but it carries community group status rather than full W3C recommendation status. In practice this distinction is largely academic — the `$extensions` pattern is well-established and unlikely to change.
 - Requires removing `x-platform` from the schema (low-risk: no typed consumer exists)
 
 ---
@@ -84,8 +154,8 @@ x-platform:
 **Rejected because**:
 - Contradicts the DTCG specification that `TokenReference` was designed to follow
 - Requires a **breaking change** to `TokenReference` (which has typed consumers and is in active use) — forces a MAJOR bump
-- `x-platform` is a bespoke convention with no external standard backing it
-- Uses SCREAMING_CASE platform keys (`FIGMA`) instead of the established reverse-domain convention, limiting extensibility
+- `x-platform` is a bespoke convention — while `x-` prefixed properties are valid JSON Schema annotations, the nested `FIGMA` keying scheme has no external standard backing it
+- Uses SCREAMING_CASE platform keys (`FIGMA`) instead of reverse-domain notation, making it unclear how to add code platforms (React? `REACT`? `REACTJS`?) — the convention doesn't scale
 
 ---
 
@@ -209,7 +279,7 @@ The existing `patternProperties: { "^\\$": {} }` on all prop definitions already
 
 ## Semver Decision
 
-**Version bump**: `0.13.0 → 0.14.0` (`MINOR`)
+**Version bump**: `0.14.0` (`MINOR`)
 
 **Justification**: All changes are additive optional fields. The removal of `x-platform` from the schema is not a breaking change because it had no TypeScript counterpart and was not part of the typed public API. Per Constitution III, additive optional fields are a MINOR bump.
 
@@ -217,8 +287,10 @@ The existing `patternProperties: { "^\\$": {} }` on all prop definitions already
 
 ## Consequences
 
-- All Figma-specific metadata across the schema follows a single pattern: `$extensions["com.figma"]`
+- All platform-specific metadata across the schema follows a single pattern: `$extensions["<reverse-domain-key>"]`
 - The `x-platform` pattern is eliminated, resolving the current type ↔ schema drift on `BooleanProp`
 - Future Figma extensions (e.g., node IDs on elements, layer metadata) can be added under `com.figma` without introducing new top-level properties
-- Other platforms can be supported via their own reverse-domain key (e.g., `com.sketch`, `io.penpot`) without schema restructuring
+- Design tool platforms can be supported via their own reverse-domain key (e.g., `com.figma`, `com.sketch`, `io.penpot`)
+- Code implementation platforms can attach platform-specific hints alongside design tool provenance (e.g., `com.reactjs`, `org.webcomponents`, `com.apple.swiftui`, `dev.android.compose`)
+- Multiple platform keys can coexist on the same node — no schema restructuring required to add new platforms
 - Downstream transformers that currently emit `x-platform` must update to emit `$extensions` instead
