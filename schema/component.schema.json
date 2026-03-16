@@ -106,6 +106,52 @@
         { "$ref": "#/definitions/SlotProp" }
       ]
     },
+    "FigmaCodeOnlySource": {
+      "type": "object",
+      "description": "Provenance metadata for props extracted from a Figma code-only container layer.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "codeOnlyProp",
+          "description": "Discriminator identifying this prop as originating from a code-only container"
+        },
+        "layer": {
+          "type": "string",
+          "description": "Sub-layer name within the code-only container tree corresponding to this prop"
+        },
+        "instanceOf": {
+          "type": "string",
+          "description": "For enum code-only props: the component name of the nested instance whose variants define the enum values"
+        }
+      },
+      "required": ["kind", "layer"],
+      "additionalProperties": false
+    },
+    "FigmaPropExtension": {
+      "type": "object",
+      "description": "DTCG §5.2.3 Figma-specific metadata for prop definitions.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"],
+          "description": "Figma-native property type"
+        },
+        "source": {
+          "$ref": "#/definitions/FigmaCodeOnlySource"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PropExtensions": {
+      "type": "object",
+      "description": "DTCG §5.2.3 platform-specific extensions for prop definitions. Uses reverse-domain namespacing.",
+      "properties": {
+        "com.figma": {
+          "$ref": "#/definitions/FigmaPropExtension"
+        }
+      },
+      "additionalProperties": true
+    },
     "BooleanProp": {
       "type": "object",
       "description": "",
@@ -129,7 +175,8 @@
             }
           },
           "additionalProperties": false
-        }
+        },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type", "default"],
       "patternProperties": { "^\\$": {} },
@@ -147,7 +194,8 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Sample values demonstrating typical content for this prop"
-        }
+        },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type"],
       "patternProperties": { "^\\$": {} },
@@ -164,7 +212,8 @@
           "type": "array",
           "items": { "type": "string" }
         },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type", "default", "enum"],
       "patternProperties": { "^\\$": {} },
@@ -177,7 +226,8 @@
       "properties": {
         "type": { "type": "string", "const": "slot" },
         "default": { "type": ["null", "string"] },
-        "nullable": { "type": "boolean" }
+        "nullable": { "type": "boolean" },
+        "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type"],
       "patternProperties": { "^\\$": {} },
