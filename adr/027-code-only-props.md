@@ -197,6 +197,7 @@ anatomy:
 | File | Change | Bump |
 |------|--------|------|
 | `Props.ts` | Add `FigmaCodeOnlySource` type and extend `FigmaPropExtension` (from ADR 026) with optional `source` field | MINOR |
+| `Config.ts` | Add optional `codeOnlyPropsPattern` to `Config.processing` | MINOR |
 
 **Example — new shape** (`types/Props.ts`):
 ```yaml
@@ -221,7 +222,7 @@ FigmaPropExtension:
 
 | File | Change | Bump |
 |------|--------|------|
-| `component.schema.json` | Add `FigmaCodeOnlySource` definition; extend `com.figma` prop extension with optional `source` property | MINOR |
+| `component.schema.json` | Add `FigmaCodeOnlySource` definition; extend `com.figma` prop extension with optional `source` property; add `codeOnlyPropsPattern` to `Config.processing` | MINOR |
 
 **Example — new shape** (`component.schema.json`):
 ```yaml
@@ -262,7 +263,7 @@ com.figma:
 - **Root container name is not stored** — it is a processing convention (e.g., "Code only props"). The transformer detects it by naming pattern (configurable). A tool regenerating Figma assets must know this convention independently.
 - **No number type inference**: Figma TEXT properties are always emitted as `type: "string"` props, even when the content looks numeric. Type narrowing (string → number) is a code-platform concern, not a Figma extraction concern.
 - **Invariant tree assumption**: The code-only prop nesting structure is assumed to be constant across all variants of a component. Per-variant structural changes to the code-only tree are not modeled.
-- Whether to add a `processing.codeOnlyContainerPattern` field to `Config` (to let users configure the container layer naming convention) is a separate concern and may be addressed in a follow-up ADR if needed.
+- A `processing.codeOnlyPropsPattern` field on `Config` lets users configure the container layer naming convention (e.g., `"Code only props"`). It follows the same optional pattern as `glyphNamePattern` — absence means no code-only prop extraction.
 
 ---
 
