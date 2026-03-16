@@ -211,6 +211,21 @@
         "type": { "type": "string", "const": "slot" },
         "default": { "type": ["null", "string"] },
         "nullable": { "type": "boolean" },
+        "minItems": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum number of items this slot accepts"
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of items this slot accepts"
+        },
+        "anyOf": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Component type names permitted in this slot"
+        },
         "$extensions": { "$ref": "#/definitions/PropExtensions" }
       },
       "required": ["type"],
