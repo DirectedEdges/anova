@@ -85,6 +85,7 @@ const _figmaExtEmpty: FigmaPropExtension = {};
 // PropExtensions composes platform extensions
 const _extCheck: PropExtensions = { 'com.figma': { type: 'BOOLEAN' } };
 const _extEmpty: PropExtensions = {};
+const _extUnknownVendor: PropExtensions = { 'com.sketch': {} };
 
 // $extensions is optional on all prop types
 const boolWithExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.figma': { type: 'BOOLEAN' } } };
@@ -98,6 +99,9 @@ const boolEmptyFigma: BooleanProp = { type: 'boolean', default: true, $extension
 
 // $extensions with empty object
 const boolEmptyExt: BooleanProp = { type: 'boolean', default: true, $extensions: {} };
+
+// $extensions with unknown reverse-domain vendor key
+const boolWithUnknownExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.sketch': {} } };
 
 // Props with $extensions are assignable to AnyProp
 const anyFromBoolExt: AnyProp = boolWithExt;
