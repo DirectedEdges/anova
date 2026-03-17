@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Config.processing.inferNumberProps` — opt-in flag to infer `NumberProp` from TEXT code-only props
+- `NumberProp` — numeric property type for number-valued component props
+- `AnyProp` — `NumberProp` added as a fifth union member (`type: 'number'`)
 - `FigmaPropExtension` — Figma-specific metadata for prop definitions (native prop type)
 - `PropExtensions` — DTCG §5.2.3 platform-specific extensions container, keyed by reverse-domain notation
 - `BooleanProp.$extensions` — optional platform metadata on boolean props
 - `StringProp.$extensions` — optional platform metadata on string props
 - `EnumProp.$extensions` — optional platform metadata on enum props
 - `SlotProp.$extensions` — optional platform metadata on slot props
-- `NumberProp` — numeric property type for number-valued component props
-- `AnyProp` — `NumberProp` added as a fifth union member (`type: 'number'`)
-- `Config.processing.inferNumberProps` — opt-in flag to infer `NumberProp` from TEXT code-only props
 
 ### Changed
 

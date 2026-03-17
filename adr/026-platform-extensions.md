@@ -2,7 +2,7 @@
 
 **Branch**: `026-platform-extensions`
 **Created**: 2026-03-16
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
