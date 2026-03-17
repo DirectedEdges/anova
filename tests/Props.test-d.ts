@@ -5,7 +5,7 @@
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { StringProp, BooleanProp, EnumProp, SlotProp, AnyProp } from '../types/index.js';
+import type { StringProp, BooleanProp, EnumProp, SlotProp, NumberProp, AnyProp } from '../types/index.js';
 
 // ─── StringProp — examples field ──────────────────────────────────────────────
 
@@ -75,3 +75,27 @@ const slotNoDefault: SlotProp = { type: 'slot' };
 
 // @ts-expect-error: default must be string | null, not number
 const _slotBadDefault: SlotProp = { type: 'slot', default: 42 };
+
+// ─── NumberProp (ADR 029) ─────────────────────────────────────────────────────
+
+// minimal valid NumberProp
+const numberMinimal: NumberProp = { type: 'number' };
+
+// with optional default
+const numberWithDefault: NumberProp = { type: 'number', default: 24 };
+
+// with optional examples
+const numberWithExamples: NumberProp = { type: 'number', examples: [1, 2, 3] };
+
+// with both
+const numberFull: NumberProp = { type: 'number', default: 1, examples: [1, 2, 4] };
+
+// @ts-expect-error: default must be number, not string
+const _numberStringDefault: NumberProp = { type: 'number', default: '24' };
+
+// @ts-expect-error: examples must be number[], not string[]
+const _numberStringExamples: NumberProp = { type: 'number', examples: ['1', '2'] };
+
+// NumberProp is assignable to AnyProp
+const anyFromNumber: AnyProp = { type: 'number' } satisfies NumberProp;
+const anyFromNumberFull: AnyProp = { type: 'number', default: 10, examples: [10, 20] } satisfies NumberProp;
