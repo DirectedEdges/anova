@@ -11,32 +11,40 @@
       "description": "A component specification derived from Figma that defines structure, properties, variants, and styling rules.",
       "examples": [],
       "properties": {
-        "metadata": { "$ref": "#/definitions/Metadata" },
-        "title": { 
+        "metadata": {
+          "$ref": "#/definitions/Metadata"
+        },
+        "title": {
           "type": "string",
           "description": "The component asset name",
-          "examples": ["Button", "Card", "Text Input"]
+          "examples": [
+            "Button",
+            "Card",
+            "Text Input"
+          ]
         },
-        "anatomy": { 
+        "anatomy": {
           "$ref": "#/definitions/Anatomy",
           "description": "The elements that comprise the component, corresponding largely to Figma layers"
         },
-        "props": { 
+        "props": {
           "$ref": "#/definitions/Props",
           "description": "Configurable properties that control component behavior and appearance"
         },
-        "default": { 
+        "default": {
           "$ref": "#/definitions/Variant",
           "description": "The base variant configuration that's both the component default display as well as the foundation for all other variants"
         },
-        "variants": { 
+        "variants": {
           "$ref": "#/definitions/Variants",
           "description": "The styling, layout, and configuration of nested instances based on a cmoponent configuration"
         },
         "invalidVariantCombinations": {
           "type": "array",
           "description": "Non-default prop values that when used in combination result in an invalid component state, such as a component being set to disabled and hover simultaneously",
-          "items": { "$ref": "#/definitions/PropConfigurations" }
+          "items": {
+            "$ref": "#/definitions/PropConfigurations"
+          }
         },
         "subcomponents": {
           "type": "object",
@@ -46,19 +54,37 @@
           }
         }
       },
-      "required": ["title", "anatomy", "default"],
+      "required": [
+        "title",
+        "anatomy",
+        "default"
+      ],
       "additionalProperties": false
     },
     "Anatomy": {
       "type": "object",
       "description": "The structural elements that make up the component. Element names format depends on user settings.",
       "examples": [],
-      "additionalProperties": { "$ref": "#/definitions/AnatomyElement" }
+      "additionalProperties": {
+        "$ref": "#/definitions/AnatomyElement"
+      }
     },
     "ElementType": {
       "type": "string",
       "description": "Element types derived from Figma node analysis.",
-      "enum": ["text", "glyph", "vector", "container", "slot", "instance", "line", "ellipse", "rectangle", "polygon", "star"]
+      "enum": [
+        "text",
+        "glyph",
+        "vector",
+        "container",
+        "slot",
+        "instance",
+        "line",
+        "ellipse",
+        "rectangle",
+        "polygon",
+        "star"
+      ]
     },
     "ElementTypeRef": {
       "type": "object",
@@ -69,7 +95,9 @@
           "description": "URI reference to an external element type definition (e.g. 'foundations#/definitions/glyph')"
         }
       },
-      "required": ["$ref"],
+      "required": [
+        "$ref"
+      ],
       "additionalProperties": false
     },
     "AnatomyElement": {
@@ -79,31 +107,54 @@
       "properties": {
         "type": {
           "oneOf": [
-            { "$ref": "#/definitions/ElementType" },
-            { "$ref": "#/definitions/ElementTypeRef" }
+            {
+              "$ref": "#/definitions/ElementType"
+            },
+            {
+              "$ref": "#/definitions/ElementTypeRef"
+            }
           ],
           "description": "Element type as a plain string identifier or a reference to an external definition."
         },
-        "detectedIn": { "type": "string" },
-        "instanceOf": { "type": "string" }
+        "detectedIn": {
+          "type": "string"
+        },
+        "instanceOf": {
+          "type": "string"
+        }
       },
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "additionalProperties": false
     },
     "Props": {
       "type": "object",
       "description": "",
       "examples": [],
-      "additionalProperties": { "$ref": "#/definitions/AnyProp" }
+      "additionalProperties": {
+        "$ref": "#/definitions/AnyProp"
+      }
     },
     "AnyProp": {
       "description": "",
       "examples": [],
       "oneOf": [
-        { "$ref": "#/definitions/BooleanProp" },
-        { "$ref": "#/definitions/StringProp" },
-        { "$ref": "#/definitions/EnumProp" },
-        { "$ref": "#/definitions/SlotProp" }
+        {
+          "$ref": "#/definitions/BooleanProp"
+        },
+        {
+          "$ref": "#/definitions/StringProp"
+        },
+        {
+          "$ref": "#/definitions/EnumProp"
+        },
+        {
+          "$ref": "#/definitions/SlotProp"
+        },
+        {
+          "$ref": "#/definitions/NumberProp"
+        }
       ]
     },
     "BooleanProp": {
@@ -111,8 +162,13 @@
       "description": "",
       "examples": [],
       "properties": {
-        "type": { "type": "string", "const": "boolean" },
-        "default": { "type": "boolean" },
+        "type": {
+          "type": "string",
+          "const": "boolean"
+        },
+        "default": {
+          "type": "boolean"
+        },
         "x-platform": {
           "type": "object",
           "properties": {
@@ -121,18 +177,30 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"]
+                  "enum": [
+                    "BOOLEAN",
+                    "TEXT",
+                    "INSTANCE_SWAP",
+                    "VARIANT"
+                  ]
                 }
               },
-              "required": ["type"],
+              "required": [
+                "type"
+              ],
               "additionalProperties": false
             }
           },
           "additionalProperties": false
         }
       },
-      "required": ["type", "default"],
-      "patternProperties": { "^\\$": {} },
+      "required": [
+        "type",
+        "default"
+      ],
+      "patternProperties": {
+        "^\\$": {}
+      },
       "additionalProperties": false
     },
     "StringProp": {
@@ -140,17 +208,33 @@
       "description": "String property definition for text content, glyph/instance swap, or other string-valued props.",
       "examples": [],
       "properties": {
-        "type": { "type": "string", "const": "string" },
-        "default": { "type": ["string", "null"] },
-        "nullable": { "type": "boolean" },
+        "type": {
+          "type": "string",
+          "const": "string"
+        },
+        "default": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
         "examples": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Sample values demonstrating typical content for this prop"
         }
       },
-      "required": ["type"],
-      "patternProperties": { "^\\$": {} },
+      "required": [
+        "type"
+      ],
+      "patternProperties": {
+        "^\\$": {}
+      },
       "additionalProperties": false
     },
     "EnumProp": {
@@ -158,16 +242,31 @@
       "description": "",
       "examples": [],
       "properties": {
-        "type": { "type": "string", "const": "string" },
-        "default": { "type": "string" },
+        "type": {
+          "type": "string",
+          "const": "string"
+        },
+        "default": {
+          "type": "string"
+        },
         "enum": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "nullable": { "type": "boolean" }
+        "nullable": {
+          "type": "boolean"
+        }
       },
-      "required": ["type", "default", "enum"],
-      "patternProperties": { "^\\$": {} },
+      "required": [
+        "type",
+        "default",
+        "enum"
+      ],
+      "patternProperties": {
+        "^\\$": {}
+      },
       "additionalProperties": false
     },
     "SlotProp": {
@@ -175,34 +274,62 @@
       "description": "",
       "examples": [],
       "properties": {
-        "type": { "type": "string", "const": "slot" },
-        "default": { "type": ["null", "string"] },
-        "nullable": { "type": "boolean" }
+        "type": {
+          "type": "string",
+          "const": "slot"
+        },
+        "default": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        }
       },
-      "required": ["type"],
-      "patternProperties": { "^\\$": {} },
+      "required": [
+        "type"
+      ],
+      "patternProperties": {
+        "^\\$": {}
+      },
       "additionalProperties": false
     },
     "Variants": {
       "type": "array",
       "description": "Variants is an array of variant items, each corresponding to a specific set of non-default prop configurations taht represent a Figma variant. Evaluating a variant's style requires including layering the element styles, configurations and other properties from *every* variant that matches any of the combinations of non-defualt properties. This behavior is similar to the CSS cascade.",
       "examples": [],
-      "items": { "$ref": "#/definitions/Variant" }
+      "items": {
+        "$ref": "#/definitions/Variant"
+      }
     },
     "Variant": {
       "type": "object",
       "description": "",
       "examples": [],
       "properties": {
-        "name": { "type": "string" },
-        "baseline": { "type": "string" },
-        "configuration": { "$ref": "#/definitions/PropConfigurations" },
-        "invalid": { "type": "boolean" },
+        "name": {
+          "type": "string"
+        },
+        "baseline": {
+          "type": "string"
+        },
+        "configuration": {
+          "$ref": "#/definitions/PropConfigurations"
+        },
+        "invalid": {
+          "type": "boolean"
+        },
         "layout": {
           "type": "array",
-          "items": { "$ref": "#/definitions/LayoutNode" }
+          "items": {
+            "$ref": "#/definitions/LayoutNode"
+          }
         },
-        "elements": { "$ref": "#/definitions/Elements" }
+        "elements": {
+          "$ref": "#/definitions/Elements"
+        }
       },
       "additionalProperties": false
     },
@@ -222,12 +349,16 @@
         }
       ],
       "oneOf": [
-        { "type": "string" },
+        {
+          "type": "string"
+        },
         {
           "type": "object",
           "additionalProperties": {
             "type": "array",
-            "items": { "$ref": "#/definitions/LayoutNode" }
+            "items": {
+              "$ref": "#/definitions/LayoutNode"
+            }
           }
         }
       ]
@@ -238,9 +369,15 @@
       "examples": [],
       "additionalProperties": {
         "oneOf": [
-          { "type": "string" },
-          { "type": "number" },
-          { "type": "boolean" }
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
         ]
       }
     },
@@ -248,7 +385,9 @@
       "type": "object",
       "description": "",
       "examples": [],
-      "additionalProperties": { "$ref": "#/definitions/Element" }
+      "additionalProperties": {
+        "$ref": "#/definitions/Element"
+      }
     },
     "Element": {
       "type": "object",
@@ -259,34 +398,54 @@
           "oneOf": [
             {
               "type": "array",
-              "items": { "type": "string" }
+              "items": {
+                "type": "string"
+              }
             },
-            { "$ref": "#/definitions/PropBinding" }
+            {
+              "$ref": "#/definitions/PropBinding"
+            }
           ],
           "description": "Child element names, or a PropBinding when bound to a slot prop"
         },
         "parent": {
           "oneOf": [
-            { "type": "string" },
-            { "type": "null" }
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "instanceOf": {
           "oneOf": [
-            { "type": "string" },
-            { "$ref": "#/definitions/PropBinding" }
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/PropBinding"
+            }
           ],
           "description": "The component or component set name that this instance element references, or a reference to an instance swap prop binding"
         },
         "content": {
           "oneOf": [
-            { "type": "string" },
-            { "$ref": "#/definitions/PropBinding" }
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/PropBinding"
+            }
           ],
           "description": "The content for content-bearing elements: text string for text elements, glyph name for glyph elements, or a PropBinding reference"
         },
-        "styles": { "$ref": "#/definitions/Styles" },
-        "propConfigurations": { "$ref": "#/definitions/PropConfigurations" }
+        "styles": {
+          "$ref": "#/definitions/Styles"
+        },
+        "propConfigurations": {
+          "$ref": "#/definitions/PropConfigurations"
+        }
       },
       "additionalProperties": false
     },
@@ -299,7 +458,9 @@
           "description": "JSON Pointer to the bound prop within this spec's props block, e.g. '#/props/propName'"
         }
       },
-      "required": ["$binding"],
+      "required": [
+        "$binding"
+      ],
       "additionalProperties": false
     },
     "ConditionArgs": {
@@ -312,15 +473,25 @@
         },
         "compareTo": {
           "oneOf": [
-            { "type": "string" },
-            { "type": "number" },
-            { "type": "boolean" },
-            { "type": "null" }
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
           ],
           "description": "Comparison operand for binary operations (equals, notEquals). Omitted for unary operations."
         }
       },
-      "required": ["value"],
+      "required": [
+        "value"
+      ],
       "additionalProperties": false
     },
     "ConditionExpression": {
@@ -335,7 +506,10 @@
           "$ref": "#/definitions/ConditionArgs"
         }
       },
-      "required": ["operation", "args"],
+      "required": [
+        "operation",
+        "args"
+      ],
       "additionalProperties": false
     },
     "Conditional": {
@@ -351,27 +525,49 @@
             "then": {
               "description": "Value when condition is true",
               "oneOf": [
-                { "type": "string" },
-                { "type": "boolean" },
-                { "type": "number" },
-                { "type": "null" }
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
               ]
             },
             "else": {
               "description": "Value when condition is false",
               "oneOf": [
-                { "type": "string" },
-                { "type": "boolean" },
-                { "type": "number" },
-                { "type": "null" }
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },
-          "required": ["condition", "then", "else"],
+          "required": [
+            "condition",
+            "then",
+            "else"
+          ],
           "additionalProperties": false
         }
       },
-      "required": ["if"],
+      "required": [
+        "if"
+      ],
       "additionalProperties": false
     },
     "Styles": {
@@ -381,14 +577,24 @@
       "type": "object",
       "description": "Metadata about the component, its author, generator, schema, and Figma source.",
       "properties": {
-        "author": { "type": "string" },
-        "lastUpdated": { "type": "string" },
+        "author": {
+          "type": "string"
+        },
+        "lastUpdated": {
+          "type": "string"
+        },
         "generator": {
           "type": "object",
           "properties": {
-            "url": { "type": "string" },
-            "version": { "type": "number" },
-            "name": { "type": "string" },
+            "url": {
+              "type": "string"
+            },
+            "version": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
             "license": {
               "type": "object",
               "description": "Resolved license state at the time this component spec was generated. Absent when no license was supplied.",
@@ -402,11 +608,18 @@
                   "description": "Output entitlement level (e.g. FREE, PRO, EXTENDED). Plain string for extensibility."
                 }
               },
-              "required": ["status", "level"],
+              "required": [
+                "status",
+                "level"
+              ],
               "additionalProperties": false
             }
           },
-          "required": ["url", "version", "name"],
+          "required": [
+            "url",
+            "version",
+            "name"
+          ],
           "additionalProperties": false
         },
         "schema": {
@@ -416,28 +629,57 @@
               "type": "string",
               "description": "Versioned schema URL pinned to a git tag (e.g. https://raw.githubusercontent.com/.../v0.13.0/schema/component.schema.json)"
             },
-            "version": { "type": "string" },
+            "version": {
+              "type": "string"
+            },
             "latest": {
               "type": "string",
               "description": "Stable URL pointing to the latest schema on the main branch for discovery"
             }
           },
-          "required": ["url", "version"],
+          "required": [
+            "url",
+            "version"
+          ],
           "additionalProperties": false
         },
         "source": {
           "type": "object",
           "properties": {
-            "pageId": { "type": "string" },
-            "nodeId": { "type": "string" },
-            "nodeType": { "type": "string", "enum": ["COMPONENT", "COMPONENT_SET", "FRAME"] }
+            "pageId": {
+              "type": "string"
+            },
+            "nodeId": {
+              "type": "string"
+            },
+            "nodeType": {
+              "type": "string",
+              "enum": [
+                "COMPONENT",
+                "COMPONENT_SET",
+                "FRAME"
+              ]
+            }
           },
-          "required": ["pageId", "nodeId", "nodeType"],
+          "required": [
+            "pageId",
+            "nodeId",
+            "nodeType"
+          ],
           "additionalProperties": false
         },
-        "config": { "$ref": "#/definitions/Config" }
+        "config": {
+          "$ref": "#/definitions/Config"
+        }
       },
-      "required": ["author", "lastUpdated", "generator", "schema", "source", "config"],
+      "required": [
+        "author",
+        "lastUpdated",
+        "generator",
+        "schema",
+        "source",
+        "config"
+      ],
       "additionalProperties": false
     },
     "Config": {
@@ -447,43 +689,120 @@
         "processing": {
           "type": "object",
           "properties": {
-            "subcomponentNamePattern": { "type": "string" },
-            "glyphNamePattern": { "type": "string", "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')" },
-            "variantDepth": { "type": "number", "enum": [1, 2, 3, 9999] },
-            "details": { "type": "string", "enum": ["FULL", "LAYERED"] }
+            "subcomponentNamePattern": {
+              "type": "string"
+            },
+            "glyphNamePattern": {
+              "type": "string",
+              "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')"
+            },
+            "variantDepth": {
+              "type": "number",
+              "enum": [
+                1,
+                2,
+                3,
+                9999
+              ]
+            },
+            "details": {
+              "type": "string",
+              "enum": [
+                "FULL",
+                "LAYERED"
+              ]
+            },
+            "inferNumberProps": {
+              "type": "boolean",
+              "description": "When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp"
+            }
           },
-          "required": ["subcomponentNamePattern", "variantDepth", "details"],
+          "required": [
+            "subcomponentNamePattern",
+            "variantDepth",
+            "details"
+          ],
           "additionalProperties": false
         },
         "format": {
           "type": "object",
           "properties": {
-            "output": { "type": "string", "enum": ["JSON", "YAML"] },
-            "keys": { "type": "string", "enum": ["SAFE", "CAMEL", "SNAKE", "KEBAB", "PASCAL", "TRAIN"] },
-            "layout": { "type": "string", "enum": ["LAYOUT", "PARENT_CHILDREN", "BOTH"] },
+            "output": {
+              "type": "string",
+              "enum": [
+                "JSON",
+                "YAML"
+              ]
+            },
+            "keys": {
+              "type": "string",
+              "enum": [
+                "SAFE",
+                "CAMEL",
+                "SNAKE",
+                "KEBAB",
+                "PASCAL",
+                "TRAIN"
+              ]
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "LAYOUT",
+                "PARENT_CHILDREN",
+                "BOTH"
+              ]
+            },
             "tokens": {
               "type": "string",
-              "enum": ["TOKEN", "TOKEN_NAME", "TOKEN_FIGMA_EXTENSIONS", "FIGMA_NAME", "CUSTOM"],
+              "enum": [
+                "TOKEN",
+                "TOKEN_NAME",
+                "TOKEN_FIGMA_EXTENSIONS",
+                "FIGMA_NAME",
+                "CUSTOM"
+              ],
               "default": "TOKEN",
               "description": "Token reference serialization profile. Optional; defaults to TOKEN. CUSTOM delegates projection entirely to the transformer."
             }
           },
-          "required": ["output", "keys", "layout"],
+          "required": [
+            "output",
+            "keys",
+            "layout"
+          ],
           "additionalProperties": false
         },
         "include": {
           "type": "object",
           "properties": {
-            "subcomponents": { "type": "boolean" },
-            "variantNames": { "type": "boolean" },
-            "invalidVariants": { "type": "boolean" },
-            "invalidCombinations": { "type": "boolean" }
+            "subcomponents": {
+              "type": "boolean"
+            },
+            "variantNames": {
+              "type": "boolean"
+            },
+            "invalidVariants": {
+              "type": "boolean"
+            },
+            "invalidCombinations": {
+              "type": "boolean"
+            }
           },
-          "required": ["subcomponents", "variantNames", "invalidVariants", "invalidCombinations"],
+          "required": [
+            "subcomponents",
+            "variantNames",
+            "invalidVariants",
+            "invalidCombinations"
+          ],
           "additionalProperties": false
         }
       },
-      "required": ["processing", "format", "include"],
+      "required": [
+        "processing",
+        "format",
+        "include"
+      ],
       "additionalProperties": false
     },
     "Subcomponent": {
@@ -499,10 +818,41 @@
               "metadata": {},
               "subcomponents": {}
             },
-            "required": ["metadata", "subcomponents"]
+            "required": [
+              "metadata",
+              "subcomponents"
+            ]
           }
         }
       ]
+    },
+    "NumberProp": {
+      "type": "object",
+      "description": "Number property definition for numeric-valued props inferred from TEXT code-only props.",
+      "examples": [],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "number"
+        },
+        "default": {
+          "type": "number"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "description": "Sample numeric values demonstrating typical content for this prop"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "patternProperties": {
+        "^\\$": {}
+      },
+      "additionalProperties": false
     }
   },
   "$ref": "#/definitions/Component"

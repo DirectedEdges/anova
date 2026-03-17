@@ -6,7 +6,7 @@ export type Props = Record<string, AnyProp>;
 /**
  * Union of all supported property types
  */
-export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp;
+export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp | NumberProp;
 
 /**
  * Boolean property definition
@@ -36,6 +36,17 @@ export interface EnumProp {
   default: string;
   enum: string[];
   nullable?: boolean;
+}
+
+/**
+ * Number property definition (numeric-valued props inferred from TEXT code-only props)
+ */
+export interface NumberProp {
+  type: 'number';
+  /** Default numeric value. Optional — omitted when no meaningful default exists. */
+  default?: number;
+  /** Sample numeric values demonstrating typical content for this prop */
+  examples?: number[];
 }
 
 /**
