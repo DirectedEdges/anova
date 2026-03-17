@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FigmaCodeOnlySource` — provenance metadata for props extracted from a Figma code-only container layer (`kind`, `layer`, `instanceOf?`)
 - `FigmaPropExtension.source` — optional `FigmaCodeOnlySource` on the Figma extension, present only for code-only props
 - `Config.processing.codeOnlyPropsPattern` — optional naming pattern for detecting the code-only props container layer
+- `Config.processing.inferNumberProps` — opt-in flag to infer `NumberProp` from TEXT code-only props
+- `NumberProp` — numeric property type for number-valued component props
+- `AnyProp` — `NumberProp` added as a fifth union member (`type: 'number'`)
 - `FigmaPropExtension` — Figma-specific metadata for prop definitions (native prop type)
 - `PropExtensions` — DTCG §5.2.3 platform-specific extensions container, keyed by reverse-domain notation
 - `BooleanProp.$extensions` — optional platform metadata on boolean props
