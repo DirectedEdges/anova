@@ -157,6 +157,33 @@
         }
       ]
     },
+    "FigmaPropExtension": {
+      "type": "object",
+      "description": "DTCG \u00a75.2.3 Figma-specific metadata for a prop definition.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BOOLEAN",
+            "TEXT",
+            "INSTANCE_SWAP",
+            "VARIANT"
+          ],
+          "description": "Figma-native property type"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PropExtensions": {
+      "type": "object",
+      "description": "DTCG \u00a75.2.3 platform-specific extensions for prop definitions. Each property is a reverse-domain key whose value is a platform extension type.",
+      "properties": {
+        "com.figma": {
+          "$ref": "#/definitions/FigmaPropExtension"
+        }
+      },
+      "additionalProperties": true
+    },
     "BooleanProp": {
       "type": "object",
       "description": "",
@@ -169,29 +196,8 @@
         "default": {
           "type": "boolean"
         },
-        "x-platform": {
-          "type": "object",
-          "properties": {
-            "FIGMA": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "BOOLEAN",
-                    "TEXT",
-                    "INSTANCE_SWAP",
-                    "VARIANT"
-                  ]
-                }
-              },
-              "required": [
-                "type"
-              ],
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
+        "$extensions": {
+          "$ref": "#/definitions/PropExtensions"
         }
       },
       "required": [
@@ -227,6 +233,9 @@
             "type": "string"
           },
           "description": "Sample values demonstrating typical content for this prop"
+        },
+        "$extensions": {
+          "$ref": "#/definitions/PropExtensions"
         }
       },
       "required": [
@@ -257,15 +266,10 @@
         },
         "nullable": {
           "type": "boolean"
+        },
+        "$extensions": {
+          "$ref": "#/definitions/PropExtensions"
         }
-      },
-      "required": [
-        "type",
-        "default",
-        "enum"
-      ],
-      "patternProperties": {
-        "^\\$": {}
       },
       "additionalProperties": false
     },
@@ -286,13 +290,10 @@
         },
         "nullable": {
           "type": "boolean"
+        },
+        "$extensions": {
+          "$ref": "#/definitions/PropExtensions"
         }
-      },
-      "required": [
-        "type"
-      ],
-      "patternProperties": {
-        "^\\$": {}
       },
       "additionalProperties": false
     },

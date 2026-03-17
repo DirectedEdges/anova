@@ -9,11 +9,33 @@ export type Props = Record<string, AnyProp>;
 export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp | NumberProp;
 
 /**
+ * DTCG §5.2.3 Figma-specific metadata for a prop definition.
+ * @since 0.14.0
+ */
+export interface FigmaPropExtension {
+  /** Figma-native property type (e.g., BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT). */
+  type?: string;
+}
+
+/**
+ * DTCG §5.2.3 platform-specific extensions for prop definitions.
+ * Each property is a reverse-domain key whose value is a platform extension type.
+ * @since 0.14.0
+ */
+export interface PropExtensions {
+  /** Figma extraction provenance for this prop. */
+  'com.figma'?: FigmaPropExtension;
+  [key: string]: unknown;
+}
+
+/**
  * Boolean property definition
  */
 export interface BooleanProp {
   type: 'boolean';
   default: boolean;
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
+  $extensions?: PropExtensions;
 }
 
 /**
@@ -26,6 +48,8 @@ export interface StringProp {
   nullable?: boolean;
   /** Sample values demonstrating typical content for this prop */
   examples?: string[];
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
+  $extensions?: PropExtensions;
 }
 
 /**
@@ -36,6 +60,8 @@ export interface EnumProp {
   default: string;
   enum: string[];
   nullable?: boolean;
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
+  $extensions?: PropExtensions;
 }
 
 /**
@@ -58,4 +84,6 @@ export interface SlotProp {
   default?: string | null;
   /** Whether this slot prop accepts a null value */
   nullable?: boolean;
+  /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
+  $extensions?: PropExtensions;
 }
