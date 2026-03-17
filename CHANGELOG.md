@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `StringProp.$extensions` — optional platform metadata on string props
 - `EnumProp.$extensions` — optional platform metadata on enum props
 - `SlotProp.$extensions` — optional platform metadata on slot props
+- `SlotProp.minItems` — minimum number of items the slot accepts
+- `SlotProp.maxItems` — maximum number of items the slot accepts
+- `SlotProp.anyOf` — component type names permitted in the slot
+- `Config.processing.slotConstraints` — opt-in flag to consolidate slot constraint code-only props into slot properties
 
 ### Changed
 

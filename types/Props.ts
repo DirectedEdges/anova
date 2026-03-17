@@ -102,6 +102,12 @@ export interface SlotProp {
   default?: string | null;
   /** Whether this slot prop accepts a null value */
   nullable?: boolean;
+  /** Minimum number of items this slot accepts. @since 0.14.0 */
+  minItems?: number;
+  /** Maximum number of items this slot accepts. @since 0.14.0 */
+  maxItems?: number;
+  /** Component type names permitted in this slot. @since 0.14.0 */
+  anyOf?: string[];
   /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
 }

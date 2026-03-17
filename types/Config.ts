@@ -14,6 +14,8 @@ export interface Config {
     glyphNamePattern?: string;
     /** Naming pattern used to detect the code-only props container layer (e.g. "Code only props"). Optional; absence means no code-only prop extraction. */
     codeOnlyPropsPattern?: string;
+    /** Whether to consolidate slot constraints (anyOf, minItems, maxItems) from code-only props into the slot property. Optional; defaults to false. @since 0.14.0 */
+    slotConstraints?: boolean;
     /** Depth of variant expansion: 1-3 or 9999 for unlimited */
     variantDepth: 1 | 2 | 3 | 9999;
     /** Level of detail in output */
