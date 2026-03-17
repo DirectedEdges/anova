@@ -25,6 +25,7 @@ export interface FigmaPropExtension {
 export interface PropExtensions {
   /** Figma extraction provenance for this prop. */
   'com.figma'?: FigmaPropExtension;
+  [key: string]: unknown;
 }
 
 /**
