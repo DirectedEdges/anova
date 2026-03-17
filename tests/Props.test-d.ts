@@ -5,7 +5,7 @@
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { StringProp, BooleanProp, EnumProp, SlotProp, AnyProp, FigmaCodeOnlySource, FigmaPropExtension, PropExtensions } from '../types/index.js';
+import type { StringProp, BooleanProp, EnumProp, SlotProp, NumberProp, AnyProp, FigmaCodeOnlySource, FigmaPropExtension, PropExtensions } from '../types/index.js';
 
 // ─── StringProp — examples field ──────────────────────────────────────────────
 
@@ -85,6 +85,7 @@ const _figmaExtEmpty: FigmaPropExtension = {};
 // PropExtensions composes platform extensions
 const _extCheck: PropExtensions = { 'com.figma': { type: 'BOOLEAN' } };
 const _extEmpty: PropExtensions = {};
+const _extUnknownVendor: PropExtensions = { 'com.sketch': {} };
 
 // $extensions is optional on all prop types
 const boolWithExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.figma': { type: 'BOOLEAN' } } };
@@ -98,6 +99,9 @@ const boolEmptyFigma: BooleanProp = { type: 'boolean', default: true, $extension
 
 // $extensions with empty object
 const boolEmptyExt: BooleanProp = { type: 'boolean', default: true, $extensions: {} };
+
+// $extensions with unknown reverse-domain vendor key
+const boolWithUnknownExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.sketch': {} } };
 
 // ─── FigmaCodeOnlySource — code-only prop provenance (ADR 027) ──────────────
 
@@ -165,3 +169,27 @@ const _slotBadAnyOf: SlotProp = { type: 'slot', anyOf: 'Avatar' };
 
 // @ts-expect-error: anyOf must be string[], not number[]
 const _slotBadAnyOfNumbers: SlotProp = { type: 'slot', anyOf: [1, 2, 3] };
+
+// ─── NumberProp (ADR 029) ─────────────────────────────────────────────────────
+
+// minimal valid NumberProp
+const numberMinimal: NumberProp = { type: 'number' };
+
+// with optional default
+const numberWithDefault: NumberProp = { type: 'number', default: 24 };
+
+// with optional examples
+const numberWithExamples: NumberProp = { type: 'number', examples: [1, 2, 3] };
+
+// with both
+const numberFull: NumberProp = { type: 'number', default: 1, examples: [1, 2, 4] };
+
+// @ts-expect-error: default must be number, not string
+const _numberStringDefault: NumberProp = { type: 'number', default: '24' };
+
+// @ts-expect-error: examples must be number[], not string[]
+const _numberStringExamples: NumberProp = { type: 'number', examples: ['1', '2'] };
+
+// NumberProp is assignable to AnyProp
+const anyFromNumber: AnyProp = { type: 'number' } satisfies NumberProp;
+const anyFromNumberFull: AnyProp = { type: 'number', default: 10, examples: [10, 20] } satisfies NumberProp;

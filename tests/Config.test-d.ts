@@ -108,6 +108,32 @@ const configWithGlyph: Config = {
 // glyphNamePattern can be undefined
 const _glyphUndefined: Config['processing']['glyphNamePattern'] = undefined;
 
+// inferNumberProps is optional — Config compiles without it (ADR 029)
+const configWithoutInferNumber: Config = {
+  processing: {
+    subcomponentNamePattern: '{C} / _ / {S}',
+    variantDepth: 9999,
+    details: 'LAYERED',
+  },
+  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
+  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
+};
+
+// inferNumberProps accepts true
+const configWithInferNumber: Config = {
+  processing: {
+    subcomponentNamePattern: '{C} / _ / {S}',
+    variantDepth: 9999,
+    details: 'LAYERED',
+    inferNumberProps: true,
+  },
+  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
+  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
+};
+
+// inferNumberProps can be undefined
+const _inferUndefined: Config['processing']['inferNumberProps'] = undefined;
+
 // ─── slotConstraints — opt-in slot constraint consolidation (ADR 028) ───────
 
 // slotConstraints is optional — Config compiles without it

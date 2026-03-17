@@ -6,7 +6,7 @@ export type Props = Record<string, AnyProp>;
 /**
  * Union of all supported property types
  */
-export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp;
+export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp | NumberProp;
 
 /**
  * Provenance metadata for props extracted from a Figma code-only container layer.
@@ -43,6 +43,7 @@ export interface FigmaPropExtension {
 export interface PropExtensions {
   /** Figma extraction provenance for this prop. */
   'com.figma'?: FigmaPropExtension;
+  [key: string]: unknown;
 }
 
 /**
@@ -79,6 +80,17 @@ export interface EnumProp {
   nullable?: boolean;
   /** DTCG §5.2.3 platform-specific extensions. @since 0.14.0 */
   $extensions?: PropExtensions;
+}
+
+/**
+ * Number property definition (numeric-valued props inferred from TEXT code-only props)
+ */
+export interface NumberProp {
+  type: 'number';
+  /** Default numeric value. Optional — omitted when no meaningful default exists. */
+  default?: number;
+  /** Sample numeric values demonstrating typical content for this prop */
+  examples?: number[];
 }
 
 /**
