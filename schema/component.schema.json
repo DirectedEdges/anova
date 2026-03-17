@@ -157,26 +157,46 @@
         }
       ]
     },
+    "FigmaCodeOnlySource": {
+      "type": "object",
+      "description": "Provenance metadata for props extracted from a Figma code-only container layer.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "const": "codeOnlyProp",
+          "description": "Discriminator identifying this prop as originating from a code-only container"
+        },
+        "layer": {
+          "type": "string",
+          "description": "Sub-layer name within the code-only container tree corresponding to this prop"
+        },
+        "instanceOf": {
+          "type": "string",
+          "description": "For enum code-only props: the component name of the nested instance whose variants define the enum values"
+        }
+      },
+      "required": ["kind", "layer"],
+      "additionalProperties": false
+    },
     "FigmaPropExtension": {
       "type": "object",
-      "description": "DTCG \u00a75.2.3 Figma-specific metadata for a prop definition.",
+      "description": "DTCG §5.2.3 Figma-specific metadata for a prop definition.",
       "properties": {
         "type": {
           "type": "string",
-          "enum": [
-            "BOOLEAN",
-            "TEXT",
-            "INSTANCE_SWAP",
-            "VARIANT"
-          ],
+          "enum": ["BOOLEAN", "TEXT", "INSTANCE_SWAP", "VARIANT"],
           "description": "Figma-native property type"
+        },
+        "source": {
+          "$ref": "#/definitions/FigmaCodeOnlySource",
+          "description": "Provenance metadata — present only for props extracted from a code-only container layer"
         }
       },
       "additionalProperties": false
     },
     "PropExtensions": {
       "type": "object",
-      "description": "DTCG \u00a75.2.3 platform-specific extensions for prop definitions. Each property is a reverse-domain key whose value is a platform extension type.",
+      "description": "DTCG §5.2.3 platform-specific extensions for prop definitions. Each property is a reverse-domain key whose value is a platform extension type.",
       "properties": {
         "com.figma": {
           "$ref": "#/definitions/FigmaPropExtension"
@@ -697,6 +717,14 @@
               "type": "string",
               "description": "Naming pattern used to detect glyph content assets (e.g. 'DS Icon Glyph /')"
             },
+            "codeOnlyPropsPattern": {
+              "type": "string",
+              "description": "Naming pattern used to detect the code-only props container layer (e.g. 'Code only props')"
+            },
+            "inferNumberProps": {
+              "type": "boolean",
+              "description": "When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp"
+            },
             "variantDepth": {
               "type": "number",
               "enum": [
@@ -712,10 +740,6 @@
                 "FULL",
                 "LAYERED"
               ]
-            },
-            "inferNumberProps": {
-              "type": "boolean",
-              "description": "When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp"
             }
           },
           "required": [

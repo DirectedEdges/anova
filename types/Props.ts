@@ -9,12 +9,30 @@ export type Props = Record<string, AnyProp>;
 export type AnyProp = BooleanProp | StringProp | EnumProp | SlotProp | NumberProp;
 
 /**
+ * Provenance metadata for props extracted from a Figma code-only container layer.
+ * Code-only props are non-visual properties embedded in a hidden container layer
+ * within the Figma component, used to encode accessibility labels, semantic
+ * heading levels, ARIA roles, and similar concerns.
+ * @since 0.14.0
+ */
+export interface FigmaCodeOnlySource {
+  /** Discriminator identifying this prop as originating from a code-only container. */
+  kind: 'codeOnlyProp';
+  /** Sub-layer name within the code-only container tree corresponding to this prop. */
+  layer: string;
+  /** For enum code-only props: the component name of the nested instance whose variants define the enum values. */
+  instanceOf?: string;
+}
+
+/**
  * DTCG §5.2.3 Figma-specific metadata for a prop definition.
  * @since 0.14.0
  */
 export interface FigmaPropExtension {
   /** Figma-native property type (e.g., BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT). */
   type?: string;
+  /** Provenance metadata — present only for props extracted from a code-only container layer. @since 0.14.0 */
+  source?: FigmaCodeOnlySource;
 }
 
 /**

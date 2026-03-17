@@ -12,6 +12,8 @@ export interface Config {
     subcomponentNamePattern: string;
     /** Naming pattern used to detect glyph content assets (e.g. "DS Icon Glyph /"). Optional; absence means no glyph detection. */
     glyphNamePattern?: string;
+    /** Naming pattern used to detect the code-only props container layer (e.g. "Code only props"). Optional; absence means no code-only prop extraction. */
+    codeOnlyPropsPattern?: string;
     /** Depth of variant expansion: 1-3 or 9999 for unlimited */
     variantDepth: 1 | 2 | 3 | 9999;
     /** Level of detail in output */

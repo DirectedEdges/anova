@@ -5,7 +5,7 @@
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { StringProp, BooleanProp, EnumProp, SlotProp, NumberProp, AnyProp, FigmaPropExtension, PropExtensions } from '../types/index.js';
+import type { StringProp, BooleanProp, EnumProp, SlotProp, NumberProp, AnyProp, FigmaCodeOnlySource, FigmaPropExtension, PropExtensions } from '../types/index.js';
 
 // ─── StringProp — examples field ──────────────────────────────────────────────
 
@@ -102,6 +102,32 @@ const boolEmptyExt: BooleanProp = { type: 'boolean', default: true, $extensions:
 
 // $extensions with unknown reverse-domain vendor key
 const boolWithUnknownExt: BooleanProp = { type: 'boolean', default: true, $extensions: { 'com.sketch': {} } };
+
+// ─── FigmaCodeOnlySource — code-only prop provenance (ADR 027) ──────────────
+
+// FigmaCodeOnlySource requires kind and layer
+const _codeOnlyBasic: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Accessibility label' };
+
+// instanceOf is optional (for enum code-only props)
+const _codeOnlyWithInstance: FigmaCodeOnlySource = { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' };
+
+// source is optional on FigmaPropExtension
+const _figmaExtWithSource: FigmaPropExtension = { type: 'TEXT', source: { kind: 'codeOnlyProp', layer: 'Accessibility label' } };
+const _figmaExtNoSource: FigmaPropExtension = { type: 'BOOLEAN' };
+
+// Code-only string prop with source metadata
+const stringCodeOnly: StringProp = { type: 'string', examples: ['Submit form'], $extensions: { 'com.figma': { type: 'TEXT', source: { kind: 'codeOnlyProp', layer: 'Accessibility label' } } } };
+
+// Code-only enum prop with source and instanceOf
+const enumCodeOnly: EnumProp = { type: 'string', default: 'h2', enum: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], $extensions: { 'com.figma': { type: 'VARIANT', source: { kind: 'codeOnlyProp', layer: 'Heading Level', instanceOf: 'Heading Level' } } } };
+
+// Code-only boolean prop with source
+const boolCodeOnly: BooleanProp = { type: 'boolean', default: false, $extensions: { 'com.figma': { type: 'BOOLEAN', source: { kind: 'codeOnlyProp', layer: 'hasA11yOverrides' } } } };
+
+// Code-only props are assignable to AnyProp
+const anyFromStringCodeOnly: AnyProp = stringCodeOnly;
+const anyFromEnumCodeOnly: AnyProp = enumCodeOnly;
+const anyFromBoolCodeOnly: AnyProp = boolCodeOnly;
 
 // Props with $extensions are assignable to AnyProp
 const anyFromBoolExt: AnyProp = boolWithExt;
