@@ -16,6 +16,8 @@ export interface Config {
     variantDepth: 1 | 2 | 3 | 9999;
     /** Level of detail in output */
     details: 'FULL' | 'LAYERED';
+    /** When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp */
+    inferNumberProps?: boolean;
   };
   format: {
     /** Output format */
