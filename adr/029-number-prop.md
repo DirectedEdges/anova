@@ -44,18 +44,27 @@ Add a first-class `NumberProp` interface (`type: 'number'`, `default?: number`, 
 
 **Inference guard — values that WILL be inferred as `NumberProp`** (all conditions must hold):
 - Source is a TEXT component property with `source.kind === 'codeOnlyProp'`
-- The `default` value and every entry in `examples` parse as a finite number via `Number()`
-- No value has a leading zero (rejects `"007"`, `"0800"`, `"01"`)
-- No value is the empty string
+- The `default` value and every entry in `examples` pass `isNumericValue()`:
+  - Not the empty string `""` or bare minus `"-"`
+  - No leading zero before another digit (rejects `"007"`, `"0800"`, `"01"`, `"-01"`; allows `"0"`, `"0.5"`, `"-0.5"`)
+  - `Number(value)` returns a finite number (not `NaN` or `±Infinity`)
 
 **Values that will NOT be inferred** (remain `StringProp`):
-- `"0800"`, `"007"` — leading zero; likely an identifier or formatted code
-- `"1.0"`, `"2.0"` — trailing `.0`; likely a version string or display label
+- `"0800"`, `"007"`, `"01"` — leading zero before another digit; likely an identifier or formatted code
 - `""` — empty string; no numeric content
+- `"-"` — bare minus sign; no numeric content
 - Any value where `Number(v)` returns `NaN` or `±Infinity`
 
+**Values that WILL be inferred** (notable cases):
+- `"1.0"`, `"2.0"` — trailing `.0` passes all guards; `Number("1.0")` → `1`
+- `"0"`, `"0.5"`, `"-0.5"` — zero or zero-prefixed decimals are allowed
+- `"-42"`, `"3.14"` — standard negative and decimal numbers
+
 **Known false positives** (will be inferred, but may not be intended as numbers):
-- `"90210"` — passes all guard conditions (no leading zero, finite, non-empty); inferred as `NumberProp` even though it is a zip code. This is the canonical example of why the flag is opt-in: the guard is a heuristic and callers accept responsibility for false positives when enabling it.
+- `"90210"` — passes all guard conditions (no leading zero, finite, non-empty); inferred as `NumberProp` even though it is a zip code
+- `"1.0"` — passes guards but could be a version string rather than a number
+
+These false positives are the canonical examples of why the flag is opt-in: the guard is a heuristic and callers accept responsibility for false positives when enabling it.
 
 **Pros**:
 - Satisfies Principle I: symmetric type + schema addition.
@@ -65,7 +74,7 @@ Add a first-class `NumberProp` interface (`type: 'number'`, `default?: number`, 
 
 **Cons / Trade-offs**:
 - Adds a new discriminant (`type: 'number'`) to `AnyProp`; downstream consumers doing exhaustive type checks must handle the new branch.
-- The leading-zero and trailing-`.0` guards are heuristics — edge cases exist, which is why the flag remains opt-in.
+- The leading-zero guard is a heuristic — edge cases exist (e.g., `"1.0"` as a version string, `"90210"` as a zip code), which is why the flag remains opt-in.
 
 ---
 
@@ -186,7 +195,7 @@ AnyProp:
 # New property under #/definitions/Config/properties/processing/properties
 inferNumberProps:
   type: boolean
-  description: "When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp"
+  description: "When true, TEXT code-only props whose default and all examples pass isNumericValue (non-empty, no bare minus, no leading zeros before digits, finite) are emitted as NumberProp instead of StringProp"
 # NOT added to required[] — optional field
 ```
 
@@ -229,5 +238,5 @@ inferNumberProps:
 - Consumers can now represent numeric-valued component properties (`maxCharacterCount`, `minRows`, `tabIndex`, etc.) as `NumberProp` in the spec output, preserving semantic type information.
 - The `AnyProp` union gains a fifth discriminant (`type: 'number'`); any exhaustive type-switch over `AnyProp` must be updated to handle `NumberProp`.
 - `Config.processing.inferNumberProps` is opt-in and absent by default — existing consumers and specs are unaffected until they enable the flag.
-- The inference guard (TEXT source, code-only prop, all values parse as numbers without leading zeros) is enforced in `anova-transformer`, not in this package. This ADR records only the contract change.
+- The inference guard (TEXT source, code-only prop, all values pass `isNumericValue` — non-empty, no bare minus, no leading zeros before digits, finite) is enforced in `anova-transformer`, not in this package. This ADR records only the contract change.
 - Enum props with numeric values (e.g., `1 | 2 | 3 | 4`) are out of scope for this ADR. If Figma represents them as VARIANT properties, they continue to emit as `EnumProp` with string members. A separate ADR may address `NumberEnumProp` if that need arises.
