@@ -175,12 +175,13 @@ Leave `x-platform` on props and `$extensions` on `TokenReference` as-is, documen
 
 ### Type hierarchy
 
-Three types compose the extension system. Each platform extension interface describes the metadata shape for that platform. `PropExtensions` is the container that maps reverse-domain keys to their platform extension types:
+Three types compose the extension system. Each platform extension interface describes the **known** metadata fields for that platform while remaining open to additional fields — platform extensions are inherently extensible and should not reject unknown properties. `PropExtensions` is the container that maps reverse-domain keys to their platform extension types:
 
 ```typescript
-// Platform-specific metadata shape
+// Platform-specific metadata shape — known fields typed, additional fields pass through
 interface FigmaPropExtension {
   type?: string;   // Figma-native prop type (BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT)
+  [key: string]: unknown;
 }
 
 // Container: maps reverse-domain keys to platform extension types
@@ -232,7 +233,7 @@ FigmaPropExtension:
     type:
       type: string
       enum: [BOOLEAN, TEXT, INSTANCE_SWAP, VARIANT]
-  additionalProperties: false
+  additionalProperties: true          # open — validates known fields, passes unknown ones through
 
 # PropExtensions — container mapping reverse-domain keys to platform types
 PropExtensions:
@@ -255,7 +256,7 @@ The existing `patternProperties: { "^\\$": {} }` on all prop definitions already
 
 - `TokenReference.$extensions` in `types/Styles.ts` and `styles.schema.json` is **unchanged** — it already follows the target pattern.
 - The `x-platform` property has no TypeScript counterpart today, so its removal from the schema does not break any typed consumer. Downstream transformers that emit `x-platform` will need to emit `$extensions` instead.
-- `PropExtensions` uses `additionalProperties: true` so that unknown platform keys pass validation. Each platform key is independently optional — no key is required.
+- Both levels of the extension hierarchy use `additionalProperties: true`: `PropExtensions` accepts unknown platform keys, and each platform extension object (e.g., `FigmaPropExtension`) accepts unknown fields within that platform's namespace. This is intentional — extensions are inherently extensible. The schema validates the fields it knows about (e.g., `type` must be one of `BOOLEAN`, `TEXT`, `INSTANCE_SWAP`, `VARIANT` if present) but does not reject additional platform-specific metadata (e.g., `visibilityProp`, `source`). This avoids forcing a schema change every time a new Figma-specific field is added to the transformer output.
 
 ---
 

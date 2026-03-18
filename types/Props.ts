@@ -33,6 +33,8 @@ export interface FigmaPropExtension {
   type?: string;
   /** Provenance metadata — present only for props extracted from a code-only container layer. @since 0.14.0 */
   source?: FigmaCodeOnlySource;
+  /** Additional Figma-specific metadata passes through without type enforcement. */
+  [key: string]: unknown;
 }
 
 /**
