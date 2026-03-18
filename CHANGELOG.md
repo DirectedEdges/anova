@@ -5,7 +5,9 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.14.0] - Unreleased
+## [0.14.0] - 2026-03-18
+
+Introduces code-only props support with `FigmaCodeOnlySource` provenance metadata and a configurable container-layer naming pattern, plus a new `NumberProp` type for numeric property values. Adds DTCG-aligned `$extensions` for platform-specific metadata across all prop types, replacing the prior `x-platform` convention on `BooleanProp`. Expands `SlotProp` with `minItems`, `maxItems`, and `anyOf` constraints consolidatable via the new `slotConstraints` processing flag.
 
 ### Added
 
@@ -29,8 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `BooleanProp` — `x-platform` replaced by `$extensions` to align with DTCG convention used on `TokenReference`
-
-### Removed
 
 
 ## [0.13.0] - 2026-03-13
