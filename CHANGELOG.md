@@ -5,6 +5,34 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-03-18
+
+Introduces code-only props support with `FigmaCodeOnlySource` provenance metadata and a configurable container-layer naming pattern, plus a new `NumberProp` type for numeric property values. Adds DTCG-aligned `$extensions` for platform-specific metadata across all prop types, replacing the prior `x-platform` convention on `BooleanProp`. Expands `SlotProp` with `minItems`, `maxItems`, and `anyOf` constraints consolidatable via the new `slotConstraints` processing flag.
+
+### Added
+
+- `FigmaCodeOnlySource` — provenance metadata for props extracted from a Figma code-only container layer (`kind`, `layer`, `instanceOf?`)
+- `FigmaPropExtension.source` — optional `FigmaCodeOnlySource` on the Figma extension, present only for code-only props
+- `Config.processing.codeOnlyPropsPattern` — optional naming pattern for detecting the code-only props container layer
+- `Config.processing.inferNumberProps` — opt-in flag to infer `NumberProp` from TEXT code-only props
+- `NumberProp` — numeric property type for number-valued component props
+- `AnyProp` — `NumberProp` added as a fifth union member (`type: 'number'`)
+- `FigmaPropExtension` — Figma-specific metadata for prop definitions (native prop type)
+- `PropExtensions` — DTCG §5.2.3 platform-specific extensions container, keyed by reverse-domain notation
+- `BooleanProp.$extensions` — optional platform metadata on boolean props
+- `StringProp.$extensions` — optional platform metadata on string props
+- `EnumProp.$extensions` — optional platform metadata on enum props
+- `SlotProp.$extensions` — optional platform metadata on slot props
+- `SlotProp.minItems` — minimum number of items the slot accepts
+- `SlotProp.maxItems` — maximum number of items the slot accepts
+- `SlotProp.anyOf` — component type names permitted in the slot
+- `Config.processing.slotConstraints` — opt-in flag to consolidate slot constraint code-only props into slot properties
+
+### Changed
+
+- `BooleanProp` — `x-platform` replaced by `$extensions` to align with DTCG convention used on `TokenReference`
+
+
 ## [0.13.0] - 2026-03-13
 
 ### Added

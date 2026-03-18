@@ -12,10 +12,16 @@ export interface Config {
     subcomponentNamePattern: string;
     /** Naming pattern used to detect glyph content assets (e.g. "DS Icon Glyph /"). Optional; absence means no glyph detection. */
     glyphNamePattern?: string;
+    /** Naming pattern used to detect the code-only props container layer (e.g. "Code only props"). Optional; absence means no code-only prop extraction. */
+    codeOnlyPropsPattern?: string;
+    /** Whether to consolidate slot constraints (anyOf, minItems, maxItems) from code-only props into the slot property. Optional; defaults to false. @since 0.14.0 */
+    slotConstraints?: boolean;
     /** Depth of variant expansion: 1-3 or 9999 for unlimited */
     variantDepth: 1 | 2 | 3 | 9999;
     /** Level of detail in output */
     details: 'FULL' | 'LAYERED';
+    /** When true, TEXT code-only props whose default and all examples parse as valid numbers (no leading zeros) are emitted as NumberProp instead of StringProp */
+    inferNumberProps?: boolean;
   };
   format: {
     /** Output format */
