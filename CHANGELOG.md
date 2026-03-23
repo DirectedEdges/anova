@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `SubcomponentRef` — reference to a subcomponent definition via `{ $ref: "#/subcomponents/{key}" }`
+- `AnatomyElement.instanceOf` — widened to accept `string | SubcomponentRef`
+- `Element.instanceOf` — widened to accept `string | PropBinding | SubcomponentRef`
+
 ### Changed
 
 ### Removed

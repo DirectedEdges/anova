@@ -3,7 +3,7 @@
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { Anatomy, AnatomyElement, ElementTypeRef } from '../types/index.js';
+import type { Anatomy, AnatomyElement, ElementTypeRef, SubcomponentRef } from '../types/index.js';
 
 // AnatomyElement.type accepts ElementType values
 const textElement: AnatomyElement = { type: 'text' };
@@ -57,6 +57,29 @@ const anatomy: Anatomy = {
   root: { type: 'container' },
   label: { type: 'text' },
   icon: { type: { $ref: 'foundations#/definitions/glyph' } },
+};
+
+// ─── SubcomponentRef ────────────────────────────────────────────────────────
+
+// SubcomponentRef shape
+const subRef: SubcomponentRef = { $ref: '#/subcomponents/formLabel' };
+
+// @ts-expect-error — SubcomponentRef requires $ref field
+const invalidSubRef: SubcomponentRef = {};
+
+// @ts-expect-error — SubcomponentRef.$ref must be a string
+const invalidSubRefType: SubcomponentRef = { $ref: 42 };
+
+// AnatomyElement.instanceOf accepts SubcomponentRef
+const subRefElement: AnatomyElement = {
+  type: 'instance',
+  instanceOf: { $ref: '#/subcomponents/formLabel' },
+};
+
+// AnatomyElement.instanceOf still accepts plain string
+const stringInstanceOf: AnatomyElement = {
+  type: 'instance',
+  instanceOf: 'SomeComponent',
 };
 
 // Type guard discrimination works
