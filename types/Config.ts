@@ -8,8 +8,8 @@
  */
 export interface Config {
   processing: {
-    /** Subcomponent discovery settings: scope, match patterns, and exclusion patterns. @since 0.15.0 */
-    subcomponents: {
+    /** Subcomponent discovery settings: scope, match patterns, and exclusion patterns. Optional; absence means no subcomponent detection. @since 0.15.0 */
+    subcomponents?: {
       /** Where to search for subcomponents. NESTED = anatomy only (default); PAGE = also search the Figma page. */
       scope?: 'NESTED' | 'PAGE';
       /** Template patterns defining which assets are subcomponents. Uses {C} (component name) and {S} (subcomponent name) placeholders. */

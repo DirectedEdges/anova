@@ -80,9 +80,9 @@ Group subcomponent settings into a nested object inside `processing`. Remove `in
 
 ```yaml
 processing:
-  subcomponents:                                # replaces flat subcomponentNamePattern
+  subcomponents?:                               # optional; absence = no subcomponent detection
     scope?: "NESTED" | "PAGE"                   # new — defaults to NESTED
-    match:                                      # required, minItems: 1
+    match:                                      # required when subcomponents defined, minItems: 1
       - "{C} / {S}"
       - "{C} / _ / {S}"
     exclude?:                                   # optional
@@ -186,9 +186,9 @@ subcomponents:
 | `X / Text cases / Y` | matches `{C} / Text cases / {S}` in `exclude` | **excluded** |
 | `X / Docs / Intro` | no `match` hit | **ignored** (not a subcomponent) |
 
-**Resolution rules**:
+**Resolution rules** (apply identically to both anatomy-based and page-level detection):
 - An asset must match at least one `match` pattern to be considered
-- If it also matches an `exclude` pattern, the exclusion wins (explicit deny)
+- If it also matches an `exclude` pattern, the exclusion wins (explicit deny) — regardless of whether the asset was discovered via anatomy or page search
 - Assets that match neither are ignored
 
 **Pros**:
@@ -292,8 +292,8 @@ subcomponents:
 | File | Change | Bump |
 |------|--------|------|
 | `Config.ts` | Remove `processing.subcomponentNamePattern` | MAJOR |
-| `Config.ts` | Add `processing.subcomponents` object with `scope?`, `match`, `exclude?` | MAJOR |
-| `Config.ts` | Remove `include.subcomponents` (implied by `match`) | MAJOR |
+| `Config.ts` | Add optional `processing.subcomponents?` object with `scope?`, `match`, `exclude?` | MAJOR |
+| `Config.ts` | Remove `include.subcomponents` (implied by presence of `subcomponents`) | MAJOR |
 
 **Example — new shape** (`types/Config.ts`):
 ```yaml
@@ -314,9 +314,9 @@ include:
 
 # After
 processing:
-  subcomponents:                           # new nested object
+  subcomponents?:                          # optional; absence = no subcomponent detection
     scope?: "NESTED" | "PAGE"              # optional, defaults to NESTED
-    match: string[]                        # required, minItems: 1 — uses {C}/{S} template syntax
+    match: string[]                        # required when present, minItems: 1 — uses {C}/{S} template syntax
     exclude?: string[]                     # optional — uses {C}/{S} template syntax
   glyphNamePattern?: string
   codeOnlyPropsPattern?: string
@@ -335,7 +335,7 @@ include:
 | File | Change | Bump |
 |------|--------|------|
 | `component.schema.json` | Remove `subcomponentNamePattern` from `Config.processing.properties` | MAJOR |
-| `component.schema.json` | Add `subcomponents` object to `Config.processing.properties` with `scope`, `match`, `exclude` | MAJOR |
+| `component.schema.json` | Add optional `subcomponents` object to `Config.processing.properties` with `scope`, `match`, `exclude` (not in `required`) | MAJOR |
 | `component.schema.json` | Remove `subcomponents` from `Config.include.properties` and `Config.include.required` | MAJOR |
 
 **Example — new schema shape** (`schema/component.schema.json`):
@@ -366,9 +366,10 @@ subcomponents:
 
 ### Notes
 
-- `processing.subcomponentNamePattern` is removed from `required` and replaced by `processing.subcomponents` in `required`
-- `include.subcomponents` is removed from `include.required` and `include.properties` — subcomponent inclusion is now implied by the presence of `match` patterns
+- `processing.subcomponentNamePattern` is removed from `required`; `processing.subcomponents` is added as an optional property (not in `required`)
+- `include.subcomponents` is removed from `include.required` and `include.properties` — subcomponent detection is now conditional on the presence of `processing.subcomponents`; absence means no detection
 - Both `match` and `exclude` entries use `{C}` / `{S}` template syntax (Decision 3a)
+- `match` and `exclude` apply universally to both anatomy-based and page-level subcomponent detection. An asset matching both a `match` and an `exclude` pattern is excluded regardless of discovery source
 - `DEFAULT_CONFIG` must be updated:
   ```typescript
   processing: {

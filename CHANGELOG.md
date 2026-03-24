@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SubcomponentRef` — reference to a subcomponent definition via `{ $ref: "#/subcomponents/{key}" }`
 - `AnatomyElement.instanceOf` — widened to accept `string | SubcomponentRef`
 - `Element.instanceOf` — widened to accept `string | PropBinding | SubcomponentRef`
-- `Config.processing.subcomponents` — nested object grouping subcomponent discovery settings: `scope`, `match`, and `exclude`
+- `Config.processing.subcomponents` — optional nested object grouping subcomponent discovery settings: `scope`, `match`, and `exclude`. Absence means no subcomponent detection
 - `Config.processing.subcomponents.scope` — optional enum (`NESTED` | `PAGE`) controlling where the transformer searches for subcomponents
 - `Config.processing.subcomponents.match` — required array of `{C}`/`{S}` template patterns defining which assets are subcomponents
 - `Config.processing.subcomponents.exclude` — optional array of `{C}`/`{S}` template patterns defining which matched assets to exclude
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Migration
 
 - `Config.processing.subcomponentNamePattern` → `Config.processing.subcomponents.match`: wrap the single pattern string in a one-element array
-- `Config.include.subcomponents` → removed: remove the field; subcomponents are included when `processing.subcomponents.match` is defined
+- `Config.include.subcomponents` → removed: remove the field; subcomponents are included when `processing.subcomponents` is defined with `match` patterns. Omit `processing.subcomponents` entirely to disable detection
 
 
 ## [0.14.0] - 2026-03-18

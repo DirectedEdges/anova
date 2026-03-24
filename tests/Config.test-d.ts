@@ -9,7 +9,6 @@ import { DEFAULT_CONFIG } from '../types/index.js';
 // ─── Helper: minimal valid processing + format + include ──────────────────────
 
 const minProcessing: Config['processing'] = {
-  subcomponents: { match: ['{C} / _ / {S}'] },
   variantDepth: 9999,
   details: 'LAYERED',
 };
@@ -65,11 +64,22 @@ const configWithoutScope: Config = {
   include: { variantNames: true, invalidVariants: true, invalidCombinations: false },
 };
 
+// ─── processing.subcomponents is optional ────────────────────────────────────
+
+const configWithoutSubcomponents: Config = {
+  processing: { variantDepth: 9999, details: 'LAYERED' },
+  format: minFormat,
+  include: minInclude,
+};
+
+const _subcomponentsUndefined: Config['processing']['subcomponents'] = undefined;
+
 // ─── subcomponents.scope enum values ──────────────────────────────────────────
 
-const scopeNested: Config['processing']['subcomponents']['scope'] = 'NESTED';
-const scopePage: Config['processing']['subcomponents']['scope'] = 'PAGE';
-const scopeUndefined: Config['processing']['subcomponents']['scope'] = undefined;
+type SubcomponentsScope = NonNullable<Config['processing']['subcomponents']>['scope'];
+const scopeNested: SubcomponentsScope = 'NESTED';
+const scopePage: SubcomponentsScope = 'PAGE';
+const scopeUndefined: SubcomponentsScope = undefined;
 
 // ─── subcomponents.exclude is optional ────────────────────────────────────────
 
@@ -86,7 +96,7 @@ const configWithExclude: Config = {
   include: minInclude,
 };
 
-const _excludeUndefined: Config['processing']['subcomponents']['exclude'] = undefined;
+const _excludeUndefined: NonNullable<Config['processing']['subcomponents']>['exclude'] = undefined;
 
 // ─── include no longer has subcomponents field ────────────────────────────────
 
