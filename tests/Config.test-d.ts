@@ -6,12 +6,30 @@
 import type { Config } from '../types/index.js';
 import { DEFAULT_CONFIG } from '../types/index.js';
 
-// Config format with all fields including optional tokens
+// ─── Helper: minimal valid processing + format + include ──────────────────────
+
+const minProcessing: Config['processing'] = {
+  variantDepth: 9999,
+  details: 'LAYERED',
+};
+const minFormat: Config['format'] = { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' };
+const minInclude: Config['include'] = { variantNames: false, invalidVariants: false, invalidCombinations: true };
+
+// ─── Full Config with all fields ──────────────────────────────────────────────
+
 const fullConfig: Config = {
   processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
+    subcomponents: {
+      scope: 'PAGE',
+      match: ['{C} / {S}', '{C} / _ / {S}'],
+      exclude: ['{C} / Examples / {S}', '{C} / Text cases / {S}'],
+    },
+    glyphNamePattern: 'DS Icon Glyph /',
+    codeOnlyPropsPattern: 'Code only props',
+    slotConstraints: true,
     variantDepth: 9999,
     details: 'LAYERED',
+    inferNumberProps: true,
   },
   format: {
     output: 'JSON',
@@ -20,135 +38,100 @@ const fullConfig: Config = {
     tokens: 'TOKEN',
   },
   include: {
-    subcomponents: false,
     variantNames: false,
     invalidVariants: false,
     invalidCombinations: true,
   },
 };
 
-// Config format without optional tokens field — should compile
-const configWithoutTokens: Config = {
+// ─── Minimal Config — only required fields ────────────────────────────────────
+
+const minimalConfig: Config = {
+  processing: minProcessing,
+  format: minFormat,
+  include: minInclude,
+};
+
+// ─── subcomponents.scope is optional, defaults to NESTED ──────────────────────
+
+const configWithoutScope: Config = {
   processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
+    subcomponents: { match: ['{C} / _ / {S}'] },
     variantDepth: 9999,
     details: 'FULL',
   },
-  format: {
-    output: 'YAML',
-    keys: 'CAMEL',
-    layout: 'PARENT_CHILDREN',
-    // tokens is optional
-  },
-  include: {
-    subcomponents: true,
-    variantNames: true,
-    invalidVariants: true,
-    invalidCombinations: false,
-  },
+  format: { output: 'YAML', keys: 'CAMEL', layout: 'PARENT_CHILDREN' },
+  include: { variantNames: true, invalidVariants: true, invalidCombinations: false },
 };
 
-// All tokens enum values are valid
+// ─── processing.subcomponents is optional ────────────────────────────────────
+
+const configWithoutSubcomponents: Config = {
+  processing: { variantDepth: 9999, details: 'LAYERED' },
+  format: minFormat,
+  include: minInclude,
+};
+
+const _subcomponentsUndefined: Config['processing']['subcomponents'] = undefined;
+
+// ─── subcomponents.scope enum values ──────────────────────────────────────────
+
+type SubcomponentsScope = NonNullable<Config['processing']['subcomponents']>['scope'];
+const scopeNested: SubcomponentsScope = 'NESTED';
+const scopePage: SubcomponentsScope = 'PAGE';
+const scopeUndefined: SubcomponentsScope = undefined;
+
+// ─── subcomponents.exclude is optional ────────────────────────────────────────
+
+const configWithExclude: Config = {
+  processing: {
+    subcomponents: {
+      match: ['{C} / {S}'],
+      exclude: ['{C} / Examples / {S}'],
+    },
+    variantDepth: 9999,
+    details: 'LAYERED',
+  },
+  format: minFormat,
+  include: minInclude,
+};
+
+const _excludeUndefined: NonNullable<Config['processing']['subcomponents']>['exclude'] = undefined;
+
+// ─── include no longer has subcomponents field ────────────────────────────────
+
+// @ts-expect-error — subcomponents was removed from include
+const _badInclude: Config['include']['subcomponents'] = true;
+
+// ─── processing no longer has subcomponentNamePattern ─────────────────────────
+
+// @ts-expect-error — subcomponentNamePattern was replaced by subcomponents object
+const _badProcessing: Config['processing']['subcomponentNamePattern'] = '{C} / _ / {S}';
+
+// ─── All tokens enum values are valid ─────────────────────────────────────────
+
 const tokenConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN' } };
 const tokenNameConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN_NAME' } };
 const tokenFigmaExtConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'TOKEN_FIGMA_EXTENSIONS' } };
 const figmaNameConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'FIGMA_NAME' } };
 const customConfig: Config = { ...fullConfig, format: { ...fullConfig.format, tokens: 'CUSTOM' } };
 
-// DEFAULT_CONFIG should be a valid Config
+// ─── DEFAULT_CONFIG is a valid Config ─────────────────────────────────────────
+
 const defaultIsValid: Config = DEFAULT_CONFIG;
 
-// DEFAULT_CONFIG.format.tokens should be 'TOKEN'
+// ─── DEFAULT_CONFIG.format.tokens should be 'TOKEN' ──────────────────────────
+
 const defaultTokensValue: typeof DEFAULT_CONFIG.format.tokens = 'TOKEN';
 
-// Type narrowing works
-const tokensValue: Config['format']['tokens'] = fullConfig.format.tokens;
-if (tokensValue === 'TOKEN') {
-  const _token: 'TOKEN' = tokensValue;
-}
-if (tokensValue === 'TOKEN_NAME') {
-  const _tokenName: 'TOKEN_NAME' = tokensValue;
-}
-if (tokensValue === 'TOKEN_FIGMA_EXTENSIONS') {
-  const _tokenFigmaExt: 'TOKEN_FIGMA_EXTENSIONS' = tokensValue;
-}
-if (tokensValue === 'FIGMA_NAME') {
-  const _figmaName: 'FIGMA_NAME' = tokensValue;
-}
-if (tokensValue === 'CUSTOM') {
-  const _custom: 'CUSTOM' = tokensValue;
-}
+// ─── glyphNamePattern is optional ─────────────────────────────────────────────
 
-// tokens can be undefined
-const _undefined: Config['format']['tokens'] = undefined;
-
-// glyphNamePattern is optional — Config compiles without it
-const configWithoutGlyph: Config = {
-  processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
-    variantDepth: 9999,
-    details: 'LAYERED',
-  },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
-
-// glyphNamePattern accepts a string
-const configWithGlyph: Config = {
-  processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
-    glyphNamePattern: 'DS Icon Glyph /',
-    variantDepth: 9999,
-    details: 'LAYERED',
-  },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
-
-// glyphNamePattern can be undefined
 const _glyphUndefined: Config['processing']['glyphNamePattern'] = undefined;
 
-// inferNumberProps is optional — Config compiles without it (ADR 029)
-const configWithoutInferNumber: Config = {
-  processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
-    variantDepth: 9999,
-    details: 'LAYERED',
-  },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
+// ─── inferNumberProps is optional ─────────────────────────────────────────────
 
-// inferNumberProps accepts true
-const configWithInferNumber: Config = {
-  processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
-    variantDepth: 9999,
-    details: 'LAYERED',
-    inferNumberProps: true,
-  },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
-
-// inferNumberProps can be undefined
 const _inferUndefined: Config['processing']['inferNumberProps'] = undefined;
 
-// ─── slotConstraints — opt-in slot constraint consolidation (ADR 028) ───────
+// ─── slotConstraints is optional ──────────────────────────────────────────────
 
-// slotConstraints is optional — Config compiles without it
-const configWithoutSlotConstraints: Config = {
-  processing: { subcomponentNamePattern: '{C} / _ / {S}', variantDepth: 9999, details: 'LAYERED' },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
-
-// slotConstraints accepts a boolean
-const configWithSlotConstraints: Config = {
-  processing: { subcomponentNamePattern: '{C} / _ / {S}', slotConstraints: true, variantDepth: 9999, details: 'LAYERED' },
-  format: { output: 'JSON', keys: 'SAFE', layout: 'LAYOUT' },
-  include: { subcomponents: false, variantNames: false, invalidVariants: false, invalidCombinations: true },
-};
-
-// slotConstraints can be undefined
 const _slotConstraintsUndefined: Config['processing']['slotConstraints'] = undefined;
