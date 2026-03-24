@@ -751,8 +751,34 @@
         "processing": {
           "type": "object",
           "properties": {
-            "subcomponentNamePattern": {
-              "type": "string"
+            "subcomponents": {
+              "type": "object",
+              "description": "Subcomponent discovery settings: scope, match patterns, and exclusion patterns.",
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": ["NESTED", "PAGE"],
+                  "default": "NESTED",
+                  "description": "Where to search for subcomponents. NESTED = anatomy only; PAGE = also search the Figma page."
+                },
+                "match": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "description": "Template patterns defining which assets are subcomponents. Uses {C} (component name) and {S} (subcomponent name) placeholders."
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Template patterns defining which matched assets to exclude. Same {C}/{S} syntax as match."
+                }
+              },
+              "required": ["match"],
+              "additionalProperties": false
             },
             "glyphNamePattern": {
               "type": "string",
@@ -788,7 +814,7 @@
             }
           },
           "required": [
-            "subcomponentNamePattern",
+            "subcomponents",
             "variantDepth",
             "details"
           ],
@@ -846,9 +872,6 @@
         "include": {
           "type": "object",
           "properties": {
-            "subcomponents": {
-              "type": "boolean"
-            },
             "variantNames": {
               "type": "boolean"
             },
@@ -860,7 +883,6 @@
             }
           },
           "required": [
-            "subcomponents",
             "variantNames",
             "invalidVariants",
             "invalidCombinations"

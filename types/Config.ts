@@ -8,8 +8,15 @@
  */
 export interface Config {
   processing: {
-    /** Pattern for naming subcomponents */
-    subcomponentNamePattern: string;
+    /** Subcomponent discovery settings: scope, match patterns, and exclusion patterns. @since 0.15.0 */
+    subcomponents: {
+      /** Where to search for subcomponents. NESTED = anatomy only (default); PAGE = also search the Figma page. */
+      scope?: 'NESTED' | 'PAGE';
+      /** Template patterns defining which assets are subcomponents. Uses {C} (component name) and {S} (subcomponent name) placeholders. */
+      match: string[];
+      /** Template patterns defining which matched assets to exclude. Same {C}/{S} syntax as match. */
+      exclude?: string[];
+    };
     /** Naming pattern used to detect glyph content assets (e.g. "DS Icon Glyph /"). Optional; absence means no glyph detection. */
     glyphNamePattern?: string;
     /** Naming pattern used to detect the code-only props container layer (e.g. "Code only props"). Optional; absence means no code-only prop extraction. */
@@ -34,8 +41,6 @@ export interface Config {
     tokens?: 'TOKEN' | 'TOKEN_NAME' | 'TOKEN_FIGMA_EXTENSIONS' | 'FIGMA_NAME' | 'CUSTOM';
   };
   include: {
-    /** Include subcomponents in output */
-    subcomponents: boolean;
     /** Include variant names */
     variantNames: boolean;
     /** Include invalid variants */
@@ -47,24 +52,25 @@ export interface Config {
 
 /**
  * Default Model Configuration
- * 
+ *
  * Used by both CLI and Plugin to ensure identical behavior with same settings.
- * 
+ *
  * Rationale for defaults:
- * - processing.subcomponentNamePattern: Standard "{C} / _ / {S}" pattern for identifying subcomponents
+ * - processing.subcomponents.match: Standard "{C} / _ / {S}" pattern for identifying subcomponents
  * - processing.variantDepth: 9999 (no limit) allows full variant combination exploration
  * - processing.details: LAYERED reduces output size by only showing differences from default
  * - format.keys: SAFE prevents corruption of special characters while maintaining readability
  * - format.layout: LAYOUT provides tree structure with layout properties
  * - format.tokens: TOKEN provides platform-neutral token references with $token path and $type
- * - include.subcomponents: false (opt-in) to avoid unnecessary processing overhead
  * - include.variantNames: false reduces output size (names can be reconstructed from configuration)
  * - include.invalidVariants: false excludes variants that can't be instantiated
  * - include.invalidCombinations: true helps designers identify property conflicts
  */
 export const DEFAULT_CONFIG: Config = {
   processing: {
-    subcomponentNamePattern: '{C} / _ / {S}',
+    subcomponents: {
+      match: ['{C} / _ / {S}'],
+    },
     variantDepth: 9999,
     details: 'LAYERED',
   },
@@ -75,7 +81,6 @@ export const DEFAULT_CONFIG: Config = {
     tokens: 'TOKEN',
   },
   include: {
-    subcomponents: false,
     variantNames: false,
     invalidVariants: false,
     invalidCombinations: true,
