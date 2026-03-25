@@ -5,6 +5,37 @@ All notable changes to the Anova schema will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-03-25
+
+Adds structured subcomponent discovery via a new `Config.processing.subcomponents` object with `scope`, `match`, and `exclude` settings, replacing the flat `subcomponentNamePattern` string. Introduces `SubcomponentRef` for referencing subcomponent definitions and widens `instanceOf` on both `AnatomyElement` and `Element` to accept it. Corrects `Typography` field types for `leadingTrim`, `fontFamily`, and `fontStyle` to match actual Figma API values.
+
+### Added
+
+- `SubcomponentRef` — reference to a subcomponent definition via `{ $ref: "#/subcomponents/{key}" }`
+- `AnatomyElement.instanceOf` — widened to accept `string | SubcomponentRef`
+- `Element.instanceOf` — widened to accept `string | PropBinding | SubcomponentRef`
+- `Config.processing.subcomponents` — optional nested object grouping subcomponent discovery settings: `scope`, `match`, and `exclude`. Absence means no subcomponent detection
+- `Config.processing.subcomponents.scope` — optional enum (`NESTED` | `PAGE`) controlling where the transformer searches for subcomponents
+- `Config.processing.subcomponents.match` — required array of `{C}`/`{S}` template patterns defining which assets are subcomponents
+- `Config.processing.subcomponents.exclude` — optional array of `{C}`/`{S}` template patterns defining which matched assets to exclude
+
+### Changed
+
+- `Typography.leadingTrim` — corrected from `number | 'mixed' | TokenReference` to `'NONE' | 'CAP_HEIGHT' | 'mixed'` per Figma API
+- `Typography.fontFamily` — corrected from `string | number | 'mixed'` to `string | 'mixed' | TokenReference`; removed impossible `number`, added `TokenReference` for variable-bound fonts
+- `Typography.fontStyle` — corrected from `string | number | 'mixed'` to `string | 'mixed' | TokenReference`; removed impossible `number`, added `TokenReference` for variable-bound fonts
+
+### Removed
+
+- `Config.processing.subcomponentNamePattern` — replaced by `Config.processing.subcomponents.match`
+- `Config.include.subcomponents` — subcomponent inclusion is now implied by the presence of `match` patterns
+
+### Migration
+
+- `Config.processing.subcomponentNamePattern` → `Config.processing.subcomponents.match`: wrap the single pattern string in a one-element array
+- `Config.include.subcomponents` → removed: remove the field; subcomponents are included when `processing.subcomponents` is defined with `match` patterns. Omit `processing.subcomponents` entirely to disable detection
+
+
 ## [0.14.0] - 2026-03-18
 
 Introduces code-only props support with `FigmaCodeOnlySource` provenance metadata and a configurable container-layer naming pattern, plus a new `NumberProp` type for numeric property values. Adds DTCG-aligned `$extensions` for platform-specific metadata across all prop types, replacing the prior `x-platform` convention on `BooleanProp`. Expands `SlotProp` with `minItems`, `maxItems`, and `anyOf` constraints consolidatable via the new `slotConstraints` processing flag.

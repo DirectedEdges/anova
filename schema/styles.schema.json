@@ -538,18 +538,18 @@
         "fontFamily": {
           "oneOf": [
             { "type": "string" },
-            { "type": "number" },
-            { "type": "string", "const": "mixed" }
+            { "type": "string", "const": "mixed" },
+            { "$ref": "#/definitions/TokenReference" }
           ],
-          "description": "Font family name; number for weight, 'mixed' when varied (font primitive)"
+          "description": "Font family name, 'mixed' when varied, or token reference for variable-bound fonts"
         },
         "fontStyle": {
           "oneOf": [
             { "type": "string" },
-            { "type": "number" },
-            { "type": "string", "const": "mixed" }
+            { "type": "string", "const": "mixed" },
+            { "$ref": "#/definitions/TokenReference" }
           ],
-          "description": "Style name (e.g., \"Bold\") or numeric (e.g., 400); 'mixed' allowed (font primitive)"
+          "description": "Style name (e.g., 'Bold'), 'mixed' when varied, or token reference for variable-bound fonts"
         },
         "lineHeight": {
           "oneOf": [
@@ -597,11 +597,10 @@
         },
         "leadingTrim": {
           "oneOf": [
-            { "type": "number" },
-            { "type": "string", "const": "mixed" },
-            { "$ref": "#/definitions/TokenReference" }
+            { "type": "string", "enum": ["NONE", "CAP_HEIGHT"] },
+            { "type": "string", "const": "mixed" }
           ],
-          "description": "Leading trim value (mixableNumber primitive)"
+          "description": "Leading trim mode — 'NONE' or 'CAP_HEIGHT' per Figma API; 'mixed' when varied across selection"
         },
         "listSpacing": {
           "oneOf": [

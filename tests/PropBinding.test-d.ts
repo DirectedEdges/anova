@@ -46,9 +46,8 @@ const _badKey: BindingKey = 'styles';
 const elemUnbound: Element = { instanceOf: 'Button' };
 const elemBound: Element = { instanceOf: { $binding: '#/props/swap' } };
 
-// Old { $ref } shape must NOT compile as Element.instanceOf
-// @ts-expect-error: ReferenceValue ($ref) is no longer valid for instanceOf
-const _oldInstanceOf: Element = { instanceOf: { $ref: '#/props/swap' } };
+// { $ref } is now valid for instanceOf — it matches SubcomponentRef
+const _subcomponentRef: Element = { instanceOf: { $ref: '#/subcomponents/formLabel' } };
 
 // ─── Element.content accepts string | PropBinding ───────────────────────────
 

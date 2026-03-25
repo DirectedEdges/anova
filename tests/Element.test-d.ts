@@ -4,13 +4,19 @@
  * These files are intentionally never executed — they are compiled with tsc
  * to assert that the type shape is correct.
  */
-import type { Element, PropBinding } from '../types/index.js';
+import type { Element, PropBinding, SubcomponentRef } from '../types/index.js';
 
 // ─── Element.content accepts string | PropBinding ───────────────────────────
 
 const contentString: Element = { content: 'Submit' };
 const contentGlyph: Element = { content: 'caret-down' };
 const contentBound: Element = { content: { $binding: '#/props/label' } };
+
+// ─── Element.instanceOf accepts string | PropBinding | SubcomponentRef ──────
+
+const instanceString: Element = { instanceOf: 'Button' };
+const instanceBound: Element = { instanceOf: { $binding: '#/props/icon' } };
+const instanceSubRef: Element = { instanceOf: { $ref: '#/subcomponents/formLabel' } };
 
 // content is optional — empty element is valid
 const emptyElement: Element = {};

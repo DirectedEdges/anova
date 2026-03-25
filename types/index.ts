@@ -8,7 +8,7 @@
 
 // Core component types
 export type { Component } from './Component.js';
-export type { Anatomy, AnatomyElement, ElementTypeRef } from './Anatomy.js';
+export type { Anatomy, AnatomyElement, ElementTypeRef, SubcomponentRef } from './Anatomy.js';
 export type { Props, AnyProp, BooleanProp, StringProp, EnumProp, SlotProp, NumberProp, FigmaCodeOnlySource, FigmaPropExtension, PropExtensions } from './Props.js';
 export type { Variant, Variants } from './Variant.js';
 export type { Metadata } from './Metadata.js';

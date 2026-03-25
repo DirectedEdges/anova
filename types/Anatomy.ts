@@ -16,6 +16,16 @@ export type ElementTypeRef = {
 };
 
 /**
+ * Reference to a subcomponent definition within the same spec.
+ * Used when an anatomy item or element is an instance of a sibling subcomponent.
+ * @since 0.15.0
+ */
+export type SubcomponentRef = {
+  /** JSON Pointer to a subcomponent (e.g. "#/subcomponents/formLabel"). */
+  $ref: string;
+};
+
+/**
  * Represents an element within the anatomy of a component.
  */
 export type AnatomyElement = {
@@ -25,6 +35,6 @@ export type AnatomyElement = {
    */
   type: ElementType | ElementTypeRef;
   detectedIn?: string;
-  /** The component or component set name that this instance element references. */
-  instanceOf?: string;
+  /** The component or component set name that this instance element references, or a subcomponent reference. */
+  instanceOf?: string | SubcomponentRef;
 };

@@ -100,6 +100,21 @@
       ],
       "additionalProperties": false
     },
+    "SubcomponentRef": {
+      "type": "object",
+      "description": "Reference to a subcomponent definition within the same spec.",
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "pattern": "^#/subcomponents/.+",
+          "description": "JSON Pointer to a subcomponent (e.g. '#/subcomponents/formLabel')"
+        }
+      },
+      "required": [
+        "$ref"
+      ],
+      "additionalProperties": false
+    },
     "AnatomyElement": {
       "type": "object",
       "description": "An element within the anatomy of a component.",
@@ -120,7 +135,15 @@
           "type": "string"
         },
         "instanceOf": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/SubcomponentRef"
+            }
+          ],
+          "description": "The component or component set name that this instance element references, or a subcomponent reference"
         }
       },
       "required": [
@@ -461,9 +484,12 @@
             },
             {
               "$ref": "#/definitions/PropBinding"
+            },
+            {
+              "$ref": "#/definitions/SubcomponentRef"
             }
           ],
-          "description": "The component or component set name that this instance element references, or a reference to an instance swap prop binding"
+          "description": "The component or component set name that this instance element references, a prop binding for instance swaps, or a subcomponent reference"
         },
         "content": {
           "oneOf": [
@@ -725,8 +751,34 @@
         "processing": {
           "type": "object",
           "properties": {
-            "subcomponentNamePattern": {
-              "type": "string"
+            "subcomponents": {
+              "type": "object",
+              "description": "Subcomponent discovery settings: scope, match patterns, and exclusion patterns.",
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "enum": ["NESTED", "PAGE"],
+                  "default": "NESTED",
+                  "description": "Where to search for subcomponents. NESTED = anatomy only; PAGE = also search the Figma page."
+                },
+                "match": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "description": "Template patterns defining which assets are subcomponents. Uses {C} (component name) and {S} (subcomponent name) placeholders."
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Template patterns defining which matched assets to exclude. Same {C}/{S} syntax as match."
+                }
+              },
+              "required": ["match"],
+              "additionalProperties": false
             },
             "glyphNamePattern": {
               "type": "string",
@@ -762,7 +814,6 @@
             }
           },
           "required": [
-            "subcomponentNamePattern",
             "variantDepth",
             "details"
           ],
@@ -820,9 +871,6 @@
         "include": {
           "type": "object",
           "properties": {
-            "subcomponents": {
-              "type": "boolean"
-            },
             "variantNames": {
               "type": "boolean"
             },
@@ -834,7 +882,6 @@
             }
           },
           "required": [
-            "subcomponents",
             "variantNames",
             "invalidVariants",
             "invalidCombinations"
