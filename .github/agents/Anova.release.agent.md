@@ -114,7 +114,7 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
 
 13. **GitHub Release gate**: Use `AskUserQuestion` with Yes/No options: **"Create a GitHub Release for v[version]?"**
     On Yes:
-    - Extract the release notes from `CHANGELOG.md` for this version: all content under the `## [version]` heading, up to (but not including) the next `##` heading.
+    - Extract the release notes from `CHANGELOG.md` for this version: the **Summary** paragraph and all content under the `## [version]` heading, up to (but not including) the next `##` heading.
     - Create the GitHub Release:
       ```bash
       gh release create "v[version]" --title "@directededges/anova v[version]" --notes "$(cat <<'EOF'
@@ -122,6 +122,7 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
       EOF
       )"
       ```
+    - The release is attached to the existing `v[version]` tag pushed in step 11.
     - Verify the release was created:
       ```bash
       gh release view "v[version]" --json url --jq '.url'
