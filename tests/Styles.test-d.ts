@@ -238,8 +238,8 @@ const fullTypographyRaw: Typography = {
 // Typography with TokenReference values
 const fullTypographyToken: Typography = {
   fontSize: { $token: 'Typography.Body.Size', $type: 'dimension' } satisfies TokenReference,
-  fontFamily: 'Inter', // font primitive does not accept TokenReference
-  fontStyle: 'Regular', // font primitive does not accept TokenReference
+  fontFamily: { $token: 'Typography.Body.FontFamily', $type: 'string' } satisfies TokenReference,
+  fontStyle: { $token: 'Typography.Body.FontStyle', $type: 'string' } satisfies TokenReference,
   lineHeight: { $token: 'Typography.Body.LineHeight', $type: 'dimension' } satisfies TokenReference,
   letterSpacing: { $token: 'Typography.Body.LetterSpacing', $type: 'dimension' } satisfies TokenReference,
   textCase: { $token: 'Typography.Body.TextCase', $type: 'string' } satisfies TokenReference,
@@ -270,8 +270,8 @@ const mixedTypography: Typography = {
 // fontSize accepts number, 'mixed', or TokenReference
 const _fontSizeNumber: number | 'mixed' | TokenReference | undefined = fullTypographyRaw.fontSize;
 
-// fontFamily/fontStyle accept string, number, 'mixed', or VariableStyle (number for registered families)
-const _fontFamily: string | number | 'mixed' | undefined = fullTypographyRaw.fontFamily;
+// fontFamily/fontStyle accept string, 'mixed', or TokenReference
+const _fontFamily: string | 'mixed' | TokenReference | undefined = fullTypographyRaw.fontFamily;
 
 // hangingPunctuation accepts boolean or TokenReference
 const _hangingBool: boolean | TokenReference | undefined = fullTypographyRaw.hangingPunctuation;
@@ -279,11 +279,15 @@ const _hangingBool: boolean | TokenReference | undefined = fullTypographyRaw.han
 // @ts-expect-error: fontSize must not accept string
 const _badFontSize: Typography = { fontSize: '16px' };
 
-// @ts-expect-error: fontFamily must not accept TokenReference (font primitive restriction)
-const _badFontFamily: Typography['fontFamily'] = { $token: 'X', $type: 'string' };
+// fontFamily and fontStyle now accept TokenReference for variable-bound fonts
+const _tokenFontFamily: Typography['fontFamily'] = { $token: 'Typography.FontFamily.Sans', $type: 'string' };
+const _tokenFontStyle: Typography['fontStyle'] = { $token: 'Typography.FontStyle.Regular', $type: 'string' };
 
-// @ts-expect-error: fontStyle must not accept TokenReference (font primitive restriction)
-const _badFontStyle: Typography['fontStyle'] = { $token: 'X', $type: 'string' };
+// @ts-expect-error: fontFamily must not accept number (font names are strings)
+const _badFontFamilyNumber: Typography['fontFamily'] = 400;
+
+// @ts-expect-error: fontStyle must not accept number (style names are strings)
+const _badFontStyleNumber: Typography['fontStyle'] = 400;
 
 // @ts-expect-error: hangingPunctuation must not accept string
 const _badHanging: Typography = { hangingPunctuation: 'yes' };
