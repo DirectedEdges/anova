@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Typography.fontFamily` — corrected from `string | number | 'mixed'` to `string | 'mixed' | TokenReference`; removed impossible `number`, added `TokenReference` for variable-bound fonts
+- `Typography.fontStyle` — corrected from `string | number | 'mixed'` to `string | 'mixed' | TokenReference`; removed impossible `number`, added `TokenReference` for variable-bound fonts
+
 ### Removed
 
 - `Config.processing.subcomponentNamePattern` — replaced by `Config.processing.subcomponents.match`

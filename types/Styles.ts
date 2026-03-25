@@ -133,10 +133,10 @@ export type ColorStyle = string | TokenReference | GradientValue | null;
 export interface Typography {
   /** Font size in pixels (mixableNumber primitive) */
   fontSize?: number | 'mixed' | TokenReference;
-  /** Font family name; 'mixed' when text has multiple families (font primitive) */
-  fontFamily?: string | number | 'mixed';
-  /** Style name or numeric (e.g., 400, "Bold"); 'mixed' allowed (font primitive) */
-  fontStyle?: string | number | 'mixed';
+  /** Font family name; 'mixed' when text has multiple families; TokenReference for variable-bound fonts */
+  fontFamily?: string | 'mixed' | TokenReference;
+  /** Style name (e.g., "Bold"); 'mixed' when varied; TokenReference for variable-bound fonts */
+  fontStyle?: string | 'mixed' | TokenReference;
   /** Line height: "150%", "auto", or pixel value (lineHeight primitive) */
   lineHeight?: string | number | TokenReference;
   /** Letter spacing in pixels; 'mixed' allowed (mixableNumber primitive) */
