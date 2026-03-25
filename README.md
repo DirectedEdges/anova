@@ -4,38 +4,35 @@ This repository serves as the central hub for documentation, issue tracking, and
 
 - [Plugin page](https://www.figma.com/community/plugin/1549454283615386215/anova) on Figma community
 
-## 📖 About
+## About
 
-Anova (short for "Analysis of variants") automates design specifications as data by analyzing a selected Figma component or component set.
+Anova (short for "Analysis of variants") is the shared type system and JSON schema that defines the structure of UI component specifications. The schema describes the output of an "analysis of variants" — a deterministic audit of component composition, visual styling, and property configurations drawn from Figma components.
 
-The plugin conducts an "analysis of variants" to audit component composition, visual styling, and property configurations. While the name and concept alludes to traditional analysis of variance in statistics, the plugin returns a deterministic, repeatable, succinct and comprehensive result. To learn more, read the [Analysis of Variants blog post](https://nathanacurtis.substack.com/p/analysis-of-variants-9e440c30b93e).
+To learn more, read the [Analysis of Variants blog post](https://nathanacurtis.substack.com/p/analysis-of-variants-9e440c30b93e).
 
-> **Note**: This repository contains documentation and issue tracking only. The actual plugin source code is maintained separately.
+## NPM Package
 
-## 📚 Documentation
-
-- [JSON Schema](schema/root.schema.json) of data produced by the plugin
-- [TypeScript Types](types/) - Complete type definitions for all schema entities
-
-## 📦 NPM Package
-
-This package provides TypeScript types and a default configuration for use with `@directededges/anova-transformer`.
+The `@directededges/anova` package exports TypeScript types, JSON schema definitions, and a default configuration object.
 
 ```typescript
-import type { Component, Config } from '@directededges/anova';
+import type { Component, Config, AnyProp, Styles } from '@directededges/anova';
 import { DEFAULT_CONFIG } from '@directededges/anova';
-
-// Use the default config or customize it
-const myConfig: Config = {
-  ...DEFAULT_CONFIG,
-  format: {
-    ...DEFAULT_CONFIG.format,
-    output: 'YAML'
-  }
-};
 ```
 
-## 🐛 Issue Tracking
+- [JSON Schema](schema/root.schema.json) — the canonical schema for component spec output
+- [TypeScript Types](types/) — complete type definitions for all schema entities (`Component`, `Config`, `Styles`, `Element`, `AnyProp`, etc.)
+- `DEFAULT_CONFIG` — a runtime configuration object controlling output shape (format, token resolution, variant depth, etc.)
+
+## Architectural Decision Records
+
+Schema changes are proposed and tracked through ADRs in the [`adr/`](adr/) directory. Each ADR documents the context, options considered, and decision for a type or schema modification.
+
+- **[ADR Index](adr/INDEX.md)** — summary table of all Draft and Accepted ADRs
+- `/anova.adr.create` — drafts a new ADR, claims the next number, and reserves it in the index
+- `/anova.adr.implement` — applies the type and schema changes described in an ADR
+- `/anova.adr.accept` — validates the implementation, marks the ADR as ACCEPTED, and updates the index
+
+## Issue Tracking
 
 ### Reporting Issues
 Found a bug or have a feature request? Please check if it already exists in our [Issues](../../issues) before creating a new one.
@@ -52,17 +49,13 @@ Found a bug or have a feature request? Please check if it already exists in our 
 - Use case and benefits
 - Any relevant mockups or examples
 
-## 💬 Community & Support
+## Community & Support
 
 - **Issues**: Use GitHub Issues for bug reports and feature requests
 - **Questions**: For general questions, please read docs first and then visit our [Slack community](https://join.slack.com/t/directededges-plugins/shared_invite/zt-3e3nhx1zp-4uUjRCA7y2QAEPZdVNJi6A)
 - **Updates**: Watch the [plugin's Figma community page](https://www.figma.com/community/plugin/1549454283615386215/anova) for release updates
 
-## 🔄 Release Process
-
-Plugin updates are published directly to the Figma Community. Release notes and version history are included there.
-
-## 📄 License
+## License
 
 This repository and the [JSON schema](schema/root.schema.json) are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 

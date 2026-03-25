@@ -90,7 +90,17 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Semver Decision**: MAJOR / MINOR / PATCH with justification citing the constitution
    - **Consequences**: What becomes true after acceptance
 
-7. **Report**: Output `$SPEC_FILE` path, the `$ADR_BRANCH` name, the target `$RELEASE_BRANCH`, and a one-paragraph summary of the decision.
+7. **Claim ADR number in INDEX**: Update `adr/INDEX.md` to reserve the ADR number and prevent collisions.
+   - On the current ADR branch, add a row to the **Draft** table (descending by number) with the ADR number and title but **no highlight** (leave the Highlights cell empty).
+   - Commit this INDEX update on the ADR branch.
+   - Then cherry-pick the INDEX change onto `main` (and `$RELEASE_BRANCH` if it differs from `main`):
+     1. `git stash` any uncommitted work (if needed).
+     2. `git checkout main && git cherry-pick <commit> && git push origin main`
+     3. If `$RELEASE_BRANCH` ≠ `main`: `git checkout $RELEASE_BRANCH && git cherry-pick <commit> && git push origin $RELEASE_BRANCH`
+     4. `git checkout $ADR_BRANCH` to return to the working branch.
+   - This ensures other ADR authors see the claimed number immediately.
+
+8. **Report**: Output `$SPEC_FILE` path, the `$ADR_BRANCH` name, the target `$RELEASE_BRANCH`, and a one-paragraph summary of the decision.
 ## Formatting rules (apply when drafting the ADR)
 
 - **Examples over prose**: Wherever a type shape, schema property, or field change is described, include a YAML example showing the before/after or the new structure. Prefer this over sentences explaining the same idea in abstract terms.

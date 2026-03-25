@@ -2,7 +2,7 @@
 
 **Branch**: `031-subcomponent-search-scope`
 **Created**: 2026-03-24
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 

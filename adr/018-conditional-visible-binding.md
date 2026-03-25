@@ -2,7 +2,7 @@
 
 **Branch**: `018-conditional-visible-binding`
 **Created**: 2026-03-10
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 

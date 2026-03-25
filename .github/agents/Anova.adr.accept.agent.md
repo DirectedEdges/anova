@@ -32,11 +32,17 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 4. **Mark ADR ACCEPTED**: In `$REPO_ROOT/adr/$ADR_NAME.md` header, change `Status: DRAFT` to `Status: ACCEPTED`.
 
-5. **Determine release branch**: Read the ADR's `## Semver Decision` section to find the target version (e.g., `0.12.0`). The release branch name is the version number itself (e.g., `0.12.0`).
+5. **Update INDEX**: Read `adr/INDEX.md` and update the entry for this ADR:
+   - Move the row from the **Draft** table to the **Accepted** table (descending by number).
+   - Update the **Title** to match the final ADR heading (it may have changed during implementation).
+   - Add a **Highlights** summary (max 144 characters) describing the key change as accepted.
+   - If no entry exists in the Draft table (older ADR created before INDEX tracking), add the row directly to the Accepted table.
 
-6. **Create PR**: Commit any uncommitted changes (the status flip), push `$BRANCH`, and open a PR into the release branch using `gh pr create --base $RELEASE_BRANCH`.
+6. **Determine release branch**: Read the ADR's `## Semver Decision` section to find the target version (e.g., `0.12.0`). The release branch name is the version number itself (e.g., `0.12.0`).
 
-7. **Report**: Confirm all gates passed, the ADR is ACCEPTED, and the PR has been created. List the next steps:
+7. **Create PR**: Commit any uncommitted changes (the status flip and INDEX update), push `$BRANCH`, and open a PR into the release branch using `gh pr create --base $RELEASE_BRANCH`.
+
+8. **Report**: Confirm all gates passed, the ADR is ACCEPTED, and the PR has been created. List the next steps:
    - Review and merge the PR into the release branch
    - When all ADRs for the release are complete, merge `$RELEASE_BRANCH` into `main` and `npm publish`
 

@@ -1,7 +1,7 @@
 # ADR: Replace Hex String with DTCG Color Object in `ColorStyleValue`
 
 **Created**: 2026-03-02
-**Status**: DRAFT
+**Status**: ACCEPTED
 **Deciders**: Nathan Curtis (author)
 **Supersedes**: *(none)*
 
