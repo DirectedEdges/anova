@@ -149,8 +149,8 @@ export interface Typography {
   paragraphIndent?: number | TokenReference;
   /** Spacing between paragraphs in pixels (pureNumber primitive) */
   paragraphSpacing?: number | TokenReference;
-  /** Leading trim value (mixableNumber primitive) */
-  leadingTrim?: number | 'mixed' | TokenReference;
+  /** Leading trim mode — 'NONE' or 'CAP_HEIGHT' per Figma API; 'mixed' when varied across selection */
+  leadingTrim?: 'NONE' | 'CAP_HEIGHT' | 'mixed';
   /** Spacing for list items in pixels (pureNumber primitive) */
   listSpacing?: number | TokenReference;
   /** Whether hanging punctuation is enabled (boolean primitive) */

@@ -597,11 +597,10 @@
         },
         "leadingTrim": {
           "oneOf": [
-            { "type": "number" },
-            { "type": "string", "const": "mixed" },
-            { "$ref": "#/definitions/TokenReference" }
+            { "type": "string", "enum": ["NONE", "CAP_HEIGHT"] },
+            { "type": "string", "const": "mixed" }
           ],
-          "description": "Leading trim value (mixableNumber primitive)"
+          "description": "Leading trim mode — 'NONE' or 'CAP_HEIGHT' per Figma API; 'mixed' when varied across selection"
         },
         "listSpacing": {
           "oneOf": [
