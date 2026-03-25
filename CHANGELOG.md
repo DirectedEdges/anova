@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `Typography.leadingTrim` — corrected from `number | 'mixed' | TokenReference` to `'NONE' | 'CAP_HEIGHT' | 'mixed'` per Figma API
+
 ### Removed
 
 - `Config.processing.subcomponentNamePattern` — replaced by `Config.processing.subcomponents.match`

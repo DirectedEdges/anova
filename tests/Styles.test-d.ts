@@ -229,7 +229,7 @@ const fullTypographyRaw: Typography = {
   textDecoration: 'NONE',
   paragraphIndent: 0,
   paragraphSpacing: 12,
-  leadingTrim: 0,
+  leadingTrim: 'NONE',
   listSpacing: 8,
   hangingPunctuation: false,
   hangingList: false,
@@ -246,7 +246,8 @@ const fullTypographyToken: Typography = {
   textDecoration: { $token: 'Typography.Body.Decoration', $type: 'string' } satisfies TokenReference,
   paragraphIndent: { $token: 'Typography.Body.Indent', $type: 'dimension' } satisfies TokenReference,
   paragraphSpacing: { $token: 'Typography.Body.ParaSpacing', $type: 'dimension' } satisfies TokenReference,
-  leadingTrim: { $token: 'Typography.Body.LeadingTrim', $type: 'dimension' } satisfies TokenReference,
+  // leadingTrim no longer accepts TokenReference — it is a string enum ('NONE' | 'CAP_HEIGHT' | 'mixed')
+  leadingTrim: 'CAP_HEIGHT',
   listSpacing: { $token: 'Typography.Body.ListSpacing', $type: 'dimension' } satisfies TokenReference,
   hangingPunctuation: { $token: 'Typography.Body.HangingPunct', $type: 'boolean' } satisfies TokenReference,
   hangingList: { $token: 'Typography.Body.HangingList', $type: 'boolean' } satisfies TokenReference,
@@ -270,7 +271,7 @@ const mixedTypography: Typography = {
 // fontSize accepts number, 'mixed', or TokenReference
 const _fontSizeNumber: number | 'mixed' | TokenReference | undefined = fullTypographyRaw.fontSize;
 
-// fontFamily/fontStyle accept string, number, 'mixed', or VariableStyle (number for registered families)
+// fontFamily/fontStyle accept string, number, or 'mixed' (font primitive)
 const _fontFamily: string | number | 'mixed' | undefined = fullTypographyRaw.fontFamily;
 
 // hangingPunctuation accepts boolean or TokenReference
@@ -278,6 +279,17 @@ const _hangingBool: boolean | TokenReference | undefined = fullTypographyRaw.han
 
 // @ts-expect-error: fontSize must not accept string
 const _badFontSize: Typography = { fontSize: '16px' };
+
+// leadingTrim accepts 'NONE', 'CAP_HEIGHT', or 'mixed' — not number or TokenReference
+const _leadingTrimNone: Typography = { leadingTrim: 'NONE' };
+const _leadingTrimCap: Typography = { leadingTrim: 'CAP_HEIGHT' };
+const _leadingTrimMixed: Typography = { leadingTrim: 'mixed' };
+
+// @ts-expect-error: leadingTrim must not accept number (was incorrectly typed as mixableNumber)
+const _badLeadingTrimNumber: Typography = { leadingTrim: 0 };
+
+// @ts-expect-error: leadingTrim must not accept TokenReference
+const _badLeadingTrimToken: Typography['leadingTrim'] = { $token: 'X', $type: 'dimension' };
 
 // @ts-expect-error: fontFamily must not accept TokenReference (font primitive restriction)
 const _badFontFamily: Typography['fontFamily'] = { $token: 'X', $type: 'string' };
