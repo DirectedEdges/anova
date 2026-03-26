@@ -33,10 +33,11 @@ The argument is the version to release (e.g., `0.12.0`). You **MUST** have a ver
    ```
    If dirty, STOP and report. Exception: changes made by this agent (e.g., CHANGELOG date added) are expected.
 
-4. **Verify GitHub Packages auth**:
+4. **Verify registry auth**:
    ```bash
    npm whoami --registry=https://npm.pkg.github.com
    ```
+   <!-- Future: switch to https://registry.npmjs.org and update publishConfig in package.json -->
    If this fails, STOP.
 
 5. **Build**:
