@@ -4,7 +4,7 @@
 
 | # | Title | Highlights |
 |---|-------|------------|
-| 034 | Add Config.include.emptyVariants to support filtering layered variants without elements |  |
+| 034 | Make Config.include fields optional and add emptyVariants | Make all `include` fields optional for consistency; add `emptyVariants` to filter layered variants without elements |
 | 025 | Flowing Content into a Nested Instance's Slot | Model parent components that flow defined content into a nested child instance's slot _(branch)_ |
 | 024 | Component Extends Relationship | Add `extends` field to express base/derived component relationships and prop/variant inheritance _(branch)_ |
 | 022 | Add Nullable Support to SlotProp | Fix type-schema drift: add `nullable?: boolean` and widen `default` to `string \| null` on SlotProp |

@@ -1,4 +1,4 @@
-# ADR: Add Config.include.emptyVariants to support filtering layered variants without elements
+# ADR: Make Config.include fields optional and add emptyVariants
 
 **Branch**: `034-empty-variants`
 **Created**: 2026-03-30
@@ -12,7 +12,7 @@
 
 The `anova-plugin` UI exposes an "Include layered variants without elements" checkbox setting (`DATA_EMPTY_VARIANTS` in `src/UI/App/Settings/VariantsChildren.ts`), but toggling it has no effect on the transformer output. The setting is purely cosmetic — it persists in localStorage but is never passed through to the transformer pipeline.
 
-Currently, the `Config.include` type in `types/Config.ts` defines three boolean fields:
+Currently, the `Config.include` type in `types/Config.ts` defines three required boolean fields:
 
 ```typescript
 include: {
@@ -22,14 +22,13 @@ include: {
 }
 ```
 
-There is no `emptyVariants` field (or equivalent) for the transformer to read. This means:
+There is no `emptyVariants` field (or equivalent) for the transformer to read. Additionally, all three existing fields are required, which deviates from the broader Config pattern where most fields are optional with defaults specified in `DEFAULT_CONFIG` (e.g., `tokens?`, `inferNumberProps?`, `slotConstraints?`, `subcomponents?`, `glyphNamePattern?`).
+
+This creates two issues:
 1. The plugin setting cannot be mapped to the `Config` object passed to the transformer
-2. The transformer has no signal to filter out layered variants that contain no elements
-3. All valid variants are always included in output regardless of element presence
+2. The `include` section is inconsistent with the rest of the Config structure
 
-When `processing.details` is set to `'LAYERED'`, the transformer computes diffs between each variant and the default variant. In some cases, a layered variant may have no elements — its diff is structurally present but semantically empty. Consumers may wish to exclude these variants from the output to reduce noise.
-
-This ADR addresses the missing contract field that would enable downstream filtering behavior.
+This ADR addresses both by adding the missing `emptyVariants` field and making all `include` fields optional for consistency.
 
 ---
 
@@ -39,33 +38,36 @@ This ADR addresses the missing contract field that would enable downstream filte
 - **Type ↔ schema symmetry**: Both `types/Config.ts` and `schema/component.schema.json` must be updated in lockstep per Constitution I
 - **No runtime logic**: This package defines the contract only; filtering logic belongs in `anova-transformer` per Constitution II
 - **Explicit defaults**: `DEFAULT_CONFIG` must specify the default value to ensure consistent behavior across CLI and plugin per existing pattern
-- **Consistency with existing include fields**: Should follow the same boolean flag pattern as `variantNames`, `invalidVariants`, and `invalidCombinations`
+- **Consistency with Config pattern**: Optional fields with defaults are the established norm (e.g., `tokens?`, `inferNumberProps?`, `slotConstraints?`)
+- **Internal consistency**: The `include` section should follow a uniform pattern — all fields optional with defaults
 
 ---
 
 ## Options Considered
 
-### Option A: Add `emptyVariants: boolean` to `Config.include` *(Selected)*
+### Option A: Make all `Config.include` fields optional with defaults *(Selected)*
 
-Add a new optional boolean field `emptyVariants` to the `Config.include` type and schema. When `false` (default), all variants are included in output regardless of element presence. When `true`, layered variants without elements are excluded from output.
+Add new field `emptyVariants?: boolean` and make existing fields (`variantNames`, `invalidVariants`, `invalidCombinations`) optional as well. All fields default to their current `DEFAULT_CONFIG` values when absent.
 
 **Pros**:
-- Follows existing pattern of other `include` fields (boolean flags that control output filtering)
+- Creates consistency within the `include` section — all fields follow the same pattern
+- Follows established Config pattern of optional fields with sensible defaults (`tokens?`, `inferNumberProps?`, `slotConstraints?`, etc.)
 - Additive change — existing code continues to work without modification (MINOR bump)
-- Provides clear signal to transformer for filtering behavior
-- Name aligns with plugin UI terminology and existing `invalidVariants` precedent
+- Serialized configs can omit fields when using default behavior, reducing output size
+- Consumers don't need to update existing config construction code
+- Makes the intent explicit: "if not specified, use the sensible default"
 
 **Cons / Trade-offs**:
-- Field name could be interpreted two ways: "include empty variants" (keep them) vs "filter empty variants" (remove them). We follow the "include" semantics: `true` = include them, `false` = exclude them.
-- Adds another required field to the `include` object in schema (must be present in all serialized configs)
+- Consumers must handle both presence and absence for all include fields (but this is already the pattern for many Config fields)
+- Changes the shape of the `include` section in a broader way than just adding one field
 
 ---
 
-### Option B: Add `Config.include.emptyVariants` as optional field *(Rejected)*
+### Option B: Add only `emptyVariants?` as optional, keep others required *(Rejected)*
 
-Make the field optional in both type and schema, defaulting to `true` (include empty variants) when absent.
+Add new optional field `emptyVariants?: boolean` but leave `variantNames`, `invalidVariants`, and `invalidCombinations` as required.
 
-**Rejected because**: Making the field optional adds ambiguity — consumers must handle both presence and absence. The existing pattern in `Config.include` is that all fields are required with explicit defaults in `DEFAULT_CONFIG`. Deviating from this pattern increases maintenance burden and breaks symmetry.
+**Rejected because**: Creates inconsistency within the `include` section — some fields required, some optional. This makes the API harder to learn and understand. If we're adopting optional-with-defaults for new fields, existing fields should follow the same pattern for consistency.
 
 ---
 
@@ -83,7 +85,8 @@ Place the field under `processing` rather than `include`, since it affects the p
 
 | File | Change | Bump |
 |------|--------|------|
-| `Config.ts` | Add optional field `emptyVariants: boolean` to `Config.include` interface | MINOR |
+| `Config.ts` | Make `variantNames`, `invalidVariants`, `invalidCombinations` optional in `Config.include` interface | MINOR |
+| `Config.ts` | Add new optional field `emptyVariants?: boolean` to `Config.include` interface | MINOR |
 | `Config.ts` | Add `emptyVariants: false` to `DEFAULT_CONFIG.include` | MINOR |
 
 **Example — new shape** (`types/Config.ts`):
@@ -98,32 +101,32 @@ include: {
 
 // After
 include: {
-  variantNames: boolean;
-  invalidVariants: boolean;
-  invalidCombinations: boolean;
-  emptyVariants: boolean;
+  variantNames?: boolean;
+  invalidVariants?: boolean;
+  invalidCombinations?: boolean;
+  emptyVariants?: boolean;
 }
 ```
 
-**Default value** (`DEFAULT_CONFIG`):
+**Default values** (`DEFAULT_CONFIG` — unchanged):
 
 ```typescript
 include: {
   variantNames: false,
   invalidVariants: false,
   invalidCombinations: true,
-  emptyVariants: false,  // NEW: exclude empty variants by default
+  emptyVariants: false,  // NEW
 }
 ```
 
-**Rationale for default value**: Setting `emptyVariants: false` (exclude empty variants) aligns with the principle of minimal output — consumers typically want only semantically meaningful variants. Users can opt in to including empty variants when debugging or analyzing variant coverage. This matches the plugin's current default behavior.
+**Rationale for `emptyVariants` default**: Setting `emptyVariants: false` (exclude empty variants) aligns with the principle of minimal output — consumers typically want only semantically meaningful variants. Users can opt in to including empty variants when debugging or analyzing variant coverage. This matches the plugin's current default behavior.
 
 ### Schema changes (`schema/`)
 
 | File | Change | Bump |
 |------|--------|------|
-| `component.schema.json` | Add `emptyVariants` property to `#/definitions/Config/properties/include/properties` | MINOR |
-| `component.schema.json` | Add `emptyVariants` to `#/definitions/Config/properties/include/required` array | MINOR |
+| `component.schema.json` | Remove `variantNames`, `invalidVariants`, `invalidCombinations` from `#/definitions/Config/properties/include/required` array | MINOR |
+| `component.schema.json` | Add optional `emptyVariants` property to `#/definitions/Config/properties/include/properties` | MINOR |
 
 **Example — new shape** (`schema/component.schema.json`):
 
@@ -132,24 +135,24 @@ include: {
   "type": "object",
   "properties": {
     "variantNames": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Include variant names"
     },
     "invalidVariants": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Include invalid variants"
     },
     "invalidCombinations": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Include invalid combinations"
     },
     "emptyVariants": {
       "type": "boolean",
-      "description": "When false, exclude layered variants that contain no elements from output. When true, include all variants regardless of element presence."
+      "description": "When false, exclude layered variants that contain no elements from output. When true, include all variants regardless of element presence. Defaults to false when absent."
     }
   },
   "required": [
-    "variantNames",
-    "invalidVariants",
-    "invalidCombinations",
-    "emptyVariants"
+    // All fields now optional — empty array or remove property
   ],
   "additionalProperties": false
 }
@@ -157,6 +160,8 @@ include: {
 
 ### Notes
 
+- **Scope expansion**: This ADR initially focused on adding `emptyVariants`, but was expanded to make all `include` fields optional for consistency with the broader Config pattern
+- All `include` fields now follow the same pattern: optional in the type/schema, explicit defaults in `DEFAULT_CONFIG`
 - The field name `emptyVariants` follows the "include" semantics: `false` = exclude empty variants from output, `true` = include them
 - "Empty variant" is defined as: a layered variant (when `processing.details = 'LAYERED'`) that contains no elements in its diff from the default variant
 - The filtering logic implementation is deferred to `anova-transformer` (separate issue)
@@ -201,9 +206,12 @@ More precisely:
 
 ## Consequences
 
+- The entire `Config.include` section now follows a consistent pattern: all fields optional with explicit defaults in `DEFAULT_CONFIG`
+- Serialized configs can omit `include` fields when using default values, reducing output size
 - The `Config` contract now supports signaling whether to include or exclude empty variants in output
 - The transformer can implement filtering logic for layered variants without elements once this ADR is accepted
 - The plugin can wire its existing UI setting to the config field, making the checkbox functional
-- Consumers validating against `schema/component.schema.json` must update to the new version to accept specs with the `emptyVariants` field
-- Serialized specs will include `config.include.emptyVariants: false` by default, explicitly documenting the filtering behavior
-- Adding this field establishes a precedent for other "include" flags that control output filtering based on variant characteristics
+- Consumers validating against `schema/component.schema.json` must update to the new version to accept specs with optional `include` fields
+- Consumers constructing `Config` objects can now omit any `include` field and rely on `DEFAULT_CONFIG` merging or explicit defaults
+- Existing code that provides all `include` fields continues to work without modification (backward compatible)
+- Establishes `Config.include` as a clean example of the optional-with-defaults pattern for future Config additions
