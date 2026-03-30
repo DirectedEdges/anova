@@ -9,9 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Config.include.emptyVariants` — optional boolean to control inclusion of layered variants that contain no elements; defaults to false
+
 ### Changed
 
+- `Config.include.invalidVariants` — now optional; defaults to false when absent
+- `Config.include.invalidCombinations` — now optional; defaults to true when absent
+
 ### Removed
+
+- `Config.include.variantNames` — unused field removed from the API
+
+### Migration
+
+- `Config.include.variantNames` → removed: delete any references to this field from config construction code; regenerate cached specs to remove the field from serialized output
 
 
 ## [0.15.0] - 2026-03-25

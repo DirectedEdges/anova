@@ -871,21 +871,20 @@
         "include": {
           "type": "object",
           "properties": {
-            "variantNames": {
-              "type": "boolean"
-            },
             "invalidVariants": {
-              "type": "boolean"
+              "type": "boolean",
+              "description": "Include invalid variants. Optional; defaults to false."
             },
             "invalidCombinations": {
-              "type": "boolean"
+              "type": "boolean",
+              "description": "Include invalid combinations. Optional; defaults to true."
+            },
+            "emptyVariants": {
+              "type": "boolean",
+              "description": "Include layered variants that contain no elements. When false (default), exclude empty variants from output. When true, include all variants regardless of element presence. Optional; defaults to false."
             }
           },
-          "required": [
-            "variantNames",
-            "invalidVariants",
-            "invalidCombinations"
-          ],
+          "required": [],
           "additionalProperties": false
         }
       },
