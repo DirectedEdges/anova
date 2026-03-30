@@ -41,12 +41,12 @@ export interface Config {
     tokens?: 'TOKEN' | 'TOKEN_NAME' | 'TOKEN_FIGMA_EXTENSIONS' | 'FIGMA_NAME' | 'CUSTOM';
   };
   include: {
-    /** Include variant names */
-    variantNames: boolean;
-    /** Include invalid variants */
-    invalidVariants: boolean;
-    /** Include invalid combinations */
-    invalidCombinations: boolean;
+    /** Include invalid variants. Optional; defaults to false. */
+    invalidVariants?: boolean;
+    /** Include invalid combinations. Optional; defaults to true. */
+    invalidCombinations?: boolean;
+    /** Include layered variants that contain no elements. When false (default), exclude empty variants from output. When true, include all variants regardless of element presence. Optional; defaults to false. @since 1.0.0 */
+    emptyVariants?: boolean;
   };
 }
 
@@ -62,9 +62,9 @@ export interface Config {
  * - format.keys: SAFE prevents corruption of special characters while maintaining readability
  * - format.layout: LAYOUT provides tree structure with layout properties
  * - format.tokens: TOKEN provides platform-neutral token references with $token path and $type
- * - include.variantNames: false reduces output size (names can be reconstructed from configuration)
  * - include.invalidVariants: false excludes variants that can't be instantiated
  * - include.invalidCombinations: true helps designers identify property conflicts
+ * - include.emptyVariants: false reduces output size by excluding semantically empty layered variants
  */
 export const DEFAULT_CONFIG: Config = {
   processing: {
@@ -81,8 +81,8 @@ export const DEFAULT_CONFIG: Config = {
     tokens: 'TOKEN',
   },
   include: {
-    variantNames: false,
     invalidVariants: false,
     invalidCombinations: true,
+    emptyVariants: false,
   },
 };
