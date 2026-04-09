@@ -1,71 +1,12 @@
 {
   "name": "@directededges/anova",
   "version": "0.15.0",
-  "description": "Anova UI Component Schema - TypeScript types and JSON schema definitions for component specifications",
+  "description": "DEPRECATED — moved to @directededges/specs-schema. See https://github.com/DirectedEdges/specs",
   "license": "CC BY 4.0",
   "author": "Nathan Curtis <nathan@directededges.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/DirectedEdges/anova.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./types/index.ts",
-  "exports": {
-    ".": {
-      "types": "./types/index.ts",
-      "default": "./dist/index.js"
-    },
-    "./types": {
-      "types": "./types/index.ts",
-      "default": "./types/index.ts"
-    },
-    "./types/*": {
-      "types": "./types/*.ts",
-      "default": "./types/*.ts"
-    },
-    "./schema": {
-      "default": "./schema/component.schema.json"
-    },
-    "./schema/component": {
-      "default": "./schema/component.schema.json"
-    },
-    "./schema/components": {
-      "default": "./schema/components.schema.json"
-    },
-    "./schema/styles": {
-      "default": "./schema/styles.schema.json"
-    },
-    "./schema/root": {
-      "default": "./schema/root.schema.json"
-    }
-  },
-  "files": [
-    "dist",
-    "types",
-    "schema",
-    "LICENSE",
-    "README.md",
-    "CHANGELOG.md"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "prepublishOnly": "npm run build"
-  },
-  "keywords": [
-    "anova",
-    "component",
-    "schema",
-    "figma",
-    "design-system",
-    "specifications",
-    "types",
-    "typescript"
-  ],
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  }
+  "deprecated": "This package has moved to @directededges/specs-schema. See https://github.com/DirectedEdges/specs"
 }
